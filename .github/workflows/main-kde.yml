@@ -1,0 +1,105 @@
+name: KDE Linux RDP (Tailscale)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kde-rdp:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+
+    steps:
+      - name: Install KDE Plasma and XRDP
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            kde-plasma-desktop \
+            xrdp \
+            xorgxrdp \
+            dbus-x11 \
+            x11-xserver-utils \
+            curl
+
+      - name: Create the RDP login
+        shell: bash
+        env:
+          RDP_USER: ${{ secrets.RDP_USER }}
+          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RDP_USER}" ] || [ -z "${RDP_PASSWORD}" ]; then
+            echo "Set the RDP_USER and RDP_PASSWORD repository Actions secrets first."
+            exit 1
+          fi
+
+          if ! [[ "$RDP_USER" =~ ^[a-z_][a-z0-9_-]{0,31}$ ]]; then
+            echo "RDP_USER must be a simple Linux username (lowercase letters, numbers, _ or -)."
+            exit 1
+          fi
+
+          sudo useradd --create-home --shell /bin/bash "$RDP_USER"
+          printf '%s:%s\n' "$RDP_USER" "$RDP_PASSWORD" | sudo chpasswd
+          sudo adduser xrdp ssl-cert
+
+          # Start a KDE Plasma X11 session for this account.
+          printf '%s\n' 'exec startplasma-x11' | sudo tee "/home/$RDP_USER/.xsession" >/dev/null
+          sudo chown "$RDP_USER:$RDP_USER" "/home/$RDP_USER/.xsession"
+          sudo chmod 700 "/home/$RDP_USER/.xsession"
+
+      - name: Start XRDP
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo systemctl enable xrdp
+          sudo systemctl restart xrdp
+          sudo systemctl --no-pager --full status xrdp || true
+
+      - name: Connect this temporary runner to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TS_AUTHKEY }}
+          hostname: kde-github-runner
+          tags: tag:github-actions
+
+      - name: Restrict RDP to the Tailscale interface and show connection details
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Permit TCP/3389 through tailscale0 only; drop attempts arriving elsewhere.
+          # Tailscale ACLs should also restrict which tailnet devices may connect.
+          if ip link show tailscale0 >/dev/null 2>&1; then
+            sudo iptables -A INPUT -p tcp --dport 3389 -j DROP
+            sudo iptables -I INPUT 1 -i tailscale0 -p tcp --dport 3389 -j ACCEPT
+          else
+            echo "tailscale0 interface was not found; refusing to expose RDP."
+            exit 1
+          fi
+
+          TS_IP="$(tailscale ip -4 | head -n 1)"
+          if [ -z "$TS_IP" ]; then
+            echo "Could not determine the Tailscale IPv4 address."
+            exit 1
+          fi
+
+          echo ""
+          echo "=================================================="
+          echo "KDE Plasma RDP is ready."
+          echo "Address: ${TS_IP}:3389"
+          echo "Username: use the RDP_USER Actions secret"
+          echo "Password: use the RDP_PASSWORD Actions secret"
+          echo "Connect only from a device in your authorized Tailscale network."
+          echo "=================================================="
+
+      - name: Keep the temporary desktop available
+        shell: bash
+        run: |
+          echo "Runner is temporary and will stop when this job ends or times out."
+          while true; do
+            sleep 60
+          done
