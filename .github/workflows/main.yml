@@ -1,0 +1,81 @@
+name: Temporary Public Nginx Website
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  website:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+
+    steps:
+      - name: Check out website files
+        uses: actions/checkout@v4
+
+      - name: Install and configure Nginx
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y nginx curl
+          sudo rm -f /var/www/html/*
+          sudo cp -r site/. /var/www/html/
+          sudo nginx -t
+          sudo systemctl enable --now nginx
+          curl --fail --silent --show-error http://127.0.0.1/ >/dev/null
+          echo "Nginx is serving the website locally."
+
+      - name: Start temporary public HTTPS tunnel
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Download the official Cloudflare Tunnel client (amd64 Linux).
+          curl --fail --location --silent --show-error \
+            https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 \
+            --output cloudflared
+          chmod +x cloudflared
+
+          # Quick Tunnel creates a temporary public URL; no account or token is needed.
+          ./cloudflared tunnel \
+            --url http://127.0.0.1:80 \
+            --no-autoupdate \
+            --loglevel info \
+            --logfile "$RUNNER_TEMP/cloudflared.log" &
+          TUNNEL_PID=$!
+
+          echo "Waiting for the public URL..."
+          for attempt in $(seq 1 60); do
+            if ! kill -0 "$TUNNEL_PID" 2>/dev/null; then
+              echo "Cloudflared stopped unexpectedly."
+              cat "$RUNNER_TEMP/cloudflared.log" || true
+              exit 1
+            fi
+
+            PUBLIC_URL="$(grep -Eo 'https://[a-zA-Z0-9-]+\.trycloudflare\.com' \
+              "$RUNNER_TEMP/cloudflared.log" | head -n 1 || true)"
+
+            if [ -n "$PUBLIC_URL" ]; then
+              echo ""
+              echo "=================================================="
+              echo "YOUR TEMPORARY PUBLIC WEBSITE:"
+              echo "$PUBLIC_URL"
+              echo "=================================================="
+              echo "The URL works only while this workflow job is running."
+              break
+            fi
+            sleep 2
+          done
+
+          if [ -z "${PUBLIC_URL:-}" ]; then
+            echo "Could not detect a Quick Tunnel URL."
+            cat "$RUNNER_TEMP/cloudflared.log" || true
+            kill "$TUNNEL_PID" 2>/dev/null || true
+            exit 1
+          fi
+
+          # Keep the runner and tunnel alive until the job is cancelled or times out.
+          wait "$TUNNEL_PID"
