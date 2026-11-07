@@ -1,1 +1,59 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d1b">
+  <meta name="description" content="A polished, lightweight welcome page served by Nginx on Ubuntu.">
+  <title>Nova — Digital Workspace</title>
+  <style>
+    :root { color-scheme: dark; --bg:#090d1b; --panel:rgba(19,27,49,.76); --line:rgba(180,198,255,.14); --muted:#9aa8c7; --white:#f4f7ff; --cyan:#75e4ff; --violet:#a994ff; }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; color:var(--white); font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; background:radial-gradient(ellipse at 12% 8%,rgba(89,91,220,.28),transparent 35%),radial-gradient(ellipse at 88% 18%,rgba(32,183,210,.18),transparent 32%),var(--bg); }
+    .shell { width:min(1120px,calc(100% - 40px)); margin:auto; padding:28px 0 50px }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:8px 0 28px }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:750; letter-spacing:.04em }
+    .logo { width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#10152a;font-weight:900;box-shadow:0 8px 28px #6e8bff55 }
+    .status { border:1px solid var(--line); border-radius:99px; padding:7px 12px; color:#b9f7dd; font-size:12px; background:#16372c66 }
+    .hero { padding:clamp(42px,8vw,92px) 0 54px; max-width:780px }
+    .eyebrow { color:var(--cyan); text-transform:uppercase; letter-spacing:.19em; font-size:11px; font-weight:800 }
+    h1 { font-size:clamp(42px,8vw,76px); line-height:1.04; letter-spacing:-.055em; margin:18px 0 20px }
+    h1 span { background:linear-gradient(100deg,#fff 5%,#9beaff 48%,#b6a5ff 90%); -webkit-background-clip:text;background-clip:text;color:transparent }
+    .intro { color:var(--muted); font-size:clamp(16px,2vw,19px); max-width:620px }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px }
+    a.btn { text-decoration:none; padding:11px 17px; border-radius:12px; font-weight:700; border:1px solid var(--line); color:var(--white); background:#ffffff0a }
+    a.primary { color:#10152a; border:0; background:linear-gradient(100deg,var(--cyan),#b9a8ff) }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px }
+    .card { padding:22px; min-height:165px; border:1px solid var(--line); border-radius:19px; background:var(--panel); box-shadow:0 18px 50px #0002; backdrop-filter:blur(14px) }
+    .icon { font-size:22px }
+    .card h2 { margin:13px 0 5px; font-size:17px }
+    .card p { margin:0; color:var(--muted); font-size:14px }
+    footer { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; color:#71809f; font-size:12px; margin-top:32px; border-top:1px solid var(--line); padding-top:20px }
+    @media(max-width:720px){.grid{grid-template-columns:1fr}.hero{padding-top:55px}.shell{width:min(100% - 28px,1120px)}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><div class="logo">N</div><span>NOVA / DIGITAL</span></div>
+      <div class="status">● SYSTEM ONLINE</div>
+    </header>
+    <section class="hero">
+      <div class="eyebrow">A lightweight web experience</div>
+      <h1>Ideas into <span>something brilliant.</span></h1>
+      <p class="intro">A clean, modern landing page running on Ubuntu and Nginx. Your public preview is delivered through a temporary HTTPS tunnel.</p>
+      <div class="actions">
+        <a class="btn primary" href="#features">Explore the setup&nbsp; →</a>
+        <a class="btn" href="https://nginx.org/" target="_blank" rel="noreferrer">About Nginx ↗</a>
+      </div>
+    </section>
+    <section class="grid" id="features">
+      <article class="card"><div class="icon">⚡</div><h2>Fast by design</h2><p>Nginx serves this static page directly with very little overhead.</p></article>
+      <article class="card"><div class="icon">◈</div><h2>Secure transport</h2><p>The preview is exposed over HTTPS through Cloudflare Quick Tunnel.</p></article>
+      <article class="card"><div class="icon">⌘</div><h2>Built to customize</h2><p>Edit <code>site/index.html</code> in your repository to make it yours.</p></article>
+    </section>
+    <footer><span>© <span id="year"></span> Nova Digital</span><span>Ubuntu · Nginx · GitHub Actions</span></footer>
+  </main>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
