@@ -215,3 +215,26 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .copy{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);color:#5f7a6a;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
+
+/* ---------- COLLEGE PRE-TEST ROUTINE ---------- */
+.exam-section{padding:70px 0 80px;background:linear-gradient(180deg,var(--bg),var(--bg2))}
+.exam-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.exam-notice-link,.exam-inline-link{color:var(--green2);font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.exam-layout{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:18px}
+.exam-countdown,.exam-list{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:26px}
+.exam-countdown{background:linear-gradient(145deg,#123c25,#0a1f14);display:flex;flex-direction:column;align-items:flex-start}
+.exam-label{font-size:13px;font-weight:700;color:var(--green2);letter-spacing:.05em}
+.exam-countdown h3{font-size:clamp(23px,3vw,30px);line-height:1.35;margin:14px 0 8px}
+.exam-countdown p{margin:0;color:var(--muted)}
+.exam-status{margin-top:26px;color:var(--gold);font-weight:700;font-size:14px}
+.exam-timer{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%;margin-top:10px}
+.exam-timer div{background:#04150a99;border:1px solid var(--line);border-radius:14px;text-align:center;padding:12px 4px}
+.exam-timer b,.exam-timer span{display:block}.exam-timer b{font-size:clamp(22px,3vw,32px);color:var(--green2);line-height:1.2}.exam-timer span{font-size:12px;color:var(--muted)}
+.exam-countdown .exam-note{margin-top:20px;font-size:13px}
+.exam-list h3{margin:0 0 12px;font-size:19px}.exam-row{display:flex;align-items:center;gap:15px;border-top:1px solid var(--line);padding:13px 0}
+.exam-row>div:last-child{min-width:0}.exam-row strong{display:block;font-size:15px;line-height:1.45}.exam-row>div:last-child span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.exam-date{flex:none;width:68px;text-align:center;border-radius:12px;background:#00c85318;color:var(--green2);padding:8px 3px}.exam-date b,.exam-date span{display:block}.exam-date b{font-size:23px;line-height:1.15}.exam-date span{font-size:11px}
+.exam-empty{color:var(--muted)}.exam-row[hidden],.exam-timer[hidden],.exam-empty[hidden]{display:none}
+.exam-rules{margin-top:18px;padding:18px 22px;border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--muted)}
+.exam-rules summary{color:var(--text);font-weight:700;cursor:pointer}.exam-rules ul{padding-left:22px}.exam-rules li{margin:6px 0}.exam-rules p{margin-bottom:0;font-size:14px}
+@media(max-width:800px){.exam-layout{grid-template-columns:1fr}.exam-section{padding:55px 0}.exam-countdown,.exam-list{padding:20px}}
