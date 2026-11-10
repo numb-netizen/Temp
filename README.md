@@ -2,7 +2,8 @@
 
 HSC 2027 ব্যাচের শিক্ষার্থীদের জন্য তৈরি একটি সম্পূর্ণ স্টাডি প্ল্যাটফর্ম।
 
-**🌐 Live Website:** https://numb-netizen.github.io/Temp/
+**🌐 Live Website:** https://hsc2027.de5.net/ (কাস্টম ডোমেইন)
+**ব্যাকআপ URL:** https://numb-netizen.github.io/Temp/
 
 ## ফিচারসমূহ
 
@@ -22,14 +23,18 @@ HSC 2027 ব্যাচের শিক্ষার্থীদের জন্
 3. Branch: `arena/bc575e3a-temp`, Folder: `/site` → **Save**
 4. কয়েক মিনিট পর সাইট লাইভ হবে: https://numb-netizen.github.io/Temp/
 
-## কাস্টম ডোমেইন (ঐচ্ছিক)
+## কাস্টম ডোমেইন: hsc2027.de5.net
 
-নিজের ডোমেইন (যেমন `hsc2027.com`) ব্যবহার করতে চাইলে:
+ডোমেইনটি DNSHE (de5.net) থেকে ফ্রি নেওয়া। কানেক্ট করতে:
 
-1. যেকোনো রেজিস্ট্রার থেকে ডোমেইন কিনুন (Cloudflare, Namecheap, Porkbun ইত্যাদি)
-2. Settings → Pages → **Custom domain**-এ ডোমেইনটি লিখুন
-3. ডোমেইন প্রোভাইডারের DNS-এ CNAME রেকর্ড যোগ করুন: `www` → `numb-netizen.github.io`
-4. HTTPS এনফোর্সমেন্ট চালু করুন
+1. **DNSHE প্যানেলে** (dnshe.com) → Manage domains → `hsc2027.de5.net` → DNS Records
+2. নিচের CNAME রেকর্ডগুলো যোগ করুন:
+   - Host: `@` → Value: `numb-netizen.github.io`
+   - Host: `www` → Value: `numb-netizen.github.io`
+3. **GitHub** → Settings → Pages → **Custom domain**: `hsc2027.de5.net` → Save
+4. DNS প্রোপাগেট হতে কয়েক ঘণ্টা লাগতে পারে; এরপর HTTPS অটোমেটিক চালু হবে
+
+> ⚠️ DNSHE ফ্রি ডোমেইন প্রতি ১৮০ দিনে একবার রিনিউ করতে হয় — মেয়াদ শেষের আগেই রিনিউ করে রাখুন।
 
 ## লোকাল প্রিভিউ
 
