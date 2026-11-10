@@ -2,8 +2,8 @@
 
 চুনারুঘাট সরকারি কলেজের HSC ব্যাচ ২০২৭-এর শিক্ষার্থীদের জন্য তৈরি স্টাডি প্ল্যাটফর্ম।
 
-**🌐 Live Website:** https://hsc2027.de5.net/ (কাস্টম ডোমেইন)
-**ব্যাকআপ URL:** https://numb-netizen.github.io/Temp/
+**কাস্টম ডোমেইন (সেটআপের পর):** https://hsc2027.de5.net/
+**বর্তমান URL (সেটআপ পরিবর্তনের আগে):** https://numb-netizen.github.io/Temp/site/
 
 ## ওয়েবসাইটের কাঠামো (Hierarchical / Tree Structure)
 
@@ -29,24 +29,17 @@
 - 🎥 অনলাইন ক্লাস — 10 Minute School, Shikho ও সাবজেক্টভিত্তিক YouTube ক্লাস
 - 🕐 দৈনন্দিন স্টাডি রুটিন
 
-## GitHub Pages সেটআপ
+## GitHub Pages ও কাস্টম ডোমেইন সেটআপ
 
-1. রিপো → **Settings** → **Pages**
-2. Source: **Deploy from a branch**
-3. Branch: `arena/bc575e3a-temp`, Folder: `/site` → **Save**
-4. Custom domain: `hsc2027.de5.net` → **Save**
+এই রিপোর `.github/workflows/pages.yml` শুধু `site/` ফোল্ডারকে সাইটের root হিসেবে প্রকাশ করে। প্রথমে workflow-টি `main` ব্রাঞ্চে মার্জ করতে হবে।
 
-## কাস্টম ডোমেইন: hsc2027.de5.net
+1. রিপো → **Settings → Pages → Build and deployment** → Source হিসেবে **GitHub Actions** বেছে নিন। GitHub Pages ব্রাঞ্চ থেকে প্রকাশের ক্ষেত্রে `/site` ফোল্ডার বেছে নেওয়ার সুবিধা নেই।
+2. **Actions → Deploy HSC site to GitHub Pages → Run workflow** থেকে `main` ব্রাঞ্চে workflow চালান এবং সফল হওয়া পর্যন্ত অপেক্ষা করুন। `main`-এ পরবর্তী push-এ এটিও নিজে চলবে।
+3. **Settings → Pages → Custom domain**-এ `hsc2027.de5.net` লিখে Save করুন। ডোমেইনটি আপনার নিয়ন্ত্রণে থাকতে হবে; সম্ভব হলে GitHub account settings থেকে domain verification করুন।
+4. আপনার ডোমেইন/DNS প্রদানকারীর প্যানেলে `hsc2027.de5.net`-এর জন্য একটি **CNAME** রেকর্ড তৈরি করুন, যার target `numb-netizen.github.io` (URL বা `/Temp/site/` নয়)। যদি DNS zone হয় `de5.net`, host হবে `hsc2027`; আর যদি zone নিজেই `hsc2027.de5.net` হয়, host সাধারণত `@`। একই hostname-এ বিরোধপূর্ণ রেকর্ড থাকলে DNS প্রদানকারীর নির্দেশনা অনুসারে সরান।
+5. DNS check পাস হলে **Enforce HTTPS** চালু করুন। DNS পরিবর্তন ও সার্টিফিকেট তৈরি হতে কিছু সময় লাগতে পারে। তারপর https://hsc2027.de5.net/ দেখুন।
 
-ডোমেইনটি DNSHE (de5.net) থেকে ফ্রি নেওয়া। DNS সেটআপ:
-
-1. **DNSHE প্যানেলে** (dnshe.com) → Manage domains → `hsc2027.de5.net` → DNS Records
-2. CNAME রেকর্ড যোগ করুন:
-   - Host: `@` → Value: `numb-netizen.github.io`
-   - Host: `www` → Value: `numb-netizen.github.io`
-3. GitHub → Settings → Pages → **Custom domain**: `hsc2027.de5.net` → Save
-
-> ⚠️ DNSHE ফ্রি ডোমেইন প্রতি ১৮০ দিনে একবার রিনিউ করতে হয়।
+GitHub Actions deployment-এর পর কাস্টম ডোমেইন ছাড়া ডিফল্ট project URL-এ সাইটের root হবে `https://numb-netizen.github.io/Temp/`, আগের `/Temp/site/` নয়। `site/CNAME` ফাইল একা ডোমেইনের DNS বা Pages সেটিংস পরিবর্তন করে না।
 
 ## লোকাল প্রিভিউ
 
