@@ -80,3 +80,37 @@ $$(".reveal").forEach(el => io.observe(el));
 
 /* ---------- MISC ---------- */
 const yr = $("#year"); if(yr) yr.textContent = bn(new Date().getFullYear());
+
+/* ---------- PRE-TEST EXAMS (Bangladesh time; hide after the scheduled end) ---------- */
+const pretest = document.querySelector("#pretest-routine");
+if(pretest){
+  const rows = [...pretest.querySelectorAll(".exam-row")];
+  const timer = document.querySelector("#exam-timer");
+  function updatePretest(){
+    const now = Date.now();
+    const remaining = rows.filter(row => now < Date.parse(row.dataset.end));
+    rows.forEach(row => { row.hidden = now >= Date.parse(row.dataset.end); });
+    document.querySelector("#exam-empty").hidden = remaining.length > 0;
+    timer.hidden = remaining.length === 0;
+    const next = remaining[0];
+    if(!next){
+      document.querySelector("#exam-next-title").textContent = "সব পরীক্ষা শেষ";
+      document.querySelector("#exam-next-date").textContent = "প্রাক-নির্বাচনী পরীক্ষার রুটিন সম্পন্ন হয়েছে।";
+      document.querySelector("#exam-countdown-label").textContent = "";
+      return;
+    }
+    const start = Date.parse(next.dataset.start);
+    const end = Date.parse(next.dataset.end);
+    const inProgress = now >= start;
+    const difference = Math.max(0, (inProgress ? end : start) - now);
+    document.querySelector("#exam-next-title").textContent = next.dataset.subject;
+    document.querySelector("#exam-next-date").textContent = next.dataset.date + " · দুপুর ১২:০০ – বিকেল ৩:০০";
+    document.querySelector("#exam-countdown-label").textContent = inProgress ? "পরীক্ষা চলছে · শেষ হতে বাকি" : "পরীক্ষা শুরু হতে বাকি";
+    document.querySelector("#exam-days").textContent = bn(Math.floor(difference / 864e5));
+    document.querySelector("#exam-hours").textContent = bn(Math.floor(difference / 36e5) % 24);
+    document.querySelector("#exam-minutes").textContent = bn(Math.floor(difference / 6e4) % 60);
+    document.querySelector("#exam-seconds").textContent = bn(Math.floor(difference / 1e3) % 60);
+  }
+  updatePretest();
+  setInterval(updatePretest, 1000);
+}
