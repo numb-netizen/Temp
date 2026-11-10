@@ -1,59 +1,185 @@
 <!doctype html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090d1b">
-  <meta name="description" content="A polished, lightweight welcome page served by Nginx on Ubuntu.">
-  <title>Nova — Digital Workspace</title>
-  <style>
-    :root { color-scheme: dark; --bg:#090d1b; --panel:rgba(19,27,49,.76); --line:rgba(180,198,255,.14); --muted:#9aa8c7; --white:#f4f7ff; --cyan:#75e4ff; --violet:#a994ff; }
-    * { box-sizing:border-box }
-    body { margin:0; min-height:100vh; color:var(--white); font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; background:radial-gradient(ellipse at 12% 8%,rgba(89,91,220,.28),transparent 35%),radial-gradient(ellipse at 88% 18%,rgba(32,183,210,.18),transparent 32%),var(--bg); }
-    .shell { width:min(1120px,calc(100% - 40px)); margin:auto; padding:28px 0 50px }
-    header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:8px 0 28px }
-    .brand { display:flex; align-items:center; gap:11px; font-weight:750; letter-spacing:.04em }
-    .logo { width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#10152a;font-weight:900;box-shadow:0 8px 28px #6e8bff55 }
-    .status { border:1px solid var(--line); border-radius:99px; padding:7px 12px; color:#b9f7dd; font-size:12px; background:#16372c66 }
-    .hero { padding:clamp(42px,8vw,92px) 0 54px; max-width:780px }
-    .eyebrow { color:var(--cyan); text-transform:uppercase; letter-spacing:.19em; font-size:11px; font-weight:800 }
-    h1 { font-size:clamp(42px,8vw,76px); line-height:1.04; letter-spacing:-.055em; margin:18px 0 20px }
-    h1 span { background:linear-gradient(100deg,#fff 5%,#9beaff 48%,#b6a5ff 90%); -webkit-background-clip:text;background-clip:text;color:transparent }
-    .intro { color:var(--muted); font-size:clamp(16px,2vw,19px); max-width:620px }
-    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px }
-    a.btn { text-decoration:none; padding:11px 17px; border-radius:12px; font-weight:700; border:1px solid var(--line); color:var(--white); background:#ffffff0a }
-    a.primary { color:#10152a; border:0; background:linear-gradient(100deg,var(--cyan),#b9a8ff) }
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px }
-    .card { padding:22px; min-height:165px; border:1px solid var(--line); border-radius:19px; background:var(--panel); box-shadow:0 18px 50px #0002; backdrop-filter:blur(14px) }
-    .icon { font-size:22px }
-    .card h2 { margin:13px 0 5px; font-size:17px }
-    .card p { margin:0; color:var(--muted); font-size:14px }
-    footer { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; color:#71809f; font-size:12px; margin-top:32px; border-top:1px solid var(--line); padding-top:20px }
-    @media(max-width:720px){.grid{grid-template-columns:1fr}.hero{padding-top:55px}.shell{width:min(100% - 28px,1120px)}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07130d">
+<meta name="description" content="চুনারুঘাট সরকারি কলেজ — HSC 2027 ব্যাচের স্টাডি প্ল্যাটফর্ম। সাবজেক্ট, অধ্যায় ট্র্যাকার, অনলাইন ক্লাস ও রুটিন।">
+<title>হোম | HSC 2027 — চুনারুঘাট সরকারি কলেজ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Baloo+Da+2:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <main class="shell">
-    <header>
-      <div class="brand"><div class="logo">N</div><span>NOVA / DIGITAL</span></div>
-      <div class="status">● SYSTEM ONLINE</div>
-    </header>
-    <section class="hero">
-      <div class="eyebrow">A lightweight web experience</div>
-      <h1>Ideas into <span>something brilliant.</span></h1>
-      <p class="intro">A clean, modern landing page running on Ubuntu and Nginx. Your public preview is delivered through a temporary HTTPS tunnel.</p>
-      <div class="actions">
-        <a class="btn primary" href="#features">Explore the setup&nbsp; →</a>
-        <a class="btn" href="https://nginx.org/" target="_blank" rel="noreferrer">About Nginx ↗</a>
+<nav>
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html"><span class="badge">🏫</span>HSC <em>2027</em></a>
+    <div class="links" id="navLinks">
+      <a href="index.html" class="active">হোম</a>
+      <a href="science.html">বিজ্ঞান</a>
+      <a href="arts.html">মানবিক</a>
+      <a href="commerce.html">ব্যবসায়</a>
+      <a href="classes.html">অনলাইন ক্লাস</a>
+      <a href="tracker.html">ট্র্যাকার</a>
+      <a href="routine.html">রুটিন</a>
+    </div>
+    <a class="nav-cta" href="tracker.html">পড়া শুরু করো</a>
+    <button class="burger" id="burger" aria-label="মেনু">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="pill"><span class="dot"></span> 🏫 চুনারুঘাট সরকারি কলেজ · HSC ব্যাচ ২০২৭</span>
+      <h1>তোমার HSC যাত্রা<br><span class="grad">শুরু হোক এখান থেকে</span></h1>
+      <p class="sub">বিভাগভিত্তিক সাবজেক্ট, অধ্যায় ট্র্যাকার, অনলাইন ক্লাস ও স্মার্ট রুটিন — চুনারুঘাট সরকারি কলেজের HSC 2027 ব্যাচের শিক্ষার্থীদের জন্য সবকিছু এক জায়গায়।</p>
+      <div class="btns">
+        <a class="btn btn-p" href="tracker.html">📚 অধ্যায় ট্র্যাক করা শুরু করো</a>
+        <a class="btn btn-g" href="classes.html">🎥 অনলাইন ক্লাস দেখো</a>
       </div>
-    </section>
-    <section class="grid" id="features">
-      <article class="card"><div class="icon">⚡</div><h2>Fast by design</h2><p>Nginx serves this static page directly with very little overhead.</p></article>
-      <article class="card"><div class="icon">◈</div><h2>Secure transport</h2><p>The preview is exposed over HTTPS through Cloudflare Quick Tunnel.</p></article>
-      <article class="card"><div class="icon">⌘</div><h2>Built to customize</h2><p>Edit <code>site/index.html</code> in your repository to make it yours.</p></article>
-    </section>
-    <footer><span>© <span id="year"></span> Nova Digital</span><span>Ubuntu · Nginx · GitHub Actions</span></footer>
-  </main>
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+    </div>
+    <div class="cd-card">
+      <h3>⏳ পরীক্ষার কাউন্টডাউন</h3>
+      <p>HSC 2027 পরীক্ষা শুরু হতে বাকি (আনুমানিক)</p>
+      <div class="cd-grid">
+        <div class="cd-cell"><b id="cdD">—</b><span>দিন</span></div>
+        <div class="cd-cell"><b id="cdH">—</b><span>ঘণ্টা</span></div>
+        <div class="cd-cell"><b id="cdM">—</b><span>মিনিট</span></div>
+        <div class="cd-cell"><b id="cdS">—</b><span>সেকেন্ড</span></div>
+      </div>
+      <div class="cd-note"><span>লক্ষ্য: <b>A+ গ্রেড</b></span><span>প্রতিদিন পড়ো অন্তত <b>৬ ঘণ্টা</b></span></div>
+    </div>
+  </div>
+  <div class="wrap stats">
+    <div class="stat reveal"><b>৩টি</b><span>বিভাগ (বিজ্ঞান · মানবিক · ব্যবসায়)</span></div>
+    <div class="stat reveal"><b>১৫টি</b><span>সাবজেক্ট পেজ</span></div>
+    <div class="stat reveal"><b>১০০+</b><span>অধ্যায়ের ট্র্যাকার</span></div>
+    <div class="stat reveal"><b>২৪/৭</b><span>যেকোনো সময় পড়ো</span></div>
+  </div>
+</header>
+
+<div class="marquee"><div class="marquee-track" id="mq"></div></div>
+
+<!-- TREE STRUCTURE -->
+<section id="structure">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">ওয়েবসাইটের কাঠামো</div>
+      <h2 class="title">Hierarchical Structure <span class="grad">(Tree)</span></h2>
+      <p class="lead">এই ওয়েবসাইটটি গাছের মতো সাজানো — কলেজ থেকে বিভাগ, বিভাগ থেকে সাবজেক্ট। যেকোনো পেজে ক্লিক করলেই ভেতরের পেজে চলে যাবে।</p>
+    </div>
+    <div class="tree reveal">
+      <div class="tree-root"><span class="node-root">🏫 চুনারুঘাট সরকারি কলেজ</span></div>
+      <div class="tree-vline"></div>
+      <div class="tree-branches">
+        <div class="tree-branch">
+          <a class="tree-dept" href="science.html">🔬 বিজ্ঞান বিভাগ</a>
+          <div class="tree-kids">
+            <a class="tree-kid" href="physics.html">পদার্থবিজ্ঞান</a>
+            <a class="tree-kid" href="chemistry.html">রসায়ন</a>
+            <a class="tree-kid" href="math.html">উচ্চতর গণিত</a>
+            <a class="tree-kid" href="biology.html">জীববিজ্ঞান</a>
+            <a class="tree-kid" href="ict.html">ICT</a>
+            <a class="tree-kid" href="bangla.html">বাংলা</a>
+            <a class="tree-kid" href="english.html">English</a>
+          </div>
+        </div>
+        <div class="tree-branch">
+          <a class="tree-dept" href="arts.html">📖 মানবিক বিভাগ</a>
+          <div class="tree-kids">
+            <a class="tree-kid" href="bangla.html">বাংলা</a>
+            <a class="tree-kid" href="english.html">English</a>
+            <a class="tree-kid" href="bangladesh.html">বাংলাদেশ ও বিশ্বপরিচয়</a>
+            <a class="tree-kid" href="civics.html">পৌরনীতি</a>
+            <a class="tree-kid" href="economics.html">অর্থনীতি</a>
+            <a class="tree-kid" href="geography.html">ভূগোল</a>
+          </div>
+        </div>
+        <div class="tree-branch">
+          <a class="tree-dept" href="commerce.html">💼 ব্যবসায় শিক্ষা</a>
+          <div class="tree-kids">
+            <a class="tree-kid" href="accounting.html">হিসাববিজ্ঞান</a>
+            <a class="tree-kid" href="business.html">ব্যবসায় উদ্যোগ</a>
+            <a class="tree-kid" href="finance.html">ফিন্যান্স ও ব্যাংকিং</a>
+            <a class="tree-kid" href="marketing.html">মার্কেটিং</a>
+            <a class="tree-kid" href="economics.html">অর্থনীতি</a>
+            <a class="tree-kid" href="bangla.html">বাংলা</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENTS -->
+<section style="background:linear-gradient(180deg,var(--bg),var(--bg2))">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">বিভাগসমূহ</div>
+      <h2 class="title">তোমার <span class="grad">বিভাগ বেছে নাও</span></h2>
+      <p class="lead">বিভাগে ক্লিক করলেই সেই বিভাগের সব সাবজেক্টের পেজ খুলবে।</p>
+    </div>
+    <div class="dept-grid">
+      <a class="dept reveal" href="science.html"><div class="ic">🔬</div><h3>বিজ্ঞান বিভাগ</h3><p>পদার্থবিজ্ঞান, রসায়ন, গণিত, জীববিজ্ঞান, ICTসহ ৭টি সাবজেক্ট।</p><span class="go">সাবজেক্ট দেখো →</span></a>
+      <a class="dept reveal" href="arts.html"><div class="ic">📖</div><h3>মানবিক বিভাগ</h3><p>বাংলা, পৌরনীতি, অর্থনীতি, ভূগোলসহ ৬টি সাবজেক্ট।</p><span class="go">সাবজেক্ট দেখো →</span></a>
+      <a class="dept reveal" href="commerce.html"><div class="ic">💼</div><h3>ব্যবসায় শিক্ষা</h3><p>হিসাববিজ্ঞান, মার্কেটিং, ফিন্যান্সসহ ৮টি সাবজেক্ট।</p><span class="go">সাবজেক্ট দেখো →</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ONLINE CLASSES PREVIEW -->
+<section>
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">ইন্টারনেট থেকে</div>
+      <h2 class="title">ফ্রি <span class="grad">অনলাইন ক্লাস</span></h2>
+      <p class="lead">10 Minute School, Shikhoসহ সেরা চ্যানেলগুলোর ক্লাস — সব সাবজেক্টের ভিডিও এক জায়গায়।</p>
+    </div>
+    <div class="chan-grid">
+      <div class="chan reveal"><div class="ic">🎓</div><h3>10 Minute School</h3><p>HSC-এর সব সাবজেক্টের ফ্রি কোর্স ও লাইভ ক্লাস।</p><a class="dl" href="https://www.youtube.com/@10MinuteSchool" target="_blank" rel="noopener">দেখো →</a></div>
+      <div class="chan reveal"><div class="ic">📱</div><h3>Shikho</h3><p>বাংলা ভাষায় HSC-এর সেরা অনলাইন ক্লাস।</p><a class="dl" href="https://www.youtube.com/@shikho" target="_blank" rel="noopener">দেখো →</a></div>
+      <div class="chan reveal"><div class="ic">🔍</div><h3>সব সাবজেক্টের ক্লাস</h3><p>১৫টি সাবজেক্টের ভিডিও ক্লাসের লিংক এক পেজে।</p><a class="dl" href="classes.html">সব ক্লাস দেখো →</a></div>
+    </div>
+  </div>
+</section>
+
+<div class="quote wrap reveal">
+  <blockquote>“সফলতা কোনো জাদু নয় — এটি <span class="grad">প্রতিদিনের ছোট ছোট প্রচেষ্টার</span> ফল।”</blockquote>
+  <p>— HSC 2027 ব্যাচের জন্য শুভকামনা রইলো 💚</p>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="index.html"><span class="badge">🏫</span>HSC <em>2027</em></a>
+        <p style="color:var(--muted);font-size:14px;max-width:320px;margin:12px 0 0">চুনারুঘাট সরকারি কলেজ — HSC ব্যাচ ২০২৭-এর শিক্ষার্থীদের জন্য তৈরি স্টাডি প্ল্যাটফর্ম।</p>
+      </div>
+      <div>
+        <h4>বিভাগসমূহ</h4>
+        <a href="science.html">🔬 বিজ্ঞান বিভাগ</a>
+        <a href="arts.html">📖 মানবিক বিভাগ</a>
+        <a href="commerce.html">💼 ব্যবসায় শিক্ষা</a>
+      </div>
+      <div>
+        <h4>দ্রুত লিংক</h4>
+        <a href="classes.html">🎥 অনলাইন ক্লাস</a>
+        <a href="tracker.html">✅ অধ্যায় ট্র্যাকার</a>
+        <a href="routine.html">🕐 স্টাডি রুটিন</a>
+      </div>
+    </div>
+    <div class="copy"><span>© <span id="year"></span> HSC 2027 · চুনারুঘাট সরকারি কলেজ</span><span>শিক্ষার্থীদের জন্য ❤️ দিয়ে তৈরি</span></div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script>
+const words = ["পড়ো প্রতিদিন","রিভিশন দাও নিয়মিত","MCQ প্র্যাকটিস করো","মডেল টেস্ট দাও","A+ তোমার লক্ষ্য","হাল ছেড়ো না"];
+const seq = words.map(w => `<span>${w}</span><i>✦</i>`).join("");
+document.getElementById("mq").innerHTML = seq + seq;
+</script>
 </body>
 </html>
