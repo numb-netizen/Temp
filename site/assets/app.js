@@ -89,7 +89,11 @@ if(pretest){
   function updatePretest(){
     const now = Date.now();
     const remaining = rows.filter(row => now < Date.parse(row.dataset.end));
-    rows.forEach(row => { row.hidden = now >= Date.parse(row.dataset.end); });
+    rows.forEach(row => {
+      row.hidden = now >= Date.parse(row.dataset.end);
+      const syllabus = row.querySelector(".exam-syllabus");
+      if(syllabus) syllabus.hidden = now >= Date.parse(row.dataset.start);
+    });
     document.querySelector("#exam-empty").hidden = remaining.length > 0;
     timer.hidden = remaining.length === 0;
     const next = remaining[0];
