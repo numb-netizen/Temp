@@ -238,3 +238,16 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .exam-rules{margin-top:18px;padding:18px 22px;border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--muted)}
 .exam-rules summary{color:var(--text);font-weight:700;cursor:pointer}.exam-rules ul{padding-left:22px}.exam-rules li{margin:6px 0}.exam-rules p{margin-bottom:0;font-size:14px}
 @media(max-width:800px){.exam-layout{grid-template-columns:1fr}.exam-section{padding:55px 0}.exam-countdown,.exam-list{padding:20px}}
+
+/* Syllabus stays with its exam until that exam starts. */
+.syllabus-intro{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.5}
+.exam-row{align-items:flex-start}
+.exam-row>div:last-child{flex:1}
+.exam-syllabus{margin-top:10px;border:1px solid #00c85344;border-radius:12px;background:#06180fa8}
+.exam-syllabus[hidden]{display:none}
+.exam-syllabus summary{padding:9px 12px;color:var(--green2);font-weight:700;font-size:14px;cursor:pointer}
+.syllabus-content{padding:0 12px 10px;font-size:14px;color:var(--text);line-height:1.55}
+.syllabus-content h4{margin:10px 0 4px;color:var(--gold);font-size:14px}
+.syllabus-content ul{margin:5px 0 10px;padding-left:20px}
+.syllabus-content li{margin:3px 0}
+.syllabus-content p{color:var(--muted);font-size:13px;margin:10px 0 0}
