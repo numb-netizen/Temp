@@ -12,7 +12,7 @@ test('each page contains a single initially hidden credit and shared script', ()
   for (const name of fs.readdirSync(site).filter(name => name.endsWith('.html'))) {
     const html = fs.readFileSync(path.join(site, name), 'utf8');
     assert.equal((html.match(/id="temporary-credit" hidden/g) || []).length, 1, name);
-    assert.match(html, /Made by <strong>Mahadin<\/strong>/);
+    assert.match(html, /Made by <strong>Mahadin &amp; Morshed<\/strong>/);
     assert.match(html, /src="assets\/app\.js"/);
   }
 });
