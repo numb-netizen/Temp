@@ -6,7 +6,10 @@ const site = path.join(__dirname, '..', 'site');
 const read = name => fs.readFileSync(path.join(site, name), 'utf8');
 
 test('humanities links to sociology, without changing commerce', () => {
-  for (const name of ['index.html', 'arts.html', 'civics.html']) {
+  const artsTree = read('index.html').split('<a class="tree-dept" href="arts.html">')[1].split('</div>')[0];
+  assert.match(artsTree, /href="sociology\.html"/);
+  assert.doesNotMatch(artsTree, /href="bangladesh\.html"/);
+  for (const name of ['arts.html', 'civics.html']) {
     assert.match(read(name), /href="sociology\.html"/);
     assert.doesNotMatch(read(name), /href="bangladesh\.html"/);
   }
