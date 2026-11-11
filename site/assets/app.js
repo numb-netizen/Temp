@@ -118,3 +118,20 @@ if(pretest){
   updatePretest();
   setInterval(updatePretest, 1000);
 }
+
+/* ---------- TEMPORARY SITE CREDIT ---------- */
+// Expires after ten days, using the visitor's device clock.
+const temporaryCredit = document.querySelector("#temporary-credit");
+if(temporaryCredit){
+  const creditExpiry = Date.parse("2026-11-21T12:43:22Z");
+  let creditTimeout;
+  function refreshCredit(){
+    clearTimeout(creditTimeout);
+    const remaining = creditExpiry - Date.now();
+    temporaryCredit.hidden = remaining <= 0;
+    if(remaining > 0) creditTimeout = setTimeout(refreshCredit, Math.min(remaining, 2147483647));
+  }
+  refreshCredit();
+  window.addEventListener("focus", refreshCredit);
+  document.addEventListener("visibilitychange", refreshCredit);
+}

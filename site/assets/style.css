@@ -251,3 +251,8 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .syllabus-content ul{margin:5px 0 10px;padding-left:20px}
 .syllabus-content li{margin:3px 0}
 .syllabus-content p{color:var(--muted);font-size:13px;margin:10px 0 0}
+
+/* Ten-day site credit */
+.temporary-credit{text-align:center;color:var(--muted);font-size:13px;margin:20px 0 0;letter-spacing:.04em}
+.temporary-credit strong{color:var(--green2);font-weight:700}
+.temporary-credit[hidden]{display:none}
