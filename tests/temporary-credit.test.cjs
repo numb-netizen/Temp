@@ -8,12 +8,11 @@ const app = fs.readFileSync(path.join(site, 'assets/app.js'), 'utf8');
 const script = app.split('/* ---------- TEMPORARY SITE CREDIT ---------- */')[1];
 const expiry = Date.parse(script.match(/creditExpiry = Date\.parse\("([^"]+)"\)/)[1]);
 
-test('every page contains a single initially hidden Mahadin credit', () => {
+test('every page contains a single initially hidden credit for Mahadin and Morshed', () => {
   for (const name of fs.readdirSync(site).filter(name => name.endsWith('.html'))) {
     const html = fs.readFileSync(path.join(site, name), 'utf8');
     assert.equal((html.match(/id="temporary-credit" hidden/g) || []).length, 1, name);
-    assert.match(html, /Made by <strong>Mahadin<\/strong>/);
-    assert.doesNotMatch(html, /Morshed/i);
+    assert.match(html, /Made by <strong>Mahadin &amp; Morshed<\/strong>/);
     assert.match(html, /src="assets\/app\.js"/);
   }
 });
