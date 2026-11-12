@@ -31,7 +31,7 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(16px);backg
 .nav-cta{background:linear-gradient(120deg,var(--green),#00a344);color:#04150a;font-weight:700;padding:9px 18px;border-radius:12px;transition:.25s;white-space:nowrap}
 .nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 26px #00c85355}
 .burger{display:none;background:none;border:1px solid var(--line);border-radius:10px;color:#fff;font-size:20px;padding:6px 12px;cursor:pointer}
-@media(max-width:1100px){
+@media(max-width:1200px){
   .links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:flex-start;background:#0a1f14;padding:18px 24px;gap:14px;border-bottom:1px solid var(--line);display:none}
   .links.open{display:flex}
   .burger{display:block}
@@ -256,3 +256,9 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .temporary-credit{text-align:center;color:var(--muted);font-size:13px;margin:20px 0 0;letter-spacing:.04em}
 .temporary-credit strong{color:var(--green2);font-weight:700}
 .temporary-credit[hidden]{display:none}
+
+/* WhatsApp contact */
+.contact-info{scroll-margin-top:90px}
+.contact-info p{color:var(--muted);font-size:14px;margin:8px 0}
+.foot .contact-whatsapp{display:inline-flex;align-items:center;gap:6px;background:#00c853;color:#05240f;font-weight:700;padding:9px 13px;border-radius:10px;margin:5px 0;line-height:1.4}
+.foot .contact-whatsapp:hover,.foot .contact-whatsapp:focus-visible{background:#00e676;color:#05240f}
