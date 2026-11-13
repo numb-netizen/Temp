@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">HSC 2027</string>
     <string name="offline_title">পেজটি খোলা যাচ্ছে না</string>
-    <string name="offline_detail">ইন্টারনেট সংযোগ যাচাই করে আবার চেষ্টা করো।</string>
+    <string name="offline_detail">পেজ লোড করা যায়নি। আবার চেষ্টা করো অথবা ব্রাউজারে খোলো।</string>
+    <string name="error_connection">সাইটে সংযোগ করা যায়নি। ইন্টারনেট ও ফোনের DNS সেটিংস যাচাই করো।</string>
+    <string name="error_ssl">সাইটের নিরাপদ সংযোগ যাচাই করা যায়নি। ফোনের তারিখ-সময় ও Android System WebView আপডেট যাচাই করো।</string>
+    <string name="error_http">সার্ভার পেজটি দিতে পারেনি (HTTP %1$d)।</string>
+    <string name="error_code">%1$s\nত্রুটি কোড: %2$d</string>
+    <string name="open_browser">ব্রাউজারে খোলো</string>
     <string name="retry">আবার চেষ্টা করো</string>
     <string name="no_handler">এই লিংকটি খোলার জন্য কোনো অ্যাপ পাওয়া যায়নি।</string>
 </resources>
