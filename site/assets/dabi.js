@@ -68,7 +68,7 @@
   setInterval(updateSchedule, 1000);
 
   // This publishable key is intended for browsers. RLS limits it to reading
-  // public names and inserting a name; it grants no admin privileges.
+  // public names and inserting name/roll; roll is not readable by public clients.
   const endpoint = 'https://cciwbmtmlrlgpgewiaqk.supabase.co/rest/v1/dabi_public_supporters';
   const publicKey = 'sb_publishable_V_X7jg6ww2obzNVFjhbbOA_Ixqes756';
   const form = get('support-form'), list = get('support-list');
@@ -120,8 +120,12 @@
     event.preventDefault();
     if (submitting) return;
     const name = get('support-name').value.trim();
+    const roll = get('support-roll').value.trim();
     if (!name || name.length > 80 || /[\x00-\x1f\x7f]/.test(name)) {
       message.textContent = '১ থেকে ৮০ অক্ষরের একটি নাম লেখো।'; return;
+    }
+    if (roll && !/^[0-9০-৯]{1,20}$/.test(roll)) {
+      message.textContent = 'রোল নম্বরে শুধু বাংলা বা ইংরেজি সংখ্যা লেখো (সর্বোচ্চ ২০টি)।'; return;
     }
     if (!get('support-consent').checked) {
       message.textContent = 'নাম প্রকাশের সম্মতি দিতে হবে।'; return;
@@ -131,7 +135,7 @@
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {apikey: publicKey, 'Content-Type': 'application/json', Prefer: 'return=minimal'},
-        body: JSON.stringify({name}),
+        body: JSON.stringify(roll ? {name, roll_no: roll} : {name}),
       });
       if (!response.ok) throw new Error('Could not save name');
       form.reset();

@@ -60,11 +60,14 @@
       <section class="dabi-support" id="support">
         <div class="eyebrow">তোমার সমর্থন</div>
         <h2>সমর্থনে নাম যোগ করো</h2>
-        <p class="dabi-support-intro"><strong>নাম সবার কাছে প্রকাশ্যে দেখা যাবে।</strong> ব্যক্তিগত তথ্য বা রোল নম্বর লিখো না। এই তালিকা কলেজে স্বয়ংক্রিয়ভাবে পাঠানো হয় না।</p>
+        <p class="dabi-support-intro"><strong>নাম সবার কাছে প্রকাশ্যে দেখা যাবে।</strong> রোল নম্বর দিলে তা প্রকাশ্য তালিকায় দেখানো হবে না; Supabase-এ সংরক্ষিত থাকবে এবং সাইটের প্রশাসকেরা দেখতে পারবেন। নামের ঘরে শুধু নাম লিখো। এই তালিকা কলেজে স্বয়ংক্রিয়ভাবে পাঠানো হয় না।</p>
         <form id="support-form">
           <label for="support-name">তোমার নাম</label>
           <input id="support-name" maxlength="80" autocomplete="name" required placeholder="নাম লিখো">
-          <label class="dabi-consent" for="support-consent"><input id="support-consent" type="checkbox" required><span>আমি সম্মত যে আমার নাম প্রকাশ্যে দেখা যাবে।</span></label>
+          <label for="support-roll">রোল নম্বর <span>(ঐচ্ছিক, প্রকাশ্যে দেখানো হবে না)</span></label>
+          <input id="support-roll" type="text" inputmode="numeric" pattern="[0-9০-৯]{1,20}" maxlength="20" autocomplete="off" placeholder="রোল নম্বর লিখো" aria-describedby="support-roll-help">
+          <p class="dabi-support-intro" id="support-roll-help">শুধু বাংলা বা ইংরেজি সংখ্যা, সর্বোচ্চ ২০টি। না চাইলে খালি রাখো।</p>
+          <label class="dabi-consent" for="support-consent"><input id="support-consent" type="checkbox" required><span>আমি সম্মত যে আমার নাম প্রকাশ্যে দেখা যাবে এবং রোল নম্বর দিলে তা প্রশাসকদের জন্য সংরক্ষিত থাকবে।</span></label>
           <button type="submit" class="dabi-submit" id="support-submit" disabled>নাম প্রকাশ করো</button>
         </form>
         <p id="support-message" class="dabi-message" role="status" aria-live="polite"></p>
@@ -111,6 +114,6 @@
   </div>
 </footer>
 <script src="assets/app.js"></script>
-<script src="assets/dabi.js?v=20261113-public"></script>
+<script src="assets/dabi.js?v=20261113-private-roll"></script>
 </body>
 </html>
