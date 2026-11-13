@@ -39,7 +39,9 @@ test('request page links are present and public-name consent is explicit', () =>
   assert.match(page, /নাম সবার কাছে প্রকাশ্যে দেখা যাবে/);
   assert.match(page, /id="support-consent" type="checkbox" required/);
   assert.match(page, /কলেজে স্বয়ংক্রিয়ভাবে পাঠানো হয় না/);
-  assert.doesNotMatch(page, /id="support-roll"/);
+  assert.match(page, /id="support-roll"[^>]*maxlength="20"/);
+  assert.match(page, /Supabase-এ সংরক্ষিত থাকবে এবং সাইটের প্রশাসকেরা দেখতে পারবেন/);
+  assert.match(page, /ঐচ্ছিক, প্রকাশ্যে দেখানো হবে না/);
   assert.match(page, /স্বয়ংক্রিয়ভাবে প্রকাশ করা হবে না/);
 });
 
@@ -51,13 +53,13 @@ function backend() {
     if (options.method === 'POST') {
       if (failWrite) return {ok:false};
       const body = JSON.parse(options.body);
-      rows.unshift({id:String(rows.length + 1), name:body.name, created_at:'2026-11-13T00:00:00Z'});
+      rows.unshift({id:String(rows.length + 1), name:body.name, roll_no:body.roll_no ?? null, created_at:'2026-11-13T00:00:00Z'});
       return {ok:true};
     }
     if (failRead) return {ok:false};
     const query = new URL(url).searchParams;
     const offset = Number(query.get('offset') || 0), limit = Number(query.get('limit') || 100);
-    return {ok:true, json:async () => rows.slice(offset, offset + limit), headers:{get: () => `${offset}-${Math.max(offset, rows.length - 1)}/${rows.length}`}};
+    return {ok:true, json:async () => rows.slice(offset, offset + limit).map(({id, name, created_at}) => ({id, name, created_at})), headers:{get: () => `${offset}-${Math.max(offset, rows.length - 1)}/${rows.length}`}};
   }
   return {rows, calls, fetch, setFailRead: value => { failRead = value; }, setFailWrite: value => { failWrite = value; }};
 }
@@ -70,9 +72,9 @@ function browser(db) {
     addEventListener(name, fn) { this.listeners[name] = fn; }
     setAttribute(name, value) { this[name] = value; }
   }
-  const ids = ['dabi-timeline','dabi-timer','dabi-next-title','dabi-next-date','dabi-timer-label','dabi-days','dabi-hours','dabi-minutes','dabi-seconds','support-form','support-list','support-message','support-submit','support-name','support-consent','support-count','support-prev','support-next','support-page','share-whatsapp'];
+  const ids = ['dabi-timeline','dabi-timer','dabi-next-title','dabi-next-date','dabi-timer-label','dabi-days','dabi-hours','dabi-minutes','dabi-seconds','support-form','support-list','support-message','support-submit','support-name','support-roll','support-consent','support-count','support-prev','support-next','support-page','share-whatsapp'];
   const elements = Object.fromEntries(ids.map(id => [id, new Element()]));
-  elements['support-form'].reset = () => { elements['support-name'].value = ''; elements['support-consent'].checked = false; };
+  elements['support-form'].reset = () => { elements['support-name'].value = ''; elements['support-roll'].value = ''; elements['support-consent'].checked = false; };
   let poll;
   class Clock extends Date { static now() { return Date.parse('2026-11-13T18:00:00+06:00'); } }
   vm.runInNewContext(source, {
@@ -129,4 +131,43 @@ test('older public names remain accessible on later pages', async () => {
   assert.equal(page.elements['support-prev'].disabled, false);
   page.elements['support-prev'].listeners.click(); await flush();
   assert.equal(page.elements['support-list'].children.length, 50);
+});
+
+
+test('optional roll is submitted privately, never requested or rendered in public listings', async () => {
+  const db = backend(), first = browser(db), second = browser(db);
+  await flush();
+  first.elements['support-name'].value = 'শিক্ষার্থী';
+  first.elements['support-roll'].value = '০০১২৩';
+  first.elements['support-consent'].checked = true;
+  await first.elements['support-form'].listeners.submit({preventDefault(){}});
+  assert.equal(db.rows[0].roll_no, '০০১২৩', 'leading zeros are preserved');
+  assert.deepEqual(JSON.parse(db.calls.find(c => c.options.method === 'POST').options.body), {name:'শিক্ষার্থী', roll_no:'০০১২৩'});
+  assert.equal(first.elements['support-roll'].value, '', 'roll cleared after success');
+  second.poll(); await flush();
+  const rendered = second.elements['support-list'].children;
+  assert.equal(rendered[0].children.length, 1);
+  assert.equal(rendered[0].children[0].textContent, 'শিক্ষার্থী');
+  for (const call of db.calls.filter(c => c.options.method !== 'POST')) {
+    const select = new URL(call.url).searchParams.get('select');
+    assert.equal(select, 'id,name,created_at');
+    assert.ok(!call.url.includes('০০১২৩'));
+  }
+  assert.ok(!decodeURIComponent(first.elements['share-whatsapp'].href).includes('০০১২৩'));
+});
+
+test('invalid roll is rejected and a roll is optional', async () => {
+  const db = backend(), page = browser(db); await flush();
+  page.elements['support-name'].value = 'শিক্ষার্থী';
+  page.elements['support-consent'].checked = true;
+  for (const roll of ['abc', '123 4', '1'.repeat(21)]) {
+    page.elements['support-roll'].value = roll;
+    await page.elements['support-form'].listeners.submit({preventDefault(){}});
+    assert.equal(db.rows.length, 0);
+    assert.match(page.elements['support-message'].textContent, /রোল নম্বরে/);
+  }
+  page.elements['support-roll'].value = '';
+  await page.elements['support-form'].listeners.submit({preventDefault(){}});
+  assert.equal(db.rows.length, 1);
+  assert.deepEqual(JSON.parse(db.calls.find(c => c.options.method === 'POST').options.body), {name:'শিক্ষার্থী'});
 });
