@@ -19,6 +19,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.*;
@@ -39,8 +41,10 @@ public class LiveSiteTest {
             instrumentation.runOnMainSync(() -> assertTrue("App marker missing from WebView user agent",
                     web.getSettings().getUserAgentString().contains("HSC2027App")));
             assertPage(instrumentation, web, overlay, detail, "হোম");
-            instrumentation.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html"));
+            // Use a fresh URL to avoid a previously cached copy of the live HTML.
+            instrumentation.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html?appcheck=1.2"));
             assertPage(instrumentation, web, overlay, detail, "আমাদের দাবি");
+            assertAppDownloadLinksHidden(instrumentation, web);
             instrumentation.runOnMainSync(() -> {
                 WebViewClient client = web.getWebViewClient();
                 WebResourceResponse notFound = new WebResourceResponse("text/html", "UTF-8", 404,
@@ -56,6 +60,21 @@ public class LiveSiteTest {
                 assertEquals(View.GONE, overlay.getVisibility());
             });
         } finally { instrumentation.runOnMainSync(activity::finish); }
+    }
+
+    private static void assertAppDownloadLinksHidden(Instrumentation instrumentation, WebView web) {
+        CountDownLatch completed = new CountDownLatch(1);
+        AtomicReference<String> result = new AtomicReference<>("no response");
+        String check = "(() => { const links = [...document.querySelectorAll('nav a[href=\"android-app.html\"], footer a[href=\"android-app.html\"]')]; "
+                + "return document.documentElement.classList.contains('hsc-android-app') && links.length === 2 "
+                + "&& links.every(link => getComputedStyle(link).display === 'none'); })()";
+        instrumentation.runOnMainSync(() -> web.evaluateJavascript(check, value -> {
+            result.set(value);
+            completed.countDown();
+        }));
+        try { assertTrue("Timed out checking app navigation", completed.await(15, TimeUnit.SECONDS)); }
+        catch (InterruptedException e) { Thread.currentThread().interrupt(); fail("Interrupted checking navigation"); }
+        assertEquals("Live site should hide app download links inside the HSC app", "true", result.get());
     }
 
     private static WebResourceRequest request(boolean mainFrame) {
