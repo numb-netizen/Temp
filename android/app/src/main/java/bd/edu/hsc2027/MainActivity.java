@@ -78,8 +78,10 @@ public final class MainActivity extends Activity {
                 return route(request.getUrl());
             }
             @Override public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
-                if (NavigationPolicy.destination(url) == NavigationPolicy.Destination.INTERNAL) retryUrl = url;
-                offline.setVisibility(View.GONE);
+                if (NavigationPolicy.destination(url) == NavigationPolicy.Destination.INTERNAL) {
+                    retryUrl = url;
+                    offline.setVisibility(View.GONE);
+                }
             }
             @Override public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request.isForMainFrame()) {
