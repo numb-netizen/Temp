@@ -20,10 +20,16 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
       - uses: gradle/actions/setup-gradle@v4
       - name: Install Android SDK components
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+        run: |
+          echo "SDK: ${ANDROID_HOME:-unset}" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${ANDROID_HOME:-}" ] && [ -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
+            "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0'
+          else
+            echo "Android SDK command-line tools not available" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
       - name: Test and build debug APK
         run: ./gradlew --no-daemon testDebugUnitTest assembleDebug
       - name: Upload installable debug APK
