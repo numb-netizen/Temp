@@ -67,9 +67,15 @@ loadState();
 
 /* ---------- NAV ---------- */
 const burger = $("#burger"), navLinks = $("#navLinks");
-if(burger) burger.addEventListener("click", () => navLinks.classList.toggle("open"));
+if(burger && navLinks) burger.addEventListener("click", () => {
+  const open = navLinks.classList.toggle("open");
+  burger.setAttribute("aria-expanded", String(open));
+});
 if(navLinks) navLinks.addEventListener("click", e => {
-  if(e.target.tagName === "A") navLinks.classList.remove("open");
+  if(e.target.closest("a")) {
+    navLinks.classList.remove("open");
+    if(burger) burger.setAttribute("aria-expanded", "false");
+  }
 });
 
 /* ---------- REVEAL ON SCROLL ---------- */

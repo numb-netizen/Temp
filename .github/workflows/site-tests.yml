@@ -1,0 +1,25 @@
+name: Test website
+on:
+  push:
+    paths: ['site/**', 'tests/**', '.github/workflows/site-tests.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run website regression tests
+        run: node --test tests/*.test.cjs
+      - name: Test mobile and desktop navigation in Chrome
+        run: |
+          npm install --prefix "$RUNNER_TEMP/browser-test" --no-save --no-package-lock playwright-core@1.56.1
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory site > "$RUNNER_TEMP/site.log" 2>&1 &
+          if ! NODE_PATH="$RUNNER_TEMP/browser-test/node_modules" node tests/android-browser.cjs > "$RUNNER_TEMP/browser-test.log" 2>&1; then
+            python3 -c 'import os; p=os.path.join(os.environ["RUNNER_TEMP"],"browser-test.log"); s=open(p).read(); print("::error::"+s.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+            exit 1
+          fi

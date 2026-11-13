@@ -62,7 +62,7 @@ cd site && python3 -m http.server 8000
 
 ## Android অ্যাপ
 
-`android/` হলো Android WebView অ্যাপের সোর্স। এটি সরাসরি `https://hsc2027.de5.net/` খোলে; ওয়েবসাইটের পরিবর্তন অ্যাপেও দেখা যায়। ইন্টারনেট ও Android System WebView প্রয়োজন। WhatsApp, YouTube ও বাইরের লিংক অন্য অ্যাপ বা ব্রাউজারে খোলে। পড়ার ট্র্যাকার ও অন্যান্য ব্রাউজার-সংরক্ষিত তথ্য অ্যাপের নিজস্ব WebView-তে থাকে; ফোনের ব্রাউজার বা অন্য ডিভাইসের সঙ্গে স্বয়ংক্রিয়ভাবে মেলে না। আবেদন পেজের Supabase-এ সংরক্ষিত তথ্য ওয়েবসাইট ও অ্যাপে একই।
+সাইটের মেনুর **অ্যাপ ডাউনলোড** (`android-app.html`) পেজ থেকে beta APK ও ইনস্টলের নির্দেশনা পাওয়া যায়। `android/` হলো Android WebView অ্যাপের সোর্স। এটি সরাসরি `https://hsc2027.de5.net/` খোলে; ওয়েবসাইটের পরিবর্তন অ্যাপেও দেখা যায়। ইন্টারনেট ও Android System WebView প্রয়োজন। WhatsApp, YouTube ও বাইরের লিংক অন্য অ্যাপ বা ব্রাউজারে খোলে। পড়ার ট্র্যাকার ও অন্যান্য ব্রাউজার-সংরক্ষিত তথ্য অ্যাপের নিজস্ব WebView-তে থাকে; ফোনের ব্রাউজার বা অন্য ডিভাইসের সঙ্গে স্বয়ংক্রিয়ভাবে মেলে না। আবেদন পেজের Supabase-এ সংরক্ষিত তথ্য ওয়েবসাইট ও অ্যাপে একই।
 
 Android Studio-তে `android/` খুলে বা JDK 17 ও Android SDK 35 দিয়ে `cd android && ./gradlew testDebugUnitTest assembleDebug` চালিয়ে debug APK বানানো যায়। GitHub-এর **Build Android app** workflow-ও ৩০ দিনের জন্য APK artifact তৈরি করে। Debug APK পরীক্ষার জন্য, Play Store-এ প্রকাশের জন্য নয়; স্থায়ী বিতরণ বা আপডেটের জন্য নিজের সুরক্ষিত signing key দিয়ে release APK/AAB তৈরি করতে হবে। বিভিন্ন workflow run-এর debug key আলাদা হতে পারে, তাই আগের debug APK-এর উপর সরাসরি update নাও হতে পারে। Uninstall করলে অ্যাপের স্থানীয় tracker data মুছে যায়। কোনো keystore বা password রিপোতে রাখবেন না।
 
