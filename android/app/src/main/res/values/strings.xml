@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HSC 2027</string>
+    <string name="offline_title">পেজটি খোলা যাচ্ছে না</string>
+    <string name="offline_detail">ইন্টারনেট সংযোগ যাচাই করে আবার চেষ্টা করো।</string>
+    <string name="retry">আবার চেষ্টা করো</string>
+    <string name="no_handler">এই লিংকটি খোলার জন্য কোনো অ্যাপ পাওয়া যায়নি।</string>
+</resources>
