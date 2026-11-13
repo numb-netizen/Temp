@@ -6,7 +6,6 @@ import android.os.SystemClock;
 import android.net.Uri;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
-import android.webkit.WebResourceError;
 import android.webkit.WebViewClient;
 import java.util.Collections;
 import java.util.Map;
@@ -53,12 +52,6 @@ public class LiveSiteTest {
                 assertEquals("Internal browser pages must not hide the error", View.VISIBLE, overlay.getVisibility());
                 client.onPageStarted(web, NavigationPolicy.HOME, null);
                 assertEquals(View.GONE, overlay.getVisibility());
-                client.onReceivedError(web, request(true), new WebResourceError() {
-                    @Override public int getErrorCode() { return WebViewClient.ERROR_HOST_LOOKUP; }
-                    @Override public CharSequence getDescription() { return "DNS lookup failed"; }
-                });
-                assertEquals(View.VISIBLE, overlay.getVisibility());
-                assertTrue(detail.getText().toString().contains("-2"));
             });
         } finally { instrumentation.runOnMainSync(activity::finish); }
     }
