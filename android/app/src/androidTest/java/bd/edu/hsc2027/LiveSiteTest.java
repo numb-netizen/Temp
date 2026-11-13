@@ -36,6 +36,8 @@ public class LiveSiteTest {
             View overlay = activity.findViewById(android.R.id.content).findViewWithTag("error-overlay");
             TextView detail = activity.findViewById(android.R.id.content).findViewWithTag("error-detail");
             assertNotNull(web); assertNotNull(overlay); assertNotNull(detail);
+            instrumentation.runOnMainSync(() -> assertTrue("App marker missing from WebView user agent",
+                    web.getSettings().getUserAgentString().contains("HSC2027App")));
             assertPage(instrumentation, web, overlay, detail, "হোম");
             instrumentation.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html"));
             assertPage(instrumentation, web, overlay, detail, "আমাদের দাবি");
