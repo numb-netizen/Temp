@@ -262,3 +262,8 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .contact-info p{color:var(--muted);font-size:14px;margin:8px 0}
 .foot .contact-whatsapp{display:inline-flex;align-items:center;gap:6px;background:#00c853;color:#05240f;font-weight:700;padding:9px 13px;border-radius:10px;margin:5px 0;line-height:1.4}
 .foot .contact-whatsapp:hover,.foot .contact-whatsapp:focus-visible{background:#00e676;color:#05240f}
+
+/* Link to the student request page */
+.dabi-teaser{display:flex;align-items:center;gap:14px;margin:28px 0 0;padding:17px 20px;border:1px solid #00c85355;border-radius:18px;background:linear-gradient(110deg,#123e26,#0c2619);transition:border-color .2s,transform .2s}
+.dabi-teaser:hover,.dabi-teaser:focus-visible{border-color:var(--green2);transform:translateY(-2px)}
+.dabi-teaser-icon{font-size:25px}.dabi-teaser span:nth-child(2){flex:1}.dabi-teaser strong,.dabi-teaser small{display:block}.dabi-teaser strong{font-size:17px;color:#fff}.dabi-teaser small{color:var(--muted);font-size:13px}.dabi-teaser span:last-child{color:var(--green2);font-size:22px}
