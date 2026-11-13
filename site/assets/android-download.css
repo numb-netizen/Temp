@@ -1,0 +1,33 @@
+/* Android download landing page */
+.android-page{background:radial-gradient(circle at 83% 19%,#1d714533,transparent 28%),var(--bg);padding:108px 0 90px}
+.android-wrap{max-width:1100px}
+.android-page section{padding:0}
+.android-hero{display:grid;grid-template-columns:1.25fr .75fr;align-items:center;gap:56px;padding:42px 0 60px!important}
+.android-kicker{display:inline-flex;align-items:center;border:1px solid #76e6a233;background:#123722;color:#a8eabb;border-radius:99px;padding:7px 15px;font-size:12px;font-weight:700;letter-spacing:.1em}
+.android-copy h1{font-size:clamp(38px,5.5vw,64px);margin:20px 0;line-height:1.22}
+.android-lead{color:#c5d9ca;font-size:18px;line-height:1.8;max-width:580px}
+.android-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:26px}
+.android-download{box-shadow:0 12px 35px #00c85324}
+.android-release-link,.android-note a{color:var(--green2);font-weight:700;font-size:14px}
+.android-meta{font-size:13px;color:var(--muted);margin:18px 0 0}
+.android-visual{display:grid;place-items:center;min-height:355px;background:radial-gradient(circle,#2ac85e30,transparent 67%)}
+.android-phone{width:222px;min-height:345px;padding:18px 18px 22px;border-radius:34px;border:5px solid #819c89;background:linear-gradient(155deg,#0b2a19,#08170f);box-shadow:0 24px 60px #0007;display:flex;align-items:center;flex-direction:column}
+.android-notch{width:65px;height:7px;background:#819c89;border-radius:8px;margin:0 auto 25px}
+.android-phone img{border-radius:50%;background:#fff}
+.android-phone strong{font:800 32px/1.2 "Baloo Da 2",sans-serif;margin-top:14px}
+.android-phone strong span{color:var(--green2)}
+.android-phone small{font-size:11px;color:#b7cfbd}
+.android-phone-card{width:100%;margin-top:24px;padding:12px;border:1px solid #ffffff1a;background:#ffffff0d;border-radius:12px;font-size:12px;font-weight:700}
+.android-phone-card span{font-size:10px;color:var(--muted);font-weight:400}
+.android-details{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
+.android-panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px}
+.android-panel h2{font:700 27px/1.35 "Baloo Da 2","Hind Siliguri",sans-serif;margin:10px 0 22px}
+.android-steps{list-style:none;padding:0;margin:0;display:grid;gap:20px}
+.android-steps li{display:flex;gap:14px;align-items:flex-start}
+.android-steps li>span{background:#133b25;color:var(--green2);border-radius:10px;flex:none;width:34px;height:34px;display:grid;place-items:center;font-weight:700}
+.android-steps strong{font-size:16px}.android-steps p,.android-note p{font-size:14px;line-height:1.75;color:#b8cfc0;margin:5px 0 0}
+.android-note{background:linear-gradient(145deg,#103421,#0b2115);border-color:#3b805544}
+.android-note p+p{margin-top:14px}.android-note a{display:inline-block;margin-top:18px}
+.android-page a:focus-visible{outline:2px solid var(--green2);outline-offset:4px}
+@media(max-width:800px){.android-hero{grid-template-columns:1fr;gap:20px}.android-visual{min-height:320px}.android-details{grid-template-columns:1fr}}
+@media(max-width:480px){.android-page{padding-top:100px}.android-hero{padding-top:25px!important}.android-panel{padding:24px}.android-actions{align-items:stretch;flex-direction:column}.android-download{text-align:center}.android-release-link{text-align:center}.android-copy h1{font-size:38px}}
