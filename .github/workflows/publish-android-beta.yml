@@ -19,6 +19,7 @@ jobs:
       RELEASE_TAG: 'android-v1.1-beta'
       APK_FILE: 'HSC-2027-v1.1-beta-debug.apk'
       GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
     steps:
       - name: Check source build
         shell: bash
@@ -63,9 +64,16 @@ jobs:
 
           `SHA256SUMS.txt` দিয়ে ডাউনলোড করা APK-এর integrity যাচাই করা যায়।
           NOTES
-          gh release create "$RELEASE_TAG" "$APK_FILE" SHA256SUMS.txt \
-            --target "$SOURCE_COMMIT" --prerelease \
-            --title 'HSC 2027 Android 1.1 beta (debug)' --notes-file release-notes.txt
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh release view "$RELEASE_TAG" --json isPrerelease --jq '.isPrerelease')" = true
+            test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')" = "$SOURCE_COMMIT"
+            gh release edit "$RELEASE_TAG" --notes-file release-notes.txt
+            gh release upload "$RELEASE_TAG" "$APK_FILE" SHA256SUMS.txt
+          else
+            gh release create "$RELEASE_TAG" "$APK_FILE" SHA256SUMS.txt \
+              --target "$SOURCE_COMMIT" --prerelease \
+              --title 'HSC 2027 Android 1.1 beta (debug)' --notes-file release-notes.txt
+          fi
       - name: Set up ORAS for the package registry
         if: github.event_name == 'workflow_dispatch'
         uses: oras-project/setup-oras@v1
