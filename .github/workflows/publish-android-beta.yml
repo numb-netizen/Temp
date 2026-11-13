@@ -1,0 +1,94 @@
+name: Publish tested Android beta
+
+on:
+  push:
+    paths: ['.github/workflows/publish-android-beta.yml']
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    env:
+      SOURCE_RUN: '43517783284'
+      SOURCE_COMMIT: '4e11397b0c038df571e05ec3b25881c2aecc1bcd'
+      RELEASE_TAG: 'android-v1.1-beta'
+      APK_FILE: 'HSC-2027-v1.1-beta-debug.apk'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check source build
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN" \
+            --jq '[.status,.conclusion,.head_sha] | @tsv' > source-run.txt
+          test "$(cat source-run.txt)" = "$(printf 'completed\tsuccess\t%s' "$SOURCE_COMMIT")"
+      - name: Download the APK already tested by the user
+        uses: actions/download-artifact@v4
+        with:
+          name: HSC-2027-debug-APK
+          run-id: 43517783284
+          github-token: ${{ github.token }}
+          path: apk
+      - name: Verify package, version and debug signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s apk/app-debug.apk
+          mv apk/app-debug.apk "$APK_FILE"
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          APKSIGNER="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          "$AAPT" dump badging "$APK_FILE" | grep -F "package: name='bd.edu.hsc2027' versionCode='2' versionName='1.1'"
+          "$APKSIGNER" verify --verbose --print-certs "$APK_FILE" | tee signature.txt
+          grep -F 'CN=Android Debug' signature.txt
+          sha256sum "$APK_FILE" > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: Publish prerelease
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > release-notes.txt <<'NOTES'
+          # HSC 2027 — Android পরীক্ষামূলক সংস্করণ 1.1
+
+          এটি ওয়েবসাইট-ভিত্তিক Android অ্যাপ। এটি চালাতে ইন্টারনেট ও Android 6.0 বা পরবর্তী সংস্করণ প্রয়োজন। সাইটে পরিবর্তন হলে অ্যাপেও দেখা যাবে।
+
+          **এটি debug-signed পরীক্ষামূলক APK, চূড়ান্ত বা Play Store release নয়।** স্থায়ী release signing key এখনও সেট করা হয়নি। ভবিষ্যতে আলাদা key-তে তৈরি সংস্করণ এই অ্যাপের ওপর সরাসরি আপডেট নাও হতে পারে; পুরোনো অ্যাপ সরাতে হলে এতে সংরক্ষিত স্থানীয় tracker তথ্য মুছে যাবে।
+
+          APK-টি GitHub Actions-এর সফল main build (run 43517783284) থেকে নেওয়া; এটি একই ফাইল যা পূর্বে পরীক্ষার জন্য দেওয়া হয়েছিল। Android এমুলেটরে হোম ও আবেদন পেজ লোড এবং ত্রুটি দেখানো পরীক্ষা করা হয়েছে; সব ফোন ও DNS কনফিগারেশনে কাজ করার নিশ্চয়তা নেই।
+
+          `SHA256SUMS.txt` দিয়ে ডাউনলোড করা APK-এর integrity যাচাই করা যায়।
+          NOTES
+          gh release create "$RELEASE_TAG" "$APK_FILE" SHA256SUMS.txt \
+            --target "$SOURCE_COMMIT" --prerelease \
+            --title 'HSC 2027 Android 1.1 beta (debug)' --notes-file release-notes.txt
+      - name: Set up ORAS for the package registry
+        if: github.event_name == 'workflow_dispatch'
+        uses: oras-project/setup-oras@v1
+        with:
+          version: 1.2.2
+      - name: Publish same APK as an OCI package
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          reference="ghcr.io/$owner/hsc-2027-android:$RELEASE_TAG"
+          printf '%s' "$GH_TOKEN" | oras login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          # Do not silently overwrite an existing package tag.
+          if oras manifest fetch "$reference" >/dev/null 2>&1; then
+            echo 'Package tag already exists; refusing to overwrite it.' >&2
+            exit 1
+          fi
+          oras push "$reference" \
+            --artifact-type application/vnd.android.package-archive \
+            --annotation "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+            --annotation 'org.opencontainers.image.description=HSC 2027 Android 1.1 beta debug APK' \
+            "$APK_FILE:application/vnd.android.package-archive" \
+            'SHA256SUMS.txt:text/plain'
+          oras manifest fetch "$reference" >/dev/null
+          echo "OCI package: $reference"
