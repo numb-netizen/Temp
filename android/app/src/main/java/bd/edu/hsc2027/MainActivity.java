@@ -60,6 +60,8 @@ public final class MainActivity extends Activity {
         setContentView(root);
 
         WebSettings settings = webView.getSettings();
+        // Identifies our app to the site for presentation only; not an auth credential.
+        settings.setUserAgentString(AppUserAgent.withMarker(settings.getUserAgentString()));
         settings.setJavaScriptEnabled(true); // Required by the study tracker and appeal form.
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(false);

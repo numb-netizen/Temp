@@ -28,6 +28,8 @@ nav{position:fixed;inset:0 0 auto 0;z-index:100;backdrop-filter:blur(16px);backg
 .links{display:flex;gap:14px;font-weight:500;font-size:14px;align-items:center}
 .links a{color:var(--muted);transition:.25s;white-space:nowrap}
 .links a:hover,.links a.active{color:#fff}
+/* Only the explicitly identified HSC app hides its own download links. */
+.hsc-android-app nav a[href="android-app.html"],.hsc-android-app footer a[href="android-app.html"]{display:none}
 .nav-cta{background:linear-gradient(120deg,var(--green),#00a344);color:#04150a;font-weight:700;padding:9px 18px;border-radius:12px;transition:.25s;white-space:nowrap}
 .nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 26px #00c85355}
 .burger{display:none;background:none;border:1px solid var(--line);border-radius:10px;color:#fff;font-size:20px;padding:6px 12px;cursor:pointer}

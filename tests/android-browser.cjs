@@ -12,9 +12,22 @@ const {chromium} = require('playwright-core');
       assert.equal(await page.locator('#burger').getAttribute('aria-expanded'), 'true');
       await page.locator('#navLinks a[href="android-app.html"]').click();
       assert.match(page.url(), /android-app\.html$/);
-      assert.equal(await page.locator('a.android-download').getAttribute('href'), 'https://github.com/numb-netizen/Temp/releases/download/android-v1.1-beta/HSC-2027-v1.1-beta-debug.apk');
+      assert.equal(await page.locator('a.android-download').getAttribute('href'), 'https://github.com/numb-netizen/Temp/releases/download/android-v1.2-beta/HSC-2027-v1.2-beta-debug.apk');
       assert.ok(await page.locator('text=পরীক্ষামূলক debug APK').count());
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `horizontal overflow at ${width}`);
+      await page.close();
+    }
+    const webView = 'Mozilla/5.0 (Linux; Android 13; Pixel; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0.0.0 Mobile Safari/537.36';
+    for (const [userAgent, isOurApp] of [[webView, false], [webView + ' HSC2027App', true]]) {
+      const page = await browser.newPage({viewport:{width:360, height:640}, userAgent});
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      for (const name of ['index.html', 'dabi.html', 'science.html', 'tracker.html', 'android-app.html']) {
+        await page.goto('http://127.0.0.1:8765/' + name);
+        await page.locator('#burger').click();
+        assert.equal(await page.locator('#navLinks a[href="android-app.html"]').isVisible(), !isOurApp, `nav ${name}: ${userAgent}`);
+        assert.equal(await page.locator('footer a[href="android-app.html"]').isVisible(), !isOurApp, `footer ${name}: ${userAgent}`);
+        assert.ok(await page.locator('#navLinks a[href="dabi.html"]').isVisible());
+      }
       await page.close();
     }
     for (const width of [1201, 1440]) {
