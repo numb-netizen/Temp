@@ -29,6 +29,7 @@ public final class MainActivity extends Activity {
     private WebView webView;
     private View offline;
     private ProgressBar progress;
+    private TextView errorDetail;
     private String retryUrl = NavigationPolicy.HOME;
 
     @Override public void onCreate(Bundle state) {
@@ -50,8 +51,10 @@ public final class MainActivity extends Activity {
         root.addView(content, new LinearLayout.LayoutParams(-1, 0, 1));
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(7, 27, 16));
+        webView.setTag("site-webview");
         content.addView(webView, new FrameLayout.LayoutParams(-1, -1));
         offline = createOfflineView();
+        offline.setTag("error-overlay");
         content.addView(offline, new FrameLayout.LayoutParams(-1, -1));
         offline.setVisibility(View.GONE);
         setContentView(root);
@@ -79,15 +82,23 @@ public final class MainActivity extends Activity {
                 offline.setVisibility(View.GONE);
             }
             @Override public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                if (request.isForMainFrame()) showOffline();
+                if (request.isForMainFrame()) {
+                    int code = error.getErrorCode();
+                    int message = R.string.offline_detail;
+                    if (code == ERROR_FAILED_SSL_HANDSHAKE) message = R.string.error_ssl;
+                    else if (code == ERROR_HOST_LOOKUP || code == ERROR_CONNECT || code == ERROR_TIMEOUT || code == ERROR_IO) message = R.string.error_connection;
+                    showOffline(getString(R.string.error_code, getString(message), code));
+                }
             }
             @Override public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse error) {
-                if (request.isForMainFrame() && error.getStatusCode() >= 400) showOffline();
+                if (request.isForMainFrame() && error.getStatusCode() >= 400) {
+                    showOffline(getString(R.string.error_http, error.getStatusCode()));
+                }
             }
             @Override public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 handler.cancel();
                 // A failed third-party asset should not cover an otherwise usable page.
-                if (error.getUrl() != null && error.getUrl().equals(view.getUrl())) showOffline();
+                if (error.getUrl() != null && error.getUrl().equals(view.getUrl())) showOffline(getString(R.string.error_ssl));
             }
         });
         if (state == null || webView.restoreState(state) == null) webView.loadUrl(NavigationPolicy.HOME);
@@ -97,12 +108,16 @@ public final class MainActivity extends Activity {
         NavigationPolicy.Destination destination = NavigationPolicy.destination(uri.toString());
         if (destination == NavigationPolicy.Destination.INTERNAL) return false;
         if (destination == NavigationPolicy.Destination.EXTERNAL) {
-            try { startActivity(new Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE)); }
-            catch (ActivityNotFoundException | SecurityException e) {
-                Toast.makeText(this, R.string.no_handler, Toast.LENGTH_LONG).show();
-            }
+            openExternal(uri);
         }
         return true;
+    }
+
+    private void openExternal(Uri uri) {
+        try { startActivity(new Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE)); }
+        catch (ActivityNotFoundException | SecurityException e) {
+            Toast.makeText(this, R.string.no_handler, Toast.LENGTH_LONG).show();
+        }
     }
 
     private View createOfflineView() {
@@ -115,19 +130,28 @@ public final class MainActivity extends Activity {
         title.setText(R.string.offline_title); title.setTextColor(Color.WHITE);
         title.setTextSize(22); title.setTypeface(null, Typeface.BOLD); title.setGravity(Gravity.CENTER);
         box.addView(title);
-        TextView detail = new TextView(this);
-        detail.setText(R.string.offline_detail); detail.setTextColor(Color.rgb(188, 214, 197));
-        detail.setTextSize(16); detail.setGravity(Gravity.CENTER);
+        errorDetail = new TextView(this);
+        errorDetail.setTag("error-detail");
+        errorDetail.setText(R.string.offline_detail); errorDetail.setTextColor(Color.rgb(188, 214, 197));
+        errorDetail.setTextSize(16); errorDetail.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams detailParams = new LinearLayout.LayoutParams(-1, -2);
-        detailParams.setMargins(0, dp(12), 0, dp(20)); box.addView(detail, detailParams);
+        detailParams.setMargins(0, dp(12), 0, dp(20)); box.addView(errorDetail, detailParams);
         Button retry = new Button(this);
         retry.setText(R.string.retry);
         retry.setOnClickListener(v -> { offline.setVisibility(View.GONE); webView.loadUrl(retryUrl); });
         box.addView(retry);
+        Button browser = new Button(this);
+        browser.setText(R.string.open_browser);
+        browser.setOnClickListener(v -> openExternal(Uri.parse(retryUrl)));
+        box.addView(browser);
         return box;
     }
 
-    private void showOffline() { progress.setVisibility(View.GONE); offline.setVisibility(View.VISIBLE); }
+    private void showOffline(String detail) {
+        errorDetail.setText(detail);
+        progress.setVisibility(View.GONE);
+        offline.setVisibility(View.VISIBLE);
+    }
     private int dp(int value) { return Math.round(value * getResources().getDisplayMetrics().density); }
 
     @Override public void onBackPressed() {
