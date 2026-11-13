@@ -67,49 +67,80 @@
   updateSchedule();
   setInterval(updateSchedule, 1000);
 
-  // Local-only drafts; this is not a shared petition or an official submission.
-  const key = 'dabi:local-support:v1', form = get('support-form'), list = get('support-list');
+  // This publishable key is intended for browsers. RLS limits it to reading
+  // public names and inserting a name; it grants no admin privileges.
+  const endpoint = 'https://cciwbmtmlrlgpgewiaqk.supabase.co/rest/v1/dabi_public_supporters';
+  const publicKey = 'sb_publishable_V_X7jg6ww2obzNVFjhbbOA_Ixqes756';
+  const form = get('support-form'), list = get('support-list');
   const message = get('support-message'), button = get('support-submit');
-  let entries = [];
-  let storageAvailable = true;
-  try {
-    const stored = JSON.parse(localStorage.getItem(key) || '[]');
-    if (Array.isArray(stored)) entries = stored.filter(item => item && typeof item.name === 'string' && typeof item.roll === 'string').slice(0, 200);
-  } catch (_) {
-    storageAvailable = false;
-    message.textContent = 'এই ব্রাউজারে স্থানীয় তথ্য পড়া যাচ্ছে না। ব্রাউজার সেটিংস যাচাই করো।';
-  }
-  button.disabled = !storageAvailable;
-  function renderSupport() {
-    list.replaceChildren();
-    get('support-count').textContent = format(entries.length);
-    entries.forEach((entry, index) => {
-      const li = document.createElement('li');
-      const text = document.createElement('span');
-      text.textContent = entry.name + (entry.roll ? ' · ' + entry.roll : '');
-      const remove = document.createElement('button');
-      remove.type = 'button'; remove.textContent = 'সরাও';
-      remove.setAttribute('aria-label', entry.name + ' নামটি সরাও');
-      remove.addEventListener('click', () => {
-        const next = entries.filter((_, i) => i !== index);
-        try { localStorage.setItem(key, JSON.stringify(next)); entries = next; renderSupport(); message.textContent = 'নামটি এই ব্রাউজার থেকে সরানো হয়েছে।'; }
-        catch (_) { message.textContent = 'তথ্য সরানো যায়নি। ব্রাউজারের স্টোরেজ যাচাই করো।'; }
-      });
-      li.append(text, remove); list.append(li);
-    });
-  }
-  renderSupport();
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    if (!storageAvailable) return;
-    const name = get('support-name').value.trim(), roll = get('support-roll').value.trim();
-    if (!name) { message.textContent = 'নাম লিখে আবার চেষ্টা করো।'; return; }
-    if (entries.length >= 200) { message.textContent = 'এই ব্রাউজারে সর্বোচ্চ ২০০টি নাম রাখা যাবে।'; return; }
-    const next = [{name: name.slice(0,80), roll: roll.slice(0,80)}, ...entries];
+  let loadingVersion = 0, submitting = false, page = 0;
+  const pageSize = 50, previous = get('support-prev'), next = get('support-next');
+
+  async function refreshSupport(announceFailure = true) {
+    const version = ++loadingVersion;
     try {
-      localStorage.setItem(key, JSON.stringify(next)); entries = next; renderSupport(); form.reset();
-      message.textContent = 'শুধু এই ব্রাউজারে সংরক্ষিত হয়েছে; কলেজে পাঠানো হয়নি।';
-    } catch (_) { message.textContent = 'সংরক্ষণ করা যায়নি। ব্রাউজারের স্টোরেজ যাচাই করো।'; }
+      const response = await fetch(endpoint + '?select=id,name,created_at&order=created_at.desc,id.desc&limit=' + (pageSize + 1) + '&offset=' + (page * pageSize), {
+        headers: {apikey: publicKey, Prefer: 'count=exact'}, cache: 'no-store',
+      });
+      if (!response.ok) throw new Error('Could not load names');
+      const entries = await response.json();
+      if (!Array.isArray(entries)) throw new Error('Invalid response');
+      if (version !== loadingVersion) return true;
+      if (!entries.length && page > 0) { page--; return refreshSupport(announceFailure); }
+      list.replaceChildren();
+      entries.slice(0, pageSize).forEach(entry => {
+        if (!entry || typeof entry.name !== 'string') return;
+        const li = document.createElement('li');
+        const name = document.createElement('span');
+        name.textContent = entry.name;
+        li.append(name); list.append(li);
+      });
+      const range = response.headers.get('content-range');
+      const count = range && range.match(/\/(\d+)$/);
+      get('support-count').textContent = count ? 'মোট জমা: ' + format(Number(count[1])) : '';
+      previous.disabled = page === 0;
+      next.disabled = entries.length <= pageSize;
+      get('support-page').textContent = 'পৃষ্ঠা ' + format(page + 1);
+      if (!entries.length) {
+        const empty = document.createElement('li');
+        empty.textContent = 'এখনো কোনো নাম জমা পড়েনি।'; list.append(empty);
+      }
+      return true;
+    } catch (_) {
+      if (version === loadingVersion && announceFailure) message.textContent = 'নামের তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ যাচাই করে পেজ রিফ্রেশ করো।';
+      return false;
+    }
+  }
+  previous.addEventListener('click', () => { if (page > 0) { page--; refreshSupport(); } });
+  next.addEventListener('click', () => { if (!next.disabled) { page++; refreshSupport(); } });
+  button.disabled = false;
+  refreshSupport();
+  setInterval(() => refreshSupport(false), 30000);
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (submitting) return;
+    const name = get('support-name').value.trim();
+    if (!name || name.length > 80 || /[\x00-\x1f\x7f]/.test(name)) {
+      message.textContent = '১ থেকে ৮০ অক্ষরের একটি নাম লেখো।'; return;
+    }
+    if (!get('support-consent').checked) {
+      message.textContent = 'নাম প্রকাশের সম্মতি দিতে হবে।'; return;
+    }
+    submitting = true; button.disabled = true; message.textContent = 'নাম সংরক্ষণ হচ্ছে…';
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {apikey: publicKey, 'Content-Type': 'application/json', Prefer: 'return=minimal'},
+        body: JSON.stringify({name}),
+      });
+      if (!response.ok) throw new Error('Could not save name');
+      form.reset();
+      page = 0;
+      const refreshed = await refreshSupport(false);
+      message.textContent = refreshed ? 'তোমার নাম সবার জন্য সংরক্ষিত হয়েছে।' : 'নাম সংরক্ষিত হয়েছে, কিন্তু তালিকা লোড করা যায়নি। পেজ রিফ্রেশ করো।';
+    } catch (_) {
+      message.textContent = 'নাম সংরক্ষণ নিশ্চিত করা যায়নি। আবার চেষ্টা করার আগে তালিকা রিফ্রেশ করে দেখো।';
+    } finally { submitting = false; button.disabled = false; }
   });
   const pageUrl = window.location.origin + window.location.pathname;
   get('share-whatsapp').href = 'https://wa.me/?text=' + encodeURIComponent('চুনারুঘাট সরকারি কলেজের শিক্ষার্থীদের আবেদন: ' + pageUrl);

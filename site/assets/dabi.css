@@ -19,3 +19,13 @@
 .dabi-share{display:flex;align-items:center;justify-content:space-between;gap:25px;flex-wrap:wrap;margin-top:32px;padding:28px;border-radius:22px;border:1px solid #00c8534d;background:linear-gradient(110deg,#103920,#0b2516)}.dabi-share h2{font:700 26px "Baloo Da 2",sans-serif;margin:5px 0}.dabi-share p{color:var(--muted);font-size:14px;margin:0}.dabi-share-btn{display:inline-block;padding:13px 18px;border-radius:12px;background:#00c853;color:#04190b;font-weight:700}.dabi-share-btn:hover{background:#00e676}
 @media(max-width:850px){.dabi-hero-grid,.dabi-lower{grid-template-columns:1fr}.dabi-hero-grid{gap:28px}.dabi-reasons{grid-template-columns:1fr;margin-bottom:40px}.dabi-hero{padding:120px 0 50px}.dabi-content{padding:55px 0}.dabi-letter,.dabi-support{padding:24px}}
 @media(max-width:520px){.dabi-row{grid-template-columns:1fr auto;gap:6px 10px;padding:14px 16px}.dabi-row.is-next{padding-left:13px}.dabi-subject{grid-column:1/-1;grid-row:2}.dabi-status{grid-column:2;grid-row:1}.dabi-clock{padding:22px}.dabi-share-btn{width:100%;text-align:center}}
+
+/* Public-name consent */
+.dabi-support label.dabi-consent{display:flex;align-items:flex-start;gap:10px;color:var(--muted);font-size:13px;font-weight:500;margin:15px 0;line-height:1.5}
+.dabi-support .dabi-consent input{width:18px;height:18px;flex:none;margin:1px 0 0;accent-color:var(--green2)}
+.dabi-list-head small{font-weight:400;color:var(--muted)}
+.dabi-support-intro a{color:var(--green2);text-decoration:underline}
+
+.dabi-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0;color:var(--muted);font-size:13px}
+.dabi-pagination button{background:#102e1d;border:1px solid var(--line);border-radius:9px;padding:7px 12px;color:var(--text);font:inherit;cursor:pointer}
+.dabi-pagination button:disabled{opacity:.4;cursor:not-allowed}
