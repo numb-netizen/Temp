@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Baloo+Da+2:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/study-logo.png" type="image/png">
 <link rel="stylesheet" href="assets/style.css">
-<link rel="stylesheet" href="assets/dabi.css">
+<link rel="stylesheet" href="assets/dabi.css?v=20261113-public">
 </head>
 <body>
 <nav>
@@ -57,9 +57,25 @@
     <div class="dabi-reasons"><div><span>০১</span><h3>সময় নিয়ে পড়া</h3><p>একটি বিরতি আগের পড়া বুঝে নেওয়া ও পরের পরীক্ষার প্রস্তুতিতে সাহায্য করতে পারে।</p></div><div><span>০২</span><h3>বিশ্রামের সুযোগ</h3><p>একটানা পরীক্ষার চাপের মধ্যে পড়াশোনার পাশাপাশি বিশ্রামেরও সুযোগ দরকার।</p></div><div><span>০৩</span><h3>সবার কথা</h3><p>আমরা পরীক্ষা এড়াতে চাই না; আরও ভালো প্রস্তুতির সুযোগ চাই।</p></div></div>
     <div class="dabi-lower">
       <article class="dabi-letter" id="letter"><span class="dabi-letter-icon" aria-hidden="true">“</span><div class="eyebrow">সম্মানিত অধ্যক্ষ ও শিক্ষকদের প্রতি</div><h2>আমাদের খোলা চিঠি</h2><p>স্যার, আমরা পরীক্ষায় ভালো করতে চাই। একটানা পরীক্ষার মধ্যে প্রতিটি বিষয়ের প্রস্তুতির জন্য পর্যাপ্ত সময় পাওয়া কঠিন হয়ে পড়ছে।</p><p>আমাদের বিনীত অনুরোধ, অবশিষ্ট পরীক্ষাগুলোর মাঝে সম্ভব হলে একটি করে দিন বিরতি দেওয়ার বিষয়টি বিবেচনা করুন। এতে আমরা বিশ্রাম নিয়ে আরও মনোযোগ দিয়ে পড়তে পারব।</p><p class="dabi-signoff">বিনীত,<br><strong>চুনারুঘাট সরকারি কলেজের শিক্ষার্থীরা</strong></p></article>
-      <section class="dabi-support" id="support"><div class="eyebrow">তোমার সমর্থন</div><h2>এই ডিভাইসে নাম রাখো</h2><p class="dabi-support-intro">সমর্থনের নাম ও রোল/বিভাগ শুধু এই ব্রাউজারে সেভ হয়। এটি কলেজে পাঠানো হয় না এবং অন্য কেউ এখান থেকে দেখতে পাবে না।</p><form id="support-form"><label for="support-name">তোমার নাম</label><input id="support-name" maxlength="80" autocomplete="name" required placeholder="নাম লিখো"><label for="support-roll">রোল / বিভাগ <span>(ঐচ্ছিক)</span></label><input id="support-roll" maxlength="80" placeholder="যেমন: বিজ্ঞান, রোল ১২"><button type="submit" class="dabi-submit" id="support-submit" disabled>এই ডিভাইসে সংরক্ষণ করো</button></form><p id="support-message" class="dabi-message" role="status" aria-live="polite"></p><div class="dabi-list-head"><strong>এই ব্রাউজারে সংরক্ষিত নাম</strong><span id="support-count">০</span></div><ul id="support-list" class="dabi-list"></ul><p class="dabi-support-intro">ব্রাউজারের ডেটা মুছে ফেললে এই নামগুলোও মুছে যাবে।</p></section>
+      <section class="dabi-support" id="support">
+        <div class="eyebrow">তোমার সমর্থন</div>
+        <h2>সমর্থনে নাম যোগ করো</h2>
+        <p class="dabi-support-intro"><strong>নাম সবার কাছে প্রকাশ্যে দেখা যাবে।</strong> ব্যক্তিগত তথ্য বা রোল নম্বর লিখো না। এই তালিকা কলেজে স্বয়ংক্রিয়ভাবে পাঠানো হয় না।</p>
+        <form id="support-form">
+          <label for="support-name">তোমার নাম</label>
+          <input id="support-name" maxlength="80" autocomplete="name" required placeholder="নাম লিখো">
+          <label class="dabi-consent" for="support-consent"><input id="support-consent" type="checkbox" required><span>আমি সম্মত যে আমার নাম প্রকাশ্যে দেখা যাবে।</span></label>
+          <button type="submit" class="dabi-submit" id="support-submit" disabled>নাম প্রকাশ করো</button>
+        </form>
+        <p id="support-message" class="dabi-message" role="status" aria-live="polite"></p>
+        <div class="dabi-list-head"><strong>সমর্থনের নাম</strong><span id="support-count">—</span></div>
+        <ul id="support-list" class="dabi-list" aria-label="প্রকাশ্যে সংরক্ষিত নাম"></ul>
+        <div class="dabi-pagination" aria-label="নামের পৃষ্ঠা"><button id="support-prev" type="button" disabled>← আগের</button><span id="support-page">পৃষ্ঠা ১</span><button id="support-next" type="button" disabled>পরের →</button></div>
+        <p class="dabi-support-intro">তালিকাটি প্রতি ৩০ সেকেন্ডে হালনাগাদ হয়। নাম সরানোর অনুরোধ করতে <a href="#contact">যোগাযোগ করো</a>। পরিচয় যাচাই করা হয় না, তাই জমার সংখ্যা স্বতন্ত্র ব্যক্তির সংখ্যা নিশ্চিত করে না।</p>
+        <p class="dabi-support-intro">আগে এই ব্রাউজারে সংরক্ষিত নাম স্বয়ংক্রিয়ভাবে প্রকাশ করা হবে না; চাইলে সম্মতি দিয়ে আবার জমা দাও।</p>
+      </section>
     </div>
-    <div class="dabi-share"><div><div class="eyebrow">একসঙ্গে জানাই</div><h2>আবেদনটি বন্ধুদের পাঠাও</h2><p>WhatsApp-এ এই পেজের লিংক শেয়ার করো। সংরক্ষিত নাম বা রোল পাঠানো হবে না।</p></div><a id="share-whatsapp" class="dabi-share-btn" href="https://wa.me/?text=%E0%A6%B6%E0%A6%BF%E0%A6%95%E0%A7%8D%E0%A6%B7%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%A5%E0%A7%80%E0%A6%A6%E0%A7%87%E0%A6%B0%20%E0%A6%86%E0%A6%AC%E0%A7%87%E0%A6%A6%E0%A6%A8%20https%3A%2F%2Fhsc2027.de5.net%2Fdabi.html" target="_blank" rel="noopener noreferrer">💬 WhatsApp-এ শেয়ার ↗</a></div>
+    <div class="dabi-share"><div><div class="eyebrow">একসঙ্গে জানাই</div><h2>আবেদনটি বন্ধুদের পাঠাও</h2><p>WhatsApp-এ শুধু এই পেজের লিংক শেয়ার করা হবে; নামের তালিকা বার্তায় পাঠানো হবে না।</p></div><a id="share-whatsapp" class="dabi-share-btn" href="https://wa.me/?text=%E0%A6%B6%E0%A6%BF%E0%A6%95%E0%A7%8D%E0%A6%B7%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%A5%E0%A7%80%E0%A6%A6%E0%A7%87%E0%A6%B0%20%E0%A6%86%E0%A6%AC%E0%A7%87%E0%A6%A6%E0%A6%A8%20https%3A%2F%2Fhsc2027.de5.net%2Fdabi.html" target="_blank" rel="noopener noreferrer">💬 WhatsApp-এ শেয়ার ↗</a></div>
   </div></section>
 </main>
 <footer>
@@ -95,6 +111,6 @@
   </div>
 </footer>
 <script src="assets/app.js"></script>
-<script src="assets/dabi.js"></script>
+<script src="assets/dabi.js?v=20261113-public"></script>
 </body>
 </html>

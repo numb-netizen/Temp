@@ -30,60 +30,103 @@ test('remaining exams match the existing homepage routine', () => {
   }
 });
 
-test('all pages link to the request and disclose local-only storage', () => {
+test('request page links are present and public-name consent is explicit', () => {
   for (const name of fs.readdirSync(site).filter(name => name.endsWith('.html'))) {
     const html = fs.readFileSync(path.join(site, name), 'utf8');
     assert.match(html, /href="dabi\.html"/, name);
   }
   const page = fs.readFileSync(path.join(site, 'dabi.html'), 'utf8');
-  assert.match(page, /শুধু এই ব্রাউজারে সেভ হয়/);
-  assert.match(page, /এটি কলেজে পাঠানো হয় না/);
-  assert.match(page, /সংরক্ষিত নাম বা রোল পাঠানো হবে না/);
+  assert.match(page, /নাম সবার কাছে প্রকাশ্যে দেখা যাবে/);
+  assert.match(page, /id="support-consent" type="checkbox" required/);
+  assert.match(page, /কলেজে স্বয়ংক্রিয়ভাবে পাঠানো হয় না/);
+  assert.doesNotMatch(page, /id="support-roll"/);
+  assert.match(page, /স্বয়ংক্রিয়ভাবে প্রকাশ করা হবে না/);
 });
 
-function browser({failStorage = false} = {}) {
+function backend() {
+  const rows = [], calls = [];
+  let failRead = false, failWrite = false;
+  async function fetch(url, options) {
+    calls.push({url, options});
+    if (options.method === 'POST') {
+      if (failWrite) return {ok:false};
+      const body = JSON.parse(options.body);
+      rows.unshift({id:String(rows.length + 1), name:body.name, created_at:'2026-11-13T00:00:00Z'});
+      return {ok:true};
+    }
+    if (failRead) return {ok:false};
+    const query = new URL(url).searchParams;
+    const offset = Number(query.get('offset') || 0), limit = Number(query.get('limit') || 100);
+    return {ok:true, json:async () => rows.slice(offset, offset + limit), headers:{get: () => `${offset}-${Math.max(offset, rows.length - 1)}/${rows.length}`}};
+  }
+  return {rows, calls, fetch, setFailRead: value => { failRead = value; }, setFailWrite: value => { failWrite = value; }};
+}
+
+function browser(db) {
   class Element {
-    constructor() { this.children = []; this.listeners = {}; this.value = ''; this.textContent = ''; this.hidden = false; }
+    constructor() { this.children = []; this.listeners = {}; this.value = ''; this.textContent = ''; this.hidden = false; this.checked = false; }
     append(...items) { this.children.push(...items); }
     replaceChildren(...items) { this.children = items; }
     addEventListener(name, fn) { this.listeners[name] = fn; }
     setAttribute(name, value) { this[name] = value; }
   }
-  const ids = ['dabi-timeline','dabi-timer','dabi-next-title','dabi-next-date','dabi-timer-label','dabi-days','dabi-hours','dabi-minutes','dabi-seconds','support-form','support-list','support-message','support-submit','support-name','support-roll','support-count','share-whatsapp'];
+  const ids = ['dabi-timeline','dabi-timer','dabi-next-title','dabi-next-date','dabi-timer-label','dabi-days','dabi-hours','dabi-minutes','dabi-seconds','support-form','support-list','support-message','support-submit','support-name','support-consent','support-count','support-prev','support-next','support-page','share-whatsapp'];
   const elements = Object.fromEntries(ids.map(id => [id, new Element()]));
-  elements['support-form'].reset = () => { elements['support-name'].value = ''; elements['support-roll'].value = ''; };
-  const storage = new Map();
-  const localStorage = {
-    getItem: key => { if (failStorage) throw Error('denied'); return storage.get(key) || null; },
-    setItem: (key, value) => { if (failStorage) throw Error('denied'); storage.set(key, value); },
-  };
+  elements['support-form'].reset = () => { elements['support-name'].value = ''; elements['support-consent'].checked = false; };
+  let poll;
   class Clock extends Date { static now() { return Date.parse('2026-11-13T18:00:00+06:00'); } }
   vm.runInNewContext(source, {
     document: {getElementById: id => elements[id], createElement: () => new Element()},
     window: {location: {origin:'https://example.test', pathname:'/dabi.html'}},
-    Date: Clock, localStorage, setInterval: () => {},
+    Date: Clock, fetch: db.fetch, setInterval: (fn, delay) => { if (delay === 30000) poll = fn; },
   });
-  return {elements, storage};
+  return {elements, poll: () => poll()};
 }
+const flush = () => new Promise(resolve => setImmediate(resolve));
 
-test('support is stored only locally, rendered as text, removable, and excluded from share', () => {
-  const {elements, storage} = browser();
-  assert.equal(elements['support-submit'].disabled, false);
-  elements['support-name'].value = '<img src=x onerror=alert(1)>';
-  elements['support-roll'].value = 'বিজ্ঞান';
-  elements['support-form'].listeners.submit({preventDefault(){}});
-  assert.equal(storage.size, 1);
-  assert.equal(elements['support-list'].children.length, 1);
-  const item = elements['support-list'].children[0];
-  assert.equal(item.children[0].textContent, '<img src=x onerror=alert(1)> · বিজ্ঞান');
-  assert.match(elements['support-message'].textContent, /কলেজে পাঠানো হয়নি/);
-  assert.ok(!decodeURIComponent(elements['share-whatsapp'].href).includes('onerror'));
-  item.children[1].listeners.click();
-  assert.equal(elements['support-list'].children.length, 0);
+test('names saved by one visitor become visible to another, safely as text', async () => {
+  const db = backend(), first = browser(db), second = browser(db);
+  await flush();
+  first.elements['support-name'].value = '<img src=x onerror=alert(1)>';
+  await first.elements['support-form'].listeners.submit({preventDefault(){}});
+  assert.equal(db.rows.length, 0, 'no publication without consent');
+  first.elements['support-consent'].checked = true;
+  await first.elements['support-form'].listeners.submit({preventDefault(){}});
+  assert.equal(db.rows.length, 1);
+  assert.match(first.elements['support-message'].textContent, /সবার জন্য সংরক্ষিত/);
+  second.poll(); await flush();
+  assert.equal(second.elements['support-list'].children[0].children[0].textContent, '<img src=x onerror=alert(1)>');
+  assert.match(second.elements['support-count'].textContent, /১/);
+  assert.ok(!decodeURIComponent(first.elements['share-whatsapp'].href).includes('onerror'));
+  const post = db.calls.find(call => call.options.method === 'POST');
+  assert.deepEqual(Object.keys(JSON.parse(post.options.body)), ['name']);
+  assert.ok(post.options.headers.apikey.startsWith('sb_publishable_'));
+  assert.ok(!('Authorization' in post.options.headers));
+  assert.ok(!source.includes('localStorage'), 'old local drafts are not auto-uploaded');
 });
 
-test('local storage failure disables the form rather than claiming submission', () => {
-  const {elements} = browser({failStorage:true});
-  assert.equal(elements['support-submit'].disabled, true);
-  assert.match(elements['support-message'].textContent, /পড়া যাচ্ছে না/);
+test('network failures do not claim that a name was saved', async () => {
+  const db = backend(); db.setFailRead(true); db.setFailWrite(true);
+  const page = browser(db); await flush();
+  assert.match(page.elements['support-message'].textContent, /লোড করা যায়নি/);
+  page.elements['support-name'].value = 'নাম'; page.elements['support-consent'].checked = true;
+  await page.elements['support-form'].listeners.submit({preventDefault(){}});
+  assert.match(page.elements['support-message'].textContent, /নিশ্চিত করা যায়নি/);
+  assert.equal(page.elements['support-submit'].disabled, false);
+  assert.equal(db.rows.length, 0);
+});
+
+
+test('older public names remain accessible on later pages', async () => {
+  const db = backend();
+  for (let i = 0; i < 60; i++) db.rows.push({id:String(i), name:'Name ' + i, created_at:'2026-11-13T00:00:00Z'});
+  const page = browser(db); await flush();
+  assert.equal(page.elements['support-list'].children.length, 50);
+  assert.equal(page.elements['support-next'].disabled, false);
+  page.elements['support-next'].listeners.click(); await flush();
+  assert.equal(page.elements['support-list'].children.length, 10);
+  assert.equal(page.elements['support-list'].children[0].children[0].textContent, 'Name 50');
+  assert.equal(page.elements['support-prev'].disabled, false);
+  page.elements['support-prev'].listeners.click(); await flush();
+  assert.equal(page.elements['support-list'].children.length, 50);
 });
