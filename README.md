@@ -65,3 +65,9 @@ cd site && python3 -m http.server 8000
 `android/` হলো Android WebView অ্যাপের সোর্স। এটি সরাসরি `https://hsc2027.de5.net/` খোলে; ওয়েবসাইটের পরিবর্তন অ্যাপেও দেখা যায়। ইন্টারনেট ও Android System WebView প্রয়োজন। WhatsApp, YouTube ও বাইরের লিংক অন্য অ্যাপ বা ব্রাউজারে খোলে। পড়ার ট্র্যাকার ও অন্যান্য ব্রাউজার-সংরক্ষিত তথ্য অ্যাপের নিজস্ব WebView-তে থাকে; ফোনের ব্রাউজার বা অন্য ডিভাইসের সঙ্গে স্বয়ংক্রিয়ভাবে মেলে না। আবেদন পেজের Supabase-এ সংরক্ষিত তথ্য ওয়েবসাইট ও অ্যাপে একই।
 
 Android Studio-তে `android/` খুলে বা JDK 17 ও Android SDK 35 দিয়ে `cd android && ./gradlew testDebugUnitTest assembleDebug` চালিয়ে debug APK বানানো যায়। GitHub-এর **Build Android app** workflow-ও ৩০ দিনের জন্য APK artifact তৈরি করে। Debug APK পরীক্ষার জন্য, Play Store-এ প্রকাশের জন্য নয়; স্থায়ী বিতরণ বা আপডেটের জন্য নিজের সুরক্ষিত signing key দিয়ে release APK/AAB তৈরি করতে হবে। বিভিন্ন workflow run-এর debug key আলাদা হতে পারে, তাই আগের debug APK-এর উপর সরাসরি update নাও হতে পারে। Uninstall করলে অ্যাপের স্থানীয় tracker data মুছে যায়। কোনো keystore বা password রিপোতে রাখবেন না।
+
+### পরীক্ষামূলক Android release ও package
+
+GitHub Releases-এর `android-v1.1-beta`-তে পরীক্ষামূলক **debug-signed** APK প্রকাশের workflow `.github/workflows/publish-android-beta.yml`। এটি আগে পরীক্ষিত main build artifact-টিই ব্যবহার করে; নতুন debug key তৈরি করে না। APK ও `SHA256SUMS.txt` সাধারণ ডাউনলোডের জন্য Releases-এ রাখা হয়। Packages-এ একই APK OCI artifact হিসেবে রাখা হয়; এটি ডেভেলপারদের `oras` দিয়ে pull করার জন্য, ফোনে সরাসরি ইনস্টল করার সাধারণ পথ নয়। নতুন GitHub container package ডিফল্টে private হতে পারে; জনসাধারণের জন্য দেখতে হলে মালিককে package settings থেকে visibility পরীক্ষা করতে হবে।
+
+Debug key নিরাপদ স্থায়ী release key নয়; নতুন signing key দিয়ে তৈরি APK পূর্বেরটির ওপর আপডেট নাও হতে পারে। চূড়ান্ত বিতরণের আগে মালিকের নিয়ন্ত্রণে নিরাপদ release signing key ও repository secrets সেট করতে হবে; key বা password কখনো রিপোতে রাখতে হবে না।
