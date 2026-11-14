@@ -28,12 +28,7 @@ jobs:
           target: google_apis
           arch: x86_64
           disable-animations: true
-          script: |
-            adb shell svc wifi disable
-            adb shell svc data disable
-            adb shell settings put global airplane_mode_on 1
-            adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true
-            cd android && ./gradlew --no-daemon connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=bd.edu.hsc2027.OfflineSiteTest -Pandroid.testInstrumentationRunnerArguments.requireOffline=true
+          script: bash android/ci/offline-test.sh
       - name: Report Android test failures
         if: failure()
         run: |
