@@ -24,6 +24,7 @@
   if (typeof document === 'undefined') return;
 
   const get = id => document.getElementById(id);
+  const clear = node => { if (node.replaceChildren) node.replaceChildren(); else node.textContent = ''; };
   const format = number => Number(number).toLocaleString('bn-BD');
   const timeline = get('dabi-timeline');
   const timer = get('dabi-timer');
@@ -34,7 +35,7 @@
     const signature = states.join(',') + ':' + selected;
     if (signature !== previousStates) {
       previousStates = signature;
-      timeline.replaceChildren();
+      clear(timeline);
       exams.forEach((exam, index) => {
         const row = document.createElement('div');
         row.className = 'dabi-row' + (index === selected ? ' is-next' : '');
@@ -91,7 +92,7 @@
       if (!Array.isArray(entries)) throw new Error('Invalid response');
       if (version !== loadingVersion) return true;
       if (!entries.length && page > 0) { page--; return refreshSupport(announceFailure); }
-      list.replaceChildren();
+      clear(list);
       entries.slice(0, pageSize).forEach(entry => {
         if (!entry || typeof entry.name !== 'string') return;
         const li = document.createElement('li');
