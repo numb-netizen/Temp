@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Check out site
         uses: actions/checkout@v4
+      - name: Generate offline update manifest
+        run: node scripts/offline-manifest.cjs site
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site

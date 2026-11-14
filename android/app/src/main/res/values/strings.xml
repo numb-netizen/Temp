@@ -7,6 +7,8 @@
     <string name="error_http">সার্ভার পেজটি দিতে পারেনি (HTTP %1$d)।</string>
     <string name="error_code">%1$s\nত্রুটি কোড: %2$d</string>
     <string name="open_browser">ব্রাউজারে খোলো</string>
+    <string name="site_update_available">নতুন তথ্য এসেছে · দেখতে চাপো</string>
+    <string name="site_update_failed">নতুন তথ্য চালু করা যায়নি। পরে আবার চেষ্টা করো।</string>
     <string name="retry">আবার চেষ্টা করো</string>
     <string name="no_handler">এই লিংকটি খোলার জন্য কোনো অ্যাপ পাওয়া যায়নি।</string>
 </resources>
