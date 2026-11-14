@@ -64,7 +64,7 @@ function backend() {
   return {rows, calls, fetch, setFailRead: value => { failRead = value; }, setFailWrite: value => { failWrite = value; }};
 }
 
-function browser(db) {
+function browser(db, online = true) {
   class Element {
     constructor() { this.children = []; this.listeners = {}; this.value = ''; this.textContent = ''; this.hidden = false; this.checked = false; }
     append(...items) { this.children.push(...items); }
@@ -76,13 +76,15 @@ function browser(db) {
   const elements = Object.fromEntries(ids.map(id => [id, new Element()]));
   elements['support-form'].reset = () => { elements['support-name'].value = ''; elements['support-roll'].value = ''; elements['support-consent'].checked = false; };
   let poll;
+  const navigator = {onLine: online}, events = {};
   class Clock extends Date { static now() { return Date.parse('2026-11-13T18:00:00+06:00'); } }
   vm.runInNewContext(source, {
     document: {getElementById: id => elements[id], createElement: () => new Element()},
-    window: {location: {origin:'https://example.test', pathname:'/dabi.html'}},
+    window: {location: {origin:'https://example.test', pathname:'/dabi.html'}, addEventListener: (name, fn) => { events[name] = fn; }},
+    navigator, setTimeout: () => {},
     Date: Clock, fetch: db.fetch, setInterval: (fn, delay) => { if (delay === 30000) poll = fn; },
   });
-  return {elements, poll: () => poll()};
+  return {elements, poll: () => poll(), navigator, events};
 }
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
@@ -170,4 +172,19 @@ test('invalid roll is rejected and a roll is optional', async () => {
   await page.elements['support-form'].listeners.submit({preventDefault(){}});
   assert.equal(db.rows.length, 1);
   assert.deepEqual(JSON.parse(db.calls.find(c => c.options.method === 'POST').options.body), {name:'শিক্ষার্থী'});
+});
+
+
+test('offline appeal shows an error, does not submit, and refreshes on reconnection', async () => {
+  const db = backend(), page = browser(db, false);
+  await flush();
+  assert.match(page.elements['support-message'].textContent, /লোড করা যায়নি/);
+  assert.equal(db.calls.length, 0);
+  page.elements['support-name'].value = 'নাম'; page.elements['support-consent'].checked = true;
+  await page.elements['support-form'].listeners.submit({preventDefault(){}});
+  assert.match(page.elements['support-message'].textContent, /ইন্টারনেট সংযোগ লাগবে/);
+  assert.equal(db.calls.length, 0);
+  page.navigator.onLine = true; page.events.online(); await flush();
+  assert.equal(db.calls.length, 1);
+  assert.equal(page.elements['support-message'].textContent, '');
 });

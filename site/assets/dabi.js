@@ -80,9 +80,12 @@
     const version = ++loadingVersion;
     try {
       if (!navigator.onLine) throw new Error('Offline');
-      const response = await fetch(endpoint + '?select=id,name,created_at&order=created_at.desc,id.desc&limit=' + (pageSize + 1) + '&offset=' + (page * pageSize), {
-        headers: {apikey: publicKey, Prefer: 'count=exact'}, cache: 'no-store',
-      });
+      const response = await Promise.race([
+        fetch(endpoint + '?select=id,name,created_at&order=created_at.desc,id.desc&limit=' + (pageSize + 1) + '&offset=' + (page * pageSize), {
+          headers: {apikey: publicKey, Prefer: 'count=exact'}, cache: 'no-store',
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 8000)),
+      ]);
       if (!response.ok) throw new Error('Could not load names');
       const entries = await response.json();
       if (!Array.isArray(entries)) throw new Error('Invalid response');
