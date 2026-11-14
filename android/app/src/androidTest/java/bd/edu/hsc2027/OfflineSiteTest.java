@@ -54,7 +54,8 @@ public class OfflineSiteTest {
                 if (status.equals("true")) break;
                 SystemClock.sleep(250);
             }
-            assertEquals("Offline public names must not claim success", "true", status);
+            String diagnostics = js(i, web, "JSON.stringify({message:document.querySelector('#support-message').textContent, online:navigator.onLine, rows:document.querySelector('#dabi-timeline').children.length, replaceChildren:typeof document.body.replaceChildren, button:document.querySelector('#support-submit').disabled, ready:document.readyState, scripts:[...document.scripts].map(s=>s.src)})");
+            assertEquals("Offline public names must not claim success: " + diagnostics, "true", status);
         } finally { i.runOnMainSync(activity::finish); }
     }
     private static void assertPage(Instrumentation i, WebView web, View overlay, String title) {
