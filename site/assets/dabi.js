@@ -79,6 +79,7 @@
   async function refreshSupport(announceFailure = true) {
     const version = ++loadingVersion;
     try {
+      if (!navigator.onLine) throw new Error('Offline');
       const response = await fetch(endpoint + '?select=id,name,created_at&order=created_at.desc,id.desc&limit=' + (pageSize + 1) + '&offset=' + (page * pageSize), {
         headers: {apikey: publicKey, Prefer: 'count=exact'}, cache: 'no-store',
       });
@@ -114,6 +115,11 @@
   previous.addEventListener('click', () => { if (page > 0) { page--; refreshSupport(); } });
   next.addEventListener('click', () => { if (!next.disabled) { page++; refreshSupport(); } });
   button.disabled = false;
+  window.addEventListener('offline', () => {
+    ++loadingVersion;
+    message.textContent = 'নামের তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ যাচাই করে পেজ রিফ্রেশ করো।';
+  });
+  window.addEventListener('online', () => { message.textContent = ''; refreshSupport(); });
   refreshSupport();
   setInterval(() => refreshSupport(false), 30000);
   form.addEventListener('submit', async event => {
@@ -129,6 +135,9 @@
     }
     if (!get('support-consent').checked) {
       message.textContent = 'নাম প্রকাশের সম্মতি দিতে হবে।'; return;
+    }
+    if (!navigator.onLine) {
+      message.textContent = 'নাম জমা দিতে ইন্টারনেট সংযোগ লাগবে।'; return;
     }
     submitting = true; button.disabled = true; message.textContent = 'নাম সংরক্ষণ হচ্ছে…';
     try {
