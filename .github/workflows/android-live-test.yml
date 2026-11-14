@@ -1,7 +1,7 @@
 name: Test Android WebView on emulator
 on:
   push:
-    paths: ['android/**', '.github/workflows/android-live-test.yml']
+    paths: ['android/**', 'site/**', '.github/workflows/android-live-test.yml']
   workflow_dispatch:
 permissions:
   contents: read
