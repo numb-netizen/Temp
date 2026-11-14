@@ -12,7 +12,7 @@ const {chromium} = require('playwright-core');
       assert.equal(await page.locator('#burger').getAttribute('aria-expanded'), 'true');
       await page.locator('#navLinks a[href="android-app.html"]').click();
       assert.match(page.url(), /android-app\.html$/);
-      assert.equal(await page.locator('a.android-download').getAttribute('href'), 'https://github.com/numb-netizen/Temp/releases/download/android-v1.2-beta/HSC-2027-v1.2-beta-debug.apk');
+      assert.equal(await page.locator('a.android-download').getAttribute('href'), 'https://github.com/numb-netizen/Temp/releases/download/android-v1.3-beta/HSC-2027-v1.3-beta-debug.apk');
       assert.ok(await page.locator('text=পরীক্ষামূলক debug APK').count());
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `horizontal overflow at ${width}`);
       await page.close();

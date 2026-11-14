@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -24,6 +28,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class MainActivity extends Activity {
     private WebView webView;
@@ -31,6 +39,13 @@ public final class MainActivity extends Activity {
     private ProgressBar progress;
     private TextView errorDetail;
     private String retryUrl = NavigationPolicy.HOME;
+    private LocalSiteStore siteStore;
+    private Button updateButton;
+    private volatile File pendingUpdate;
+    private final ExecutorService updates = Executors.newSingleThreadExecutor();
+    private final AtomicBoolean checking = new AtomicBoolean(false);
+    private ConnectivityManager connectivity;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -45,6 +60,13 @@ public final class MainActivity extends Activity {
                     insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
             return insets;
         });
+        siteStore = new LocalSiteStore(this);
+        updateButton = new Button(this);
+        updateButton.setTag("site-update");
+        updateButton.setText(R.string.site_update_available);
+        updateButton.setVisibility(View.GONE);
+        updateButton.setOnClickListener(v -> applyUpdate());
+        root.addView(updateButton, new LinearLayout.LayoutParams(-1, -2));
         progress = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         root.addView(progress, new LinearLayout.LayoutParams(-1, dp(3)));
         FrameLayout content = new FrameLayout(this);
@@ -75,6 +97,12 @@ public final class MainActivity extends Activity {
             }
         });
         webView.setWebViewClient(new WebViewClient() {
+            @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (NavigationPolicy.destination(request.getUrl().toString()) == NavigationPolicy.Destination.INTERNAL) {
+                    return siteStore.response(request.getUrl().getPath(), request.getMethod());
+                }
+                return null; // External services, including Supabase, still require the network.
+            }
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 if (!request.isForMainFrame()) return false;
                 return route(request.getUrl());
@@ -106,6 +134,58 @@ public final class MainActivity extends Activity {
             }
         });
         if (state == null || webView.restoreState(state) == null) webView.loadUrl(NavigationPolicy.HOME);
+        observeNetwork();
+        checkForUpdates();
+    }
+
+    private void observeNetwork() {
+        connectivity = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        if (connectivity == null) return;
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override public void onAvailable(Network network) { checkForUpdates(); }
+        };
+        try {
+            connectivity.registerNetworkCallback(new NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(), networkCallback);
+        } catch (RuntimeException e) { networkCallback = null; }
+    }
+
+    private void checkForUpdates() {
+        if (updates.isShutdown() || !checking.compareAndSet(false, true)) return;
+        try {
+            updates.execute(() -> {
+                try {
+                    File snapshot = siteStore.checkForUpdate();
+                    if (snapshot != null) runOnUiThread(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            pendingUpdate = snapshot;
+                            updateButton.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } catch (Exception ignored) {
+                    // Offline or incomplete update: the last complete snapshot remains usable.
+                } finally { checking.set(false); }
+            });
+        } catch (java.util.concurrent.RejectedExecutionException ignored) { checking.set(false); }
+    }
+
+    private void applyUpdate() {
+        File snapshot = pendingUpdate;
+        if (snapshot == null) return;
+        try {
+            siteStore.activate(snapshot);
+            pendingUpdate = null;
+            updateButton.setVisibility(View.GONE);
+            webView.clearCache(true);
+            webView.reload();
+        } catch (java.io.IOException e) {
+            Toast.makeText(this, R.string.site_update_failed, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (siteStore != null) checkForUpdates();
     }
 
     private boolean route(Uri uri) {
@@ -167,6 +247,10 @@ public final class MainActivity extends Activity {
         super.onSaveInstanceState(state);
     }
     @Override protected void onDestroy() {
+        if (connectivity != null && networkCallback != null) {
+            try { connectivity.unregisterNetworkCallback(networkCallback); } catch (RuntimeException ignored) { }
+        }
+        updates.shutdownNow();
         webView.destroy();
         super.onDestroy();
     }

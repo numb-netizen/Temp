@@ -24,6 +24,7 @@
   if (typeof document === 'undefined') return;
 
   const get = id => document.getElementById(id);
+  const clear = node => { if (node.replaceChildren) node.replaceChildren(); else node.textContent = ''; };
   const format = number => Number(number).toLocaleString('bn-BD');
   const timeline = get('dabi-timeline');
   const timer = get('dabi-timer');
@@ -34,7 +35,7 @@
     const signature = states.join(',') + ':' + selected;
     if (signature !== previousStates) {
       previousStates = signature;
-      timeline.replaceChildren();
+      clear(timeline);
       exams.forEach((exam, index) => {
         const row = document.createElement('div');
         row.className = 'dabi-row' + (index === selected ? ' is-next' : '');
@@ -79,15 +80,19 @@
   async function refreshSupport(announceFailure = true) {
     const version = ++loadingVersion;
     try {
-      const response = await fetch(endpoint + '?select=id,name,created_at&order=created_at.desc,id.desc&limit=' + (pageSize + 1) + '&offset=' + (page * pageSize), {
-        headers: {apikey: publicKey, Prefer: 'count=exact'}, cache: 'no-store',
-      });
+      if (!navigator.onLine) throw new Error('Offline');
+      const response = await Promise.race([
+        fetch(endpoint + '?select=id,name,created_at&order=created_at.desc,id.desc&limit=' + (pageSize + 1) + '&offset=' + (page * pageSize), {
+          headers: {apikey: publicKey, Prefer: 'count=exact'}, cache: 'no-store',
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 8000)),
+      ]);
       if (!response.ok) throw new Error('Could not load names');
       const entries = await response.json();
       if (!Array.isArray(entries)) throw new Error('Invalid response');
       if (version !== loadingVersion) return true;
       if (!entries.length && page > 0) { page--; return refreshSupport(announceFailure); }
-      list.replaceChildren();
+      clear(list);
       entries.slice(0, pageSize).forEach(entry => {
         if (!entry || typeof entry.name !== 'string') return;
         const li = document.createElement('li');
@@ -114,6 +119,11 @@
   previous.addEventListener('click', () => { if (page > 0) { page--; refreshSupport(); } });
   next.addEventListener('click', () => { if (!next.disabled) { page++; refreshSupport(); } });
   button.disabled = false;
+  window.addEventListener('offline', () => {
+    ++loadingVersion;
+    message.textContent = 'নামের তালিকা লোড করা যায়নি। ইন্টারনেট সংযোগ যাচাই করে পেজ রিফ্রেশ করো।';
+  });
+  window.addEventListener('online', () => { message.textContent = ''; refreshSupport(); });
   refreshSupport();
   setInterval(() => refreshSupport(false), 30000);
   form.addEventListener('submit', async event => {
@@ -129,6 +139,9 @@
     }
     if (!get('support-consent').checked) {
       message.textContent = 'নাম প্রকাশের সম্মতি দিতে হবে।'; return;
+    }
+    if (!navigator.onLine) {
+      message.textContent = 'নাম জমা দিতে ইন্টারনেট সংযোগ লাগবে।'; return;
     }
     submitting = true; button.disabled = true; message.textContent = 'নাম সংরক্ষণ হচ্ছে…';
     try {

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const site = path.join(__dirname, '..', 'site');
-const apk = 'https://github.com/numb-netizen/Temp/releases/download/android-v1.2-beta/HSC-2027-v1.2-beta-debug.apk';
+const apk = 'https://github.com/numb-netizen/Temp/releases/download/android-v1.3-beta/HSC-2027-v1.3-beta-debug.apk';
 
 test('every page has a working app link inside its navigation and footer', () => {
   const pages = fs.readdirSync(site).filter(name => name.endsWith('.html'));
@@ -26,7 +26,8 @@ test('app page points to published beta and explains installation and limitation
   assert.match(page, /href="android-app\.html" class="active" aria-current="page"/);
   assert.match(page, /পরীক্ষামূলক debug APK/);
   assert.match(page, /Android 6\.0 বা নতুন/);
-  assert.match(page, /ইন্টারনেট প্রয়োজন/);
+  assert.match(page, /সাধারণ পড়াশোনা অফলাইনে/);
+  assert.match(page, /ইন্টারনেট লাগবে/);
   assert.match(page, /Install unknown apps/);
   assert.match(page, /আনইনস্টল করলে অ্যাপের স্থানীয় ট্র্যাকার তথ্য মুছে যাবে/);
   assert.match(page, /GitHub release দেখো/);
