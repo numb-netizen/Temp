@@ -35,6 +35,7 @@ const {chromium} = require('playwright-core');
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
       await page.goto('http://127.0.0.1:8765/index.html');
       await page.locator('a[href="student-group.html"]').click();
+      await page.locator('#student-step').waitFor({state:'visible'});
       assert.equal(await page.locator('#student-step').isVisible(), true);
       assert.equal(await page.locator('#choice-step').isVisible(), false);
       assert.equal(await page.locator('#group-join').getAttribute('href'), null);
