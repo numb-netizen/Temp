@@ -79,3 +79,27 @@ test('syllabus covers the five supplied subjects and does not publish the studen
   for (const subject of ['তথ্য ও যোগাযোগ প্রযুক্তি (ICT)', 'পদার্থবিজ্ঞান · ১ম পত্র', 'উচ্চতর গণিত · ১ম পত্র', 'রসায়ন · ১ম পত্র', 'জীববিজ্ঞান · ১ম পত্র']) assert.ok(html.includes(subject), subject);
   assert.ok(!html.includes('Mohammad Fahim'));
 });
+
+
+test('history second-paper topics appear in the 16 November exam syllabus', () => {
+  const row = html.match(/<div class="exam-row" data-start="2026-11-16T12:00:00\+06:00"[\s\S]*?<\/details>/);
+  assert.ok(row, 'history exam syllabus exists');
+  for (const text of [
+    'ইতিহাস · ২য় পত্র', '১ম অধ্যায়', 'শিল্প বিপ্লবের সংজ্ঞা', 'শিল্প বিপ্লবের কারণ',
+    'শিল্প বিপ্লবের ফলাফল', 'ইংল্যান্ডের আর্থসামাজিক ও রাজনৈতিক অবস্থা', 'কৃষি বিপ্লব',
+    '২য় অধ্যায় (ফ্রান্সের ডিরেক্টরি শাসন)', 'ফরাসি বিপ্লবের পূর্বে সামাজিক ও রাজনৈতিক অবস্থা',
+    'ফরাসি বিপ্লবে দার্শনিকদের অবদান', 'সম্রাট নেপোলিয়নের শাসন সম্পূর্ণ', 'কোড অফ নেপোলিয়ন',
+    '৩য় অধ্যায়', 'প্রথম বিশ্বযুদ্ধের কারণ ও ফলাফল', 'জাতিসংঘ বা লীগ অব নেশনস',
+    'ত্রিশক্তি চুক্তি ও ত্রিশক্তি আঁতাত (বড় প্রশ্ন)', '৪র্থ অধ্যায়', 'বলশেভিক বিপ্লবের কারণ ও ফলাফল',
+    '৭ম অধ্যায়', 'স্নায়ুযুদ্ধ কী, এর উদ্ভব ও বিকাশ', '৯ম অধ্যায়', 'বর্ণবাদ কী', 'মার্টিন লুথার কিং'
+  ]) assert.ok(row[0].includes(text), text);
+  assert.ok(!row[0].includes('ইতিহাস ও ফিন্যান্স'));
+  const page = setup('2026-11-16T11:59:59+06:00');
+  const history = page.rows.find(item => item.dataset.subject.includes('ইতিহাস'));
+  assert.equal(history.syllabus.hidden, false);
+  page.setTime('2026-11-16T12:00:00+06:00');
+  assert.equal(history.syllabus.hidden, true);
+  assert.equal(history.hidden, false);
+  page.setTime('2026-11-16T15:00:00+06:00');
+  assert.equal(history.hidden, true);
+});
