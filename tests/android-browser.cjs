@@ -26,8 +26,16 @@ const {chromium} = require('playwright-core');
         await page.locator('#burger').click();
         assert.equal(await page.locator('#navLinks a[href="android-app.html"]').isVisible(), !isOurApp, `nav ${name}: ${userAgent}`);
         assert.equal(await page.locator('footer a[href="android-app.html"]').isVisible(), !isOurApp, `footer ${name}: ${userAgent}`);
-        assert.ok(await page.locator('#navLinks a[href="dabi.html"]').isVisible());
+        assert.equal(await page.locator('#navLinks a[href="dabi.html"]').count(), 0);
       }
+      await page.close();
+    }
+    {
+      const page = await browser.newPage();
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      await page.goto('http://127.0.0.1:8765/dabi.html');
+      assert.match(await page.title(), /পেজটি সরানো হয়েছে/);
+      assert.equal(await page.locator('#support-form').count(), 0);
       await page.close();
     }
     for (const width of [320, 360, 1201]) {

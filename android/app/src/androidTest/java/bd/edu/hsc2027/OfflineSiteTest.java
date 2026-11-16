@@ -47,15 +47,8 @@ public class OfflineSiteTest {
             SystemClock.sleep(1000); assertPage(i, web, overlay, "ট্র্যাকার");
             assertEquals("true", js(i, web, "document.querySelector('.chap').classList.contains('done')"));
             i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html"));
-            assertPage(i, web, overlay, "আমাদের দাবি");
-            long until = SystemClock.elapsedRealtime() + 20000; String status = "";
-            while (SystemClock.elapsedRealtime() < until) {
-                status = js(i, web, "document.querySelector('#support-message').textContent.includes('লোড করা যায়নি')");
-                if (status.equals("true")) break;
-                SystemClock.sleep(250);
-            }
-            String diagnostics = js(i, web, "JSON.stringify({message:document.querySelector('#support-message').textContent, online:navigator.onLine, rows:document.querySelector('#dabi-timeline').children.length, replaceChildren:typeof document.body.replaceChildren, button:document.querySelector('#support-submit').disabled, ready:document.readyState, scripts:[...document.scripts].map(s=>s.src)})");
-            assertEquals("Offline public names must not claim success: " + diagnostics, "true", status);
+            assertPage(i, web, overlay, "পেজটি সরানো হয়েছে");
+            assertEquals("true", js(i, web, "!document.querySelector('#support-form')"));
         } finally { i.runOnMainSync(activity::finish); }
     }
     private static void assertPage(Instrumentation i, WebView web, View overlay, String title) {
