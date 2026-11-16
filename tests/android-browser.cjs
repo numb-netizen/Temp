@@ -59,7 +59,7 @@ const {chromium} = require('playwright-core');
       await page.locator('#girl-step .group-back').click();
       await page.locator('#choose-boy').click();
       assert.equal(await page.locator('#group-join').isVisible(), true);
-      assert.equal(await page.locator('#group-join').getAttribute('href'), 'https://chat.whatsapp.com/KPdaTIjQNo93DEeFTldweN?s=sw&p=a&iam=2');
+      assert.equal(await page.locator('#group-join').getAttribute('href'), 'https://chat.whatsapp.com/Kj4T6Y3BpDJD3j3K7kB0Yu');
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `group page overflow at ${width}`);
       await page.locator('#boy-step .group-back').click();
       assert.equal(await page.locator('#group-join').getAttribute('href'), null);

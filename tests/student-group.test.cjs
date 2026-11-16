@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const site = path.join(__dirname, '..', 'site');
 const page = fs.readFileSync(path.join(site, 'student-group.html'), 'utf8');
 const source = fs.readFileSync(path.join(site, 'assets/student-group.js'), 'utf8');
-const url = 'https://chat.whatsapp.com/KPdaTIjQNo93DEeFTldweN?s=sw&p=a&iam=2';
+const url = 'https://chat.whatsapp.com/Kj4T6Y3BpDJD3j3K7kB0Yu';
 function setup() {
   const nodes = {};
   const element = (id) => nodes[id] = {hidden: false, attrs: {}, dataset: {},
@@ -22,6 +22,8 @@ function setup() {
 test('group entry is discoverable, while the invitation is not in the page HTML', () => {
   assert.match(fs.readFileSync(path.join(site, 'index.html'), 'utf8'), /href="student-group\.html"/);
   assert.ok(!page.includes(url));
+  assert.match(page, /src="assets\/student-group\.js\?v=2"/);
+  assert.ok(!source.includes('KPdaTIjQNo93DEeFTldweN'), 'the previous invite must not be used');
   assert.match(page, /id="boy-step"[^>]*hidden/);
   assert.match(page, /id="choice-step"[^>]*hidden/);
   assert.match(page, /শিক্ষার্থী পরিচয় যাচাই করা হয় না/);
