@@ -1,11 +1,15 @@
 (() => {
   const steps = ['student', 'not-student', 'choice', 'girl', 'boy'];
-  const join = document.getElementById('group-join');
-  const link = 'https://chat.whatsapp.com/Kj4T6Y3BpDJD3j3K7kB0Yu';
+  const links = [
+    [document.getElementById('group-join-old'), 'https://chat.whatsapp.com/KPdaTIjQNo93DEeFTldweN?s=sw&p=a&iam=2'],
+    [document.getElementById('group-join'), 'https://chat.whatsapp.com/Kj4T6Y3BpDJD3j3K7kB0Yu']
+  ];
   function show(step) {
     for (const name of steps) document.getElementById(name + '-step').hidden = name !== step;
-    if (step === 'boy') join.setAttribute('href', link);
-    else join.removeAttribute('href');
+    for (const [join, link] of links) {
+      if (step === 'boy') join.setAttribute('href', link);
+      else join.removeAttribute('href');
+    }
     document.querySelector('#' + step + '-step h2').focus();
   }
   document.getElementById('student-yes').addEventListener('click', () => show('choice'));
