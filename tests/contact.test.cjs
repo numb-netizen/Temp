@@ -5,7 +5,7 @@ const path = require('node:path');
 const site = path.join(__dirname, '..', 'site');
 
 test('every page links its contact menu to a WhatsApp link and displays the username', () => {
-  for (const name of fs.readdirSync(site).filter(name => name.endsWith('.html'))) {
+  for (const name of fs.readdirSync(site).filter(name => name.endsWith('.html') && name !== 'googleb7da7b15e33059e0.html')) {
     const html = fs.readFileSync(path.join(site, name), 'utf8');
     const nav = html.match(/<div class="links" id="navLinks">([\s\S]*?)<\/div>/);
     assert.ok(nav, name);

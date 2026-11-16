@@ -7,7 +7,7 @@ const site = path.join(__dirname, '..', 'site');
 const apk = 'https://github.com/numb-netizen/Temp/releases/download/android-v1.3-beta/HSC-2027-v1.3-beta-debug.apk';
 
 test('every page has a working app link inside its navigation and footer', () => {
-  const pages = fs.readdirSync(site).filter(name => name.endsWith('.html'));
+  const pages = fs.readdirSync(site).filter(name => name.endsWith('.html') && name !== 'googleb7da7b15e33059e0.html');
   for (const name of pages) {
     const html = fs.readFileSync(path.join(site, name), 'utf8');
     const nav = html.match(/<div class="links" id="navLinks">([\s\S]*?)<\/div>/);

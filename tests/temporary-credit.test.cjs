@@ -8,7 +8,7 @@ const script = fs.readFileSync(path.join(site, 'assets/credit.js'), 'utf8');
 const expiry = Date.parse(script.match(/expires = Date\.parse\('([^']+)'\)/)[1]);
 
 test('every page shows both names by default and loads the independent credit script', () => {
-  for (const name of fs.readdirSync(site).filter(name => name.endsWith('.html'))) {
+  for (const name of fs.readdirSync(site).filter(name => name.endsWith('.html') && name !== 'googleb7da7b15e33059e0.html')) {
     const html = fs.readFileSync(path.join(site, name), 'utf8');
     assert.equal((html.match(/id="temporary-credit"/g) || []).length, 1, name);
     assert.match(html, /<p class="temporary-credit" id="temporary-credit">Made by <strong>Mahadin &amp; Morshed<\/strong><\/p>/);

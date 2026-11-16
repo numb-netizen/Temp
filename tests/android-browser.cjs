@@ -4,6 +4,13 @@ const {chromium} = require('playwright-core');
 (async () => {
   const browser = await chromium.launch({headless: true, executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox']});
   try {
+    {
+      const page = await browser.newPage();
+      const response = await page.goto('http://127.0.0.1:8765/googleb7da7b15e33059e0.html');
+      assert.equal(response.status(), 200);
+      assert.equal(await response.text(), 'google-site-verification: googleb7da7b15e33059e0.html');
+      await page.close();
+    }
     for (const width of [320, 360]) {
       const page = await browser.newPage({viewport:{width, height:568}});
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
