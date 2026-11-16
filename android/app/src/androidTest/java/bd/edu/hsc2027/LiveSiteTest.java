@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 /** Exercises the real public site in an Android WebView (requires network). */
 @RunWith(AndroidJUnit4.class)
 public class LiveSiteTest {
-    @Test public void homeAppealAndServerError() {
+    @Test public void homeRetiredPageAndServerError() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         Intent intent = new Intent(instrumentation.getTargetContext(), MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -42,8 +42,8 @@ public class LiveSiteTest {
                     web.getSettings().getUserAgentString().contains("HSC2027App")));
             assertPage(instrumentation, web, overlay, detail, "হোম");
             // Use a fresh URL to avoid a previously cached copy of the live HTML.
-            instrumentation.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html?appcheck=1.2"));
-            assertPage(instrumentation, web, overlay, detail, "আমাদের দাবি");
+            instrumentation.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html?appcheck=retired"));
+            assertPage(instrumentation, web, overlay, detail, "পেজটি সরানো হয়েছে");
             assertAppDownloadLinksHidden(instrumentation, web);
             instrumentation.runOnMainSync(() -> {
                 WebViewClient client = web.getWebViewClient();
