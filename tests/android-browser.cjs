@@ -9,6 +9,9 @@ const {chromium} = require('playwright-core');
       const response = await page.goto('http://127.0.0.1:8765/googleb7da7b15e33059e0.html');
       assert.equal(response.status(), 200);
       assert.equal(await response.text(), 'google-site-verification: googleb7da7b15e33059e0.html');
+      const bing = await page.goto('http://127.0.0.1:8765/BingSiteAuth.xml');
+      assert.equal(bing.status(), 200);
+      assert.equal(await bing.text(), '<?xml version="1.0"?>\n<users>\n\t<user>76A0C77A1435B5695135852A5F05F622</user>\n</users>');
       await page.close();
     }
     for (const width of [320, 360]) {
