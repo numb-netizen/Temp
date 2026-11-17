@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Check out site
         uses: actions/checkout@v4
+      - name: Generate public sitemap
+        run: node scripts/generate-sitemap.cjs
       - name: Generate offline update manifest
         run: node scripts/offline-manifest.cjs site
       - name: Configure Pages

@@ -35,3 +35,20 @@ test('robots.txt advertises the production sitemap without blocking crawling', (
   assert.match(robots, /^Sitemap: https:\/\/hsc2027\.de5\.net\/sitemap\.xml$/m);
   assert.doesNotMatch(robots, /^Disallow:\s*\//mi);
 });
+
+test('generator keeps sitemap current and excludes noindex and compatibility pages', () => {
+  const os = require('node:os');
+  const {makeSitemap, isNoIndex} = require('../scripts/generate-sitemap.cjs');
+  assert.equal(makeSitemap(site), fs.readFileSync(path.join(site, 'sitemap.xml'), 'utf8'));
+  for (const tag of ['<meta name="robots" content="noindex, follow">', "<meta content='NOINDEX' name='googlebot'>", '<META NAME=robots CONTENT=noindex>']) assert.equal(isNoIndex(tag), true, tag);
+  assert.equal(isNoIndex('<meta name="robots" content="index, follow">'), false);
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hsc-sitemap-'));
+  try {
+    for (const [file, content] of Object.entries({'index.html':'<h1>Home</h1>', 'public.html':'<h1>Public</h1>', 'new_page.html':'<h1>New</h1>', 'secret.html':'<meta content="noindex" name="robots">', 'bangladesh.html':'<meta name="robots" content="noindex">', 'dabi.html':'retired', 'geography.html':'retired', 'googleb7da7b15e33059e0.html':'verification'})) fs.writeFileSync(path.join(root, file), content);
+    const xml = makeSitemap(root);
+    assert.match(xml, /https:\/\/hsc2027\.de5\.net\/public\.html/);
+    assert.match(xml, /new_page\.html/);
+    assert.doesNotMatch(xml, /secret\.html|bangladesh\.html|dabi\.html|geography\.html|googleb7da7b15e33059e0\.html/);
+    assert.doesNotMatch(xml, /<lastmod>/, 'do not fabricate modification dates');
+  } finally { fs.rmSync(root, {recursive:true, force:true}); }
+});
