@@ -1,0 +1,69 @@
+/* A quieter, notebook-inspired home page. Other study pages retain their own layouts. */
+.home{--home-ink:#edf2e9;--home-muted:#afc0b3;--home-accent:#cce69d;--home-line:rgba(212,231,211,.16);background:#0c1c15;color:var(--home-ink)}
+.home .skip-link{position:fixed;z-index:200;top:8px;left:8px;padding:10px 15px;background:#f0ead6;color:#10261b;border-radius:8px;transform:translateY(-150%)}
+.home .skip-link:focus{transform:translateY(0)}
+.home :focus-visible{outline:3px solid #e6d89e;outline-offset:4px}
+.home nav{background:rgba(12,28,21,.96);border-color:var(--home-line)}
+.home .nav-cta{background:#d4e9aa;color:#142619;box-shadow:none}
+.home .nav-cta:hover{box-shadow:none}
+.home .hero{padding:132px 0 62px;background:radial-gradient(ellipse at 82% 25%,#294433 0,transparent 45%),#0c1c15}
+.home .hero-grid{grid-template-columns:minmax(0,1.08fr) minmax(330px,.78fr);gap:clamp(30px,7vw,100px);align-items:end}
+.home .college-identity{gap:13px;margin-bottom:52px}
+.home .college-identity img{width:52px;height:52px;box-shadow:none}
+.home .college-kicker{color:#e2ecdd;font-size:15px;letter-spacing:0}
+.home .college-batch{color:var(--home-muted);font-size:13px}
+.home .hero-label,.home .section-label{color:var(--home-accent);font-size:13px;font-weight:700;letter-spacing:.02em}
+.home .hero-label:before{content:"";display:inline-block;width:27px;height:2px;background:var(--home-accent);vertical-align:middle;margin-right:10px}
+.home .hero h1{font-size:clamp(39px,5.4vw,68px);font-weight:700;line-height:1.2;letter-spacing:-.015em;margin:15px 0 18px;max-width:680px}
+.home .hero h1 span{color:var(--home-accent)}
+.home .hero p.sub{font-size:17px;line-height:1.8;color:var(--home-muted);max-width:520px;margin-bottom:26px}
+.home .btn{border-radius:8px;font-size:15px;padding:13px 18px}
+.home .btn span{margin-left:10px}
+.home .btn-p{background:#d4e9aa;color:#152b1d}
+.home .btn-g{background:transparent;border-color:#627969;color:var(--home-ink)}
+.home .btn:hover{box-shadow:none;transform:translateY(-2px)}
+.home .cd-card{position:relative;background:#e9ead9;color:#172c1f;border:0;border-radius:7px;padding:25px 27px 22px;box-shadow:9px 9px 0 #78917922;backdrop-filter:none}
+.home .card-top{display:flex;justify-content:space-between;border-bottom:1px solid #aab9a6;padding-bottom:12px;color:#526c57;font-size:12px;font-weight:700}
+.home .cd-card h2{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:25px;line-height:1.3;margin:22px 0 4px}
+.home .cd-card p{color:#516b57;line-height:1.55;margin:0 0 15px;font-size:13px}
+.home .cd-grid{gap:0;border-block:1px solid #bac7b5;margin:18px 0}
+.home .cd-cell{background:transparent;border:0;border-right:1px solid #bac7b5;border-radius:0;padding:13px 4px}
+.home .cd-cell:last-child{border-right:0}
+.home .cd-cell b{color:#244d34;font-size:clamp(24px,2.6vw,34px)}
+.home .cd-cell span{color:#526c57}
+.home .countdown-link{display:flex;justify-content:space-between;color:#1f5134;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.home .cd-card .countdown-footnote{font-size:12px;margin:12px 0 0}
+.home .quick-section{padding:58px 0 68px;background:#12281d;border-block:1px solid var(--home-line)}
+.home .quick-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:24px}
+.home .quick-heading h2{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(28px,4vw,38px);line-height:1.2;margin:8px 0 0}
+.home .quick-heading p{color:var(--home-muted);font-size:15px;margin:0;max-width:310px;line-height:1.6}
+.home .quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--home-line);border:1px solid var(--home-line)}
+.home .dabi-teaser{min-width:0;min-height:105px;margin:0;padding:20px 18px;gap:14px;background:#12281d;border:0;border-radius:0;transition:background .2s}
+.home .dabi-teaser:hover,.home .dabi-teaser:focus-visible{background:#1d3829;transform:none}
+.home .quick-number{align-self:flex-start;color:#9ab78c;font-size:13px;font-weight:700}
+.home .dabi-teaser strong{font-size:16px;line-height:1.4;color:var(--home-ink)}
+.home .dabi-teaser small{font-size:13px;color:var(--home-muted);line-height:1.5;margin-top:4px}
+.home .dabi-teaser span:last-child{font-size:18px;color:#cce69d;align-self:flex-start}
+.home .eyebrow{letter-spacing:.03em;color:var(--home-accent)}
+.home .grad{background:none;color:var(--home-accent);-webkit-text-fill-color:currentColor}
+.home .lead{color:var(--home-muted);line-height:1.7}
+.home .exam-section{background:#0c1c15}
+.home .exam-countdown,.home .exam-list,.home .exam-rules,.home .tree,.home .dept,.home .chan{border-color:var(--home-line);border-radius:10px;box-shadow:none}
+.home .exam-countdown{background:#1b3426}
+.home .exam-notice-link,.home .exam-inline-link,.home .exam-label,.home .exam-syllabus summary{color:var(--home-accent)}
+.home .exam-syllabus{border-color:#819c75}
+.home .tree-root .node-root{background:#d4e9aa;color:#152b1d;border-radius:8px;box-shadow:none}
+.home .tree-dept{border-color:#87a777;border-radius:8px;background:#1b3426}
+.home .tree-dept:hover{background:#d4e9aa;color:#152b1d}
+.home .dept,.home .chan{background:#13291d}
+.home .dept:hover,.home .chan:hover{border-color:#a8c694;transform:translateY(-3px)}
+.home .dl{background:#d4e9aa;color:#152b1d;border-radius:8px}
+.home .dl:hover{box-shadow:none}
+.home .home-note{margin-top:8px;margin-bottom:72px;border-left:3px solid #cce69d;padding:8px 0 8px 22px;max-width:760px}
+.home .home-note span,.home .home-note small{color:#a6b9a7;font-size:13px}
+.home .home-note p{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(21px,3vw,28px);line-height:1.6;margin:8px 0}
+.home .reveal{opacity:1;transform:none}
+@media(max-width:900px){.home .hero-grid{grid-template-columns:1fr;gap:35px}.home .cd-card{max-width:520px}.home .college-identity{margin-bottom:34px}}
+@media(max-width:760px){.home .hero{padding:105px 0 45px}.home .quick-section{padding:45px 0}.home .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home .quick-heading{align-items:start;flex-direction:column;gap:12px}.home .home-note{margin-bottom:55px}}
+@media(max-width:480px){.home .quick-grid{grid-template-columns:1fr}.home .dabi-teaser{min-height:0;padding:16px}.home .hero h1{font-size:39px}.home .cd-card{padding:20px}.home .hero .btns{gap:10px}.home .btn{padding:12px 14px}}
+@media(prefers-reduced-motion:reduce){.home *, .home *::before, .home *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
