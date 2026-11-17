@@ -58,6 +58,9 @@ public class OfflineSiteTest {
             i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "college-routine.html"));
             assertPage(i, web, overlay, "কলেজের ক্লাস রুটিন");
             assertEquals("true", js(i, web, "Boolean(document.querySelector('img[src=\"assets/college-booklet/class-routine.jpg\"]'))"));
+            i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "hsc-2027-routine.html"));
+            assertPage(i, web, overlay, "সম্ভাব্য রুটিন");
+            assertEquals("true", js(i, web, "document.body.textContent.includes('চূড়ান্ত রুটিন নয়')"));
             i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html"));
             assertPage(i, web, overlay, "পেজটি সরানো হয়েছে");
             assertEquals("true", js(i, web, "!document.querySelector('#support-form')"));

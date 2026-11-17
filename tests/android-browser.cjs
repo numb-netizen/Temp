@@ -103,9 +103,9 @@ const {chromium} = require('playwright-core');
     for (const width of [320, 360, 1201]) {
       const page = await browser.newPage({viewport:{width, height:720}});
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
-      for (const name of ['college-info.html', 'college-routine.html', 'honours-info.html']) {
+      for (const name of ['college-info.html', 'college-routine.html', 'honours-info.html', 'hsc-2027-routine.html']) {
         await page.goto('http://127.0.0.1:8765/index.html');
-        await page.locator(`a[href="${name}"]`).click();
+        await page.locator(`a[href="${name}"]`).first().click();
         assert.match(page.url(), new RegExp(name.replace('.', '\.') + '$'));
         for (const details of await page.locator('.booklet-source').all()) {
           await details.locator('summary').click();
