@@ -4,7 +4,7 @@ const $$ = s => [...document.querySelectorAll(s)];
 const bn = n => Number(n).toLocaleString("bn-BD");
 
 /* ---------- COUNTDOWN (home page) ---------- */
-const target = new Date("2027-06-25T09:00:00+06:00").getTime();
+const target = new Date("2027-06-06T10:00:00+06:00").getTime();
 function tick(){
   if(!$("#cdD")) return;
   const diff = Math.max(0, target - Date.now());
