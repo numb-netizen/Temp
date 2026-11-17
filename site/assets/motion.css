@@ -48,3 +48,21 @@
 @media(prefers-reduced-motion:reduce){.hero-orbits{display:none}.orbit,.hero .grad,.cd-card,.dabi-teaser[data-motion] .dabi-teaser-icon{animation:none!important}}
 .motion-paused .hero-orbits{display:none}
 .motion-paused .orbit,.motion-paused .hero .grad,.motion-paused .cd-card,.motion-paused .dabi-teaser[data-motion] .dabi-teaser-icon{animation:none!important}
+
+/* Soft moving auroras, contours and tiny streaks sit behind the existing hero. */
+.hero-ambient{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;contain:paint}
+.aurora{position:absolute;border-radius:50%;pointer-events:none;animation:aurora-drift 21s ease-in-out infinite alternate}
+.aurora-one{width:min(90vw,1050px);height:min(62vw,650px);top:-14%;right:-16%;background:radial-gradient(ellipse,rgba(20,193,126,.21) 0%,rgba(20,138,145,.10) 35%,transparent 70%)}
+.aurora-two{width:min(95vw,900px);height:min(55vw,500px);left:-23%;bottom:-5%;background:radial-gradient(ellipse,rgba(22,164,107,.14) 0%,rgba(238,184,81,.07) 42%,transparent 70%);animation-duration:27s;animation-direction:alternate-reverse}
+@keyframes aurora-drift{0%{transform:translate3d(-3%,2%,0) scale(.94)}100%{transform:translate3d(7%,-5%,0) scale(1.08)}}
+.ambient-lines{position:absolute;inset:0;width:100%;height:100%;opacity:.7}
+.ambient-trace{stroke:#96ffd0;stroke-opacity:.38;stroke-dasharray:9 220;animation:trace-flow 22s linear infinite}
+@keyframes trace-flow{to{stroke-dashoffset:-458}}
+.ambient-comet{position:absolute;width:4px;height:4px;background:#c4ffe1;border-radius:50%;box-shadow:0 0 10px #a6ffd2;opacity:0;animation:comet-pass 17s ease-in-out infinite}
+.ambient-comet::before{content:"";position:absolute;width:55px;height:1px;right:2px;top:1px;background:linear-gradient(90deg,transparent,#9cffc8);transform:rotate(-17deg);transform-origin:right center}
+.comet-one{top:21%;right:22%}.comet-two{top:60%;left:20%;animation-delay:-9s;animation-duration:23s}
+@keyframes comet-pass{0%,12%,46%,100%{opacity:0;transform:translate3d(-22px,7px,0)}18%,34%{opacity:.55}42%{opacity:0;transform:translate3d(110px,-32px,0)}}
+@media(max-width:600px){.aurora-one{width:120vw;height:110vw;right:-50%}.aurora-two{width:120vw;height:80vw;left:-50%}.ambient-lines{opacity:.5}.comet-two{display:none}}
+@media(prefers-reduced-motion:reduce){.hero-ambient{display:none}.aurora,.ambient-trace,.ambient-comet{animation:none!important}}
+.motion-paused .hero-ambient{display:none}
+.motion-paused .aurora,.motion-paused .ambient-trace,.motion-paused .ambient-comet{animation:none!important}

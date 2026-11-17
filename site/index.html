@@ -14,7 +14,7 @@
 <script src="assets/heading-motion.js?v=1"></script>
 <link rel="stylesheet" href="assets/style.css?v=20261113-app-context">
 <link rel="stylesheet" href="assets/heading-motion.css?v=1">
-<link rel="stylesheet" href="assets/motion.css?v=2">
+<link rel="stylesheet" href="assets/motion.css?v=3">
 </head>
 <body>
 <nav>
@@ -37,6 +37,19 @@
 <!-- HERO -->
 <header class="hero">
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="hero-ambient" aria-hidden="true">
+    <div class="aurora aurora-one"></div><div class="aurora aurora-two"></div>
+    <svg class="ambient-lines" viewBox="0 0 1440 900" preserveAspectRatio="none" focusable="false">
+      <defs><linearGradient id="ambient-line-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6cf9b7" stop-opacity="0"/><stop offset=".52" stop-color="#6cf9b7" stop-opacity=".32"/><stop offset="1" stop-color="#ffd783" stop-opacity="0"/></linearGradient></defs>
+      <g fill="none" stroke="url(#ambient-line-gradient)" stroke-width="1" vector-effect="non-scaling-stroke">
+        <path d="M-160 730 C160 470 370 950 720 710 S1260 310 1610 490"/>
+        <path d="M-160 760 C180 510 390 990 740 750 S1280 350 1610 530"/>
+        <path d="M-160 790 C200 550 410 1030 760 790 S1300 390 1610 570"/>
+        <path class="ambient-trace" d="M-160 760 C180 510 390 990 740 750 S1280 350 1610 530"/>
+      </g>
+    </svg>
+    <span class="ambient-comet comet-one"></span><span class="ambient-comet comet-two"></span>
+  </div>
   <div class="hero-sparkles" aria-hidden="true"></div>
   <div class="hero-orbits" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="orbit orbit-three"></span></div>
   <div class="wrap hero-grid">

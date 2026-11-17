@@ -67,3 +67,17 @@ test('varied decorative effects respect both motion controls without removing no
   assert.match(html, /class="exam-notice-link" href="assets\/pretest-notice-2026.jpg"/);
   assert.match(html, /<details class="exam-rules"><summary>পরীক্ষার্থীদের জন্য নোটিশের নির্দেশনা<\/summary>/);
 });
+
+test('ambient background is decorative, bounded, offline and respects motion preferences', () => {
+  const html = read('index.html'), css = read('assets/motion.css');
+  assert.match(html, /class="hero-ambient" aria-hidden="true"/);
+  assert.match(html, /class="ambient-lines"[^>]*focusable="false"/);
+  assert.equal((html.match(/class="aurora aurora-/g) || []).length, 2);
+  assert.equal((html.match(/class="ambient-comet comet-/g) || []).length, 2);
+  assert.match(css, /\.hero-ambient\{[^}]*pointer-events:none/);
+  for (const name of ['aurora-drift','trace-flow','comet-pass']) assert.ok(css.includes(`@keyframes ${name}`),name);
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{\.hero-ambient\{display:none\}/);
+  assert.match(css, /\.motion-paused \.hero-ambient\{display:none\}/);
+  assert.match(html, /href="assets\/motion\.css\?v=3"/);
+  assert.ok(require('../scripts/offline-manifest.cjs').makeManifest(site).files.some(x => x.path === 'assets/motion.css'));
+});
