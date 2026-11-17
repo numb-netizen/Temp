@@ -46,6 +46,9 @@ public class OfflineSiteTest {
             i.runOnMainSync(web::reload);
             SystemClock.sleep(1000); assertPage(i, web, overlay, "ট্র্যাকার");
             assertEquals("true", js(i, web, "document.querySelector('.chap').classList.contains('done')"));
+            i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "teachers.html"));
+            assertPage(i, web, overlay, "শিক্ষক পরিচিতি");
+            assertEquals("true", js(i, web, "(() => {const c=document.querySelector('#teacher-principal'); if (!c || c.open) return false; c.querySelector('summary').click(); return c.open && c.querySelector('a').getAttribute('href') === 'tel:01712612992';})()"));
             i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html"));
             assertPage(i, web, overlay, "পেজটি সরানো হয়েছে");
             assertEquals("true", js(i, web, "!document.querySelector('#support-form')"));
