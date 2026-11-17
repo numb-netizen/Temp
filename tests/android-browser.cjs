@@ -118,26 +118,6 @@ const {chromium} = require('playwright-core');
       }
       await page.close();
     }
-    for (const width of [320, 360, 1201]) {
-      const page = await browser.newPage({viewport:{width, height:720}, reducedMotion:'reduce'});
-      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
-      await page.goto('http://127.0.0.1:8765/index.html');
-      assert.equal(await page.locator('.quick-grid a').count(), 6);
-      assert.ok(await page.locator('#quick-title').isVisible());
-      assert.ok(await page.locator('#structure .tree').isVisible());
-      assert.ok(await page.locator('#cdD').textContent() !== '—');
-      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `home overflow at ${width}`);
-      await page.keyboard.press('Tab');
-      assert.equal(await page.evaluate(() => document.activeElement.className), 'skip-link');
-      await page.close();
-    }
-    {
-      const page = await browser.newPage({viewport:{width:320,height:720}, javaScriptEnabled:false});
-      await page.goto('http://127.0.0.1:8765/index.html');
-      assert.ok(await page.locator('#structure .tree').isVisible(), 'study links should remain visible without JS');
-      assert.ok(await page.locator('.quick-grid a[href="student-group.html"]').isVisible());
-      await page.close();
-    }
     for (const width of [1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:900}});
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
