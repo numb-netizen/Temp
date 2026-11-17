@@ -33,7 +33,7 @@ function refreshOverall(){
   if($("#overallPct")) $("#overallPct").textContent = bn(pct) + "%";
   if($("#overallBar")) $("#overallBar").style.width = pct + "%";
   if($("#overallTxt")) $("#overallTxt").textContent =
-    bn(done) + "টি অধ্যায় সম্পন্ন · আরও " + bn(all.length - done) + "টি বাকি";
+    bn(done) + "টি বিষয় সম্পন্ন · আরও " + bn(all.length - done) + "টি বাকি";
 }
 function refreshAll(){
   $$(".tcard").forEach(refreshCard);
