@@ -1,0 +1,21 @@
+.teachers-page{padding:48px 0 80px}
+.teacher-head{max-width:760px;margin:32px 0 42px}
+.teacher-head h1{font-size:clamp(32px,5vw,52px);line-height:1.2;margin:12px 0 18px}
+.teacher-head p,.council>p{color:var(--muted);line-height:1.75}
+.teacher-head .source-note{font-size:13px;margin-top:14px}
+.teacher-section{margin:36px 0}
+.teacher-section h2{font-size:clamp(23px,3vw,30px);margin:0 0 18px;color:#fff}
+.teacher-grid,.council-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.teacher-card,.council-card{border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}
+.teacher-card summary{display:flex;align-items:center;gap:17px;padding:18px;cursor:pointer;list-style:none}
+.teacher-card summary::-webkit-details-marker,.council-card summary::-webkit-details-marker{display:none}
+.teacher-card summary:focus-visible,.council-card summary:focus-visible{outline:2px solid var(--green2);outline-offset:-4px}
+.teacher-card summary:hover,.council-card summary:hover{background:#113a24}
+.teacher-card img{width:94px;height:94px;object-fit:cover;border-radius:50%;flex:none}
+.teacher-copy{display:flex;flex-direction:column;min-width:0;gap:4px}
+.teacher-copy strong{font-size:18px;line-height:1.4;color:#fff}.teacher-copy span{color:var(--muted);line-height:1.4}.teacher-copy small{color:var(--green2);font-size:12px;line-height:1.4;margin-top:4px}
+.teacher-contact{padding:14px 18px;border-top:1px solid var(--line);color:var(--muted);font-size:15px}
+.teacher-contact a{display:inline-block;color:var(--green2);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.council>p{margin:-4px 0 18px}.council-card summary{padding:18px;list-style:none;cursor:pointer;line-height:1.5}.council-card span{color:var(--muted)}
+@media(max-width:720px){.teacher-grid,.council-grid{grid-template-columns:1fr}.teachers-page{padding:34px 0 60px}}
+@media(max-width:380px){.teacher-card summary{gap:12px;padding:14px}.teacher-card img{width:70px;height:70px}.teacher-copy strong{font-size:16px}}
