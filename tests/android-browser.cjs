@@ -100,6 +100,24 @@ const {chromium} = require('playwright-core');
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `teachers overflow at ${width}`);
       await page.close();
     }
+    for (const width of [320, 360, 1201]) {
+      const page = await browser.newPage({viewport:{width, height:720}});
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      for (const name of ['college-info.html', 'college-routine.html', 'honours-info.html']) {
+        await page.goto('http://127.0.0.1:8765/index.html');
+        await page.locator(`a[href="${name}"]`).click();
+        assert.match(page.url(), new RegExp(name.replace('.', '\.') + '$'));
+        for (const details of await page.locator('.booklet-source').all()) {
+          await details.locator('summary').click();
+          const image = details.locator('img');
+          await image.scrollIntoViewIfNeeded();
+          await page.waitForFunction(img => img.complete && img.naturalWidth > 0, await image.elementHandle());
+          assert.equal(await image.isVisible(), true);
+        }
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${name} overflow at ${width}`);
+      }
+      await page.close();
+    }
     for (const width of [1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:900}});
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
