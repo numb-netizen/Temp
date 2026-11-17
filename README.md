@@ -80,3 +80,17 @@ Android 1.2 beta থেকে আমাদের WebView একটি সাধ�
 ### অফলাইন সাইট ও আপডেট
 
 Pages workflow প্রতিবার deploy করার সময় `scripts/offline-manifest.cjs` দিয়ে ফাইলের SHA-256 তালিকা তৈরি করে। Android অ্যাপ শুধু মূল HTTPS সাইট থেকে ওই তালিকা ও ফাইল ডাউনলোড করে; সম্পূর্ণ সেটের আকার ও প্রতিটি hash যাচাইয়ের পরই ব্যবহারকারীকে নতুন তথ্য চালু করার বোতাম দেখায়। সংযোগ বা যাচাই ব্যর্থ হলে পুরোনো সম্পূর্ণ কপি চালু থাকে। অন্তর্নির্মিত এবং হালনাগাদ পেজ একই `https://hsc2027.de5.net` origin ব্যবহার করে, যাতে একই ইনস্টলেশনের স্থানীয় tracker storage থাকে; কোনো গোপন key অ্যাপে রাখা হয় না। অ্যাপের ভিন্ন signing key হলে পুরোনো অ্যাপ আনইনস্টল করতে হতে পারে, যা তার স্থানীয় ট্র্যাকার ডেটা মুছে দেয়।
+
+## Windows ও Linux ডেস্কটপ অ্যাপ (beta)
+
+`desktop/` ফোল্ডারে Electron-এর মাধ্যমে একই ওয়েবসাইটের একটি offline snapshot প্যাকেজ করা হয়। Windows x64-এর জন্য NSIS installer এবং Linux x86_64-এর জন্য AppImage তৈরি হয়। ব্যবহারকারীর tracker তথ্য অ্যাপের নিজস্ব স্থানীয় storage-এ থাকে; ওয়েবসাইট বা অন্য ডিভাইসের সঙ্গে সিঙ্ক হয় না। সাইট পরিবর্তিত হলে নতুন অ্যাপ build দরকার; automatic update নেই। ভিডিও, বাইরের ওয়েব লিংক, WhatsApp ও Google Fonts-এর জন্য ইন্টারনেট প্রয়োজন।
+
+```bash
+cd desktop
+npm ci
+npm start
+npm run dist:linux  # Linux-এ
+npm run dist:win    # Windows-এ
+```
+
+Linux AppImage-এ `chmod +x <file>.AppImage` করে চালাতে হয়; কিছু distribution-এ FUSE লাগতে পারে। Windows build unsigned, তাই SmartScreen সতর্ক করতে পারে। শুধু বিশ্বস্ত উৎস থেকে ডাউনলোড করে প্রকাশিত SHA-256 মিলিয়ে নিন। ইনস্টলার স্থানীয় app data মুছে দেয় না, কিন্তু ব্যবহারকারী নিজে app data সরালে tracker হারাবে। `desktop.yml` CI দুই OS-এ offline navigation ও tracker পরীক্ষার পর installer তৈরি করে; প্রয়োজনে workflow dispatch দিয়ে beta release প্রকাশ করা যায়।
