@@ -16,7 +16,7 @@ assert all(x.tag == ns+'url' and len(x)==1 and x[0].tag == ns+'loc' for x in roo
 print(json.dumps([x[0].text for x in root]))`;
   const urls = JSON.parse(execFileSync('python3', ['-c', parser, xmlPath], {encoding: 'utf8'}));
   assert.equal(new Set(urls).size, urls.length, 'no duplicate URLs');
-  const excluded = new Set(['dabi.html', 'geography.html', 'googleb7da7b15e33059e0.html']);
+  const excluded = new Set(['dabi.html', 'geography.html', 'bangladesh.html', 'googleb7da7b15e33059e0.html']);
   const pages = fs.readdirSync(site).filter(n => n.endsWith('.html') && n !== 'index.html' && !excluded.has(n));
   const expected = [base + '/', ...pages.map(n => base + '/' + n)];
   assert.deepEqual([...urls].sort(), expected.sort());

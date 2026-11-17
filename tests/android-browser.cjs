@@ -133,6 +133,7 @@ const {chromium} = require('playwright-core');
         if (reducedMotion === 'reduce') {
           assert.deepEqual(await effectNames(), effectSelectors.map(() => 'none'));
           assert.equal(await page.locator('.hero-orbits').isVisible(), false);
+          assert.equal(await page.locator('h2.title').first().evaluate(el => getComputedStyle(el).animationName), 'none');
           assert.equal(await page.locator('.motion-toggle').isVisible(), false);
           assert.equal(await page.locator('.marquee-track').evaluate(el => getComputedStyle(el).animationName), 'none');
           assert.equal(await page.locator('.reveal').first().evaluate(el => getComputedStyle(el).opacity), '1');
@@ -143,11 +144,17 @@ const {chromium} = require('playwright-core');
           assert.equal(await page.locator('.hero-orbits').isVisible(), false);
           assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন চালু');
           assert.equal(await page.locator('.marquee-track').evaluate(el => getComputedStyle(el).animationName), 'none');
+          assert.equal(await page.locator('h2.title').first().evaluate(el => getComputedStyle(el).animationName), 'none');
+          await page.goto('http://127.0.0.1:8765/commerce.html');
+          assert.equal(await page.locator('h1').evaluate(el => getComputedStyle(el).animationName), 'none');
+          assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `commerce overflow at ${width}`);
+          await page.goto('http://127.0.0.1:8765/index.html');
           await page.reload();
           assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন চালু');
           await page.locator('.motion-toggle').click();
           assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন বন্ধ');
           assert.deepEqual(await effectNames(), ['orbit-spin', 'color-flow', 'card-glow', 'icon-bob', 'icon-pulse']);
+          assert.equal(await page.locator('h2.title').first().evaluate(el => getComputedStyle(el).animationName), 'heading-color-flow');
         }
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `motion home overflow at ${width}`);
         await page.locator('a[href="student-group.html"]').click();
