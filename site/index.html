@@ -12,6 +12,7 @@
 <link rel="icon" href="assets/study-logo.png" type="image/png">
 <script src="assets/app-context.js?v=20261113"></script>
 <link rel="stylesheet" href="assets/style.css?v=20261113-app-context">
+<link rel="stylesheet" href="assets/motion.css?v=1">
 </head>
 <body>
 <nav>
@@ -34,14 +35,15 @@
 <!-- HERO -->
 <header class="hero">
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="hero-sparkles" aria-hidden="true"></div>
   <div class="wrap hero-grid">
     <div>
       <div class="college-identity">
         <img src="assets/study-logo.png" width="80" height="80" alt="HSC 2027 স্টাডি সাইটের লোগো">
         <div><span class="college-kicker">চুনারুঘাট সরকারি কলেজ</span><span class="college-english" lang="en">Chunarughat Government College</span><span class="college-batch">HSC ব্যাচ ২০২৭</span></div>
       </div>
-      <h1>তোমার HSC যাত্রা<br><span class="grad">শুরু হোক এখান থেকে</span></h1>
-      <p class="sub">বিভাগভিত্তিক সাবজেক্ট, অধ্যায় ট্র্যাকার, অনলাইন ক্লাস ও স্মার্ট রুটিন — চুনারুঘাট সরকারি কলেজের HSC 2027 ব্যাচের শিক্ষার্থীদের জন্য সবকিছু এক জায়গায়।</p>
+      <h1>HSC ২০২৭<br><span class="grad">পড়াশোনার পাতায় স্বাগতম</span></h1>
+      <p class="sub">চুনারুঘাট সরকারি কলেজের HSC 2027 ব্যাচের পড়াশোনা, রুটিন ও দরকারি তথ্য এক জায়গায়।</p>
       <div class="btns">
         <a class="btn btn-p" href="tracker.html">📚 অধ্যায় ট্র্যাক করা শুরু করো</a>
         <a class="btn btn-g" href="classes.html">🎥 অনলাইন ক্লাস দেখো</a>
@@ -57,7 +59,7 @@
         <div class="cd-cell"><b id="cdS">—</b><span>সেকেন্ড</span></div>
       </div>
       <p><a href="hsc-2027-routine.html" style="color:var(--green2)">সম্ভাব্য রুটিন ও সূত্র দেখো →</a></p>
-      <div class="cd-note"><span>লক্ষ্য: <b>A+ গ্রেড</b></span><span>প্রতিদিন পড়ো অন্তত <b>৬ ঘণ্টা</b></span></div>
+      <button class="motion-toggle" type="button" hidden>অ্যানিমেশন বন্ধ</button>
     </div>
   </div>
   <div class="wrap stats">
@@ -92,11 +94,10 @@
         <div class="exam-timer" id="exam-timer" hidden aria-label="পরীক্ষার কাউন্টডাউন">
           <div><b id="exam-days">০</b><span>দিন</span></div><div><b id="exam-hours">০</b><span>ঘণ্টা</span></div><div><b id="exam-minutes">০</b><span>মিনিট</span></div><div><b id="exam-seconds">০</b><span>সেকেন্ড</span></div>
         </div>
-        <p class="exam-note">পরীক্ষা শেষ হলে তালিকা থেকে নিজে থেকেই সরে যাবে।</p>
       </div>
       <div class="exam-list" aria-label="বাকি পরীক্ষার তালিকা">
         <h3>📋 বাকি পরীক্ষাগুলো ও সিলেবাস</h3>
-        <p class="syllabus-intro">দেওয়া পিডিএফ ও পরে পাওয়া তথ্য অনুযায়ী সিলেবাস যোগ করা হয়েছে। পরীক্ষা শুরু হলে তার সিলেবাস আর দেখাবে না; রুটিনটি পরীক্ষা শেষ পর্যন্ত থাকবে।</p>
+        <p class="syllabus-intro">সিলেবাস দেওয়া তথ্য অনুযায়ী। পরীক্ষা শুরু হলে তার সিলেবাস, শেষ হলে রুটিন থেকে বিষয়টি সরে যাবে।</p>
         <p class="exam-empty" id="exam-empty" hidden>সব প্রাক-নির্বাচনী পরীক্ষা শেষ হয়েছে। শুভকামনা! 💚</p>
         <div class="exam-row" data-start="2026-11-11T12:00:00+06:00" data-end="2026-11-11T15:00:00+06:00" data-date="১১ নভেম্বর, বুধবার" data-subject="তথ্য ও যোগাযোগ প্রযুক্তি" hidden><div class="exam-date"><b>১১</b><span>নভে · বুধ</span></div><div><strong>তথ্য ও যোগাযোগ প্রযুক্তি</strong><span>দুপুর ১২:০০ – বিকেল ৩:০০</span><details class="exam-syllabus" hidden><summary>📚 এই পরীক্ষার সিলেবাস দেখো</summary><div class="syllabus-content"><h4>তথ্য ও যোগাযোগ প্রযুক্তি (ICT)</h4><ul><li>অধ্যায় ২: কমিউনিকেশন সিস্টেমস ও নেটওয়ার্কিং</li><li>অধ্যায় ৩: সংখ্যা পদ্ধতি ও ডিজিটাল ডিভাইস</li><li>অধ্যায় ৪: ওয়েব ডিজাইন পরিচিতি এবং HTML</li><li>অধ্যায় ৬: ডাটাবেজ ম্যানেজমেন্ট সিস্টেম (DBMS)</li></ul></div></details></div></div>
         <div class="exam-row" data-start="2026-11-12T12:00:00+06:00" data-end="2026-11-12T15:00:00+06:00" data-date="১২ নভেম্বর, বৃহস্পতিবার" data-subject="পদার্থবিজ্ঞান / অর্থনীতি / হিসাববিজ্ঞান" hidden><div class="exam-date"><b>১২</b><span>নভে · বৃহস্পতি</span></div><div><strong>পদার্থবিজ্ঞান / অর্থনীতি / হিসাববিজ্ঞান</strong><span>দুপুর ১২:০০ – বিকেল ৩:০০</span><details class="exam-syllabus" hidden><summary>📚 এই পরীক্ষার সিলেবাস দেখো</summary><div class="syllabus-content"><h4>পদার্থবিজ্ঞান · ১ম পত্র</h4><ul><li>অধ্যায় ১: ভৌত জগত ও পরিমাপ</li><li>অধ্যায় ২: ভেক্টর; অধ্যায় ৩: গতিবিদ্যা</li><li>অধ্যায় ৪: নিউটনীয় বলবিদ্যা</li><li>অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা</li><li>অধ্যায় ৬: মহাকর্ষ; অধ্যায় ৭: গাঠনিক ধর্ম</li><li>অধ্যায় ৮: পর্যাবৃত্ত গতি; অধ্যায় ৯: তরঙ্গ</li><li>অধ্যায় ১০: আদর্শ গ্যাস</li></ul><h4>পদার্থবিজ্ঞান · ২য় পত্র</h4><ul><li>অধ্যায় ১: তাপগতিবিদ্যা</li><li>অধ্যায় ২: স্থির তড়িৎ</li><li>অধ্যায় ৩: চল তড়িৎ</li></ul><p>অর্থনীতি ও হিসাববিজ্ঞানের সিলেবাস দেওয়া পিডিএফে নেই।</p></div></details></div></div>
@@ -141,9 +142,8 @@
 <section id="structure">
   <div class="wrap">
     <div class="reveal">
-      <div class="eyebrow">ওয়েবসাইটের কাঠামো</div>
-      <h2 class="title">Hierarchical Structure <span class="grad">(Tree)</span></h2>
-      <p class="lead">এই ওয়েবসাইটটি গাছের মতো সাজানো — কলেজ থেকে বিভাগ, বিভাগ থেকে সাবজেক্ট। যেকোনো পেজে ক্লিক করলেই ভেতরের পেজে চলে যাবে।</p>
+      <div class="eyebrow">বিষয়সমূহ</div>
+      <h2 class="title">বিভাগ ও <span class="grad">বিষয়</span></h2>
     </div>
     <div class="tree reveal">
       <div class="tree-root"><span class="node-root">🏫 চুনারুঘাট সরকারি কলেজ</span></div>
@@ -198,7 +198,6 @@
     <div class="reveal">
       <div class="eyebrow">বিভাগসমূহ</div>
       <h2 class="title">তোমার <span class="grad">বিভাগ বেছে নাও</span></h2>
-      <p class="lead">বিভাগে ক্লিক করলেই সেই বিভাগের সব সাবজেক্টের পেজ খুলবে।</p>
     </div>
     <div class="dept-grid">
       <a class="dept reveal" href="science.html"><div class="ic">🔬</div><h3>বিজ্ঞান বিভাগ</h3><p>পদার্থবিজ্ঞান, রসায়ন, গণিত, জীববিজ্ঞান, ICTসহ ৭টি সাবজেক্ট।</p><span class="go">সাবজেক্ট দেখো →</span></a>
@@ -214,20 +213,15 @@
     <div class="reveal">
       <div class="eyebrow">ইন্টারনেট থেকে</div>
       <h2 class="title">ফ্রি <span class="grad">অনলাইন ক্লাস</span></h2>
-      <p class="lead">10 Minute School, Shikhoসহ সেরা চ্যানেলগুলোর ক্লাস — সব সাবজেক্টের ভিডিও এক জায়গায়।</p>
+      <p class="lead">বিষয়ভিত্তিক ভিডিও ও দরকারি চ্যানেল।</p>
     </div>
     <div class="chan-grid">
-      <div class="chan reveal"><div class="ic">🎓</div><h3>10 Minute School</h3><p>HSC-এর সব সাবজেক্টের ফ্রি কোর্স ও লাইভ ক্লাস।</p><a class="dl" href="https://www.youtube.com/@10MinuteSchool" target="_blank" rel="noopener">দেখো →</a></div>
-      <div class="chan reveal"><div class="ic">📱</div><h3>Shikho</h3><p>বাংলা ভাষায় HSC-এর সেরা অনলাইন ক্লাস।</p><a class="dl" href="https://www.youtube.com/@shikho" target="_blank" rel="noopener">দেখো →</a></div>
+      <div class="chan reveal"><div class="ic">🎓</div><h3>10 Minute School</h3><p>HSC-এর বিষয়ভিত্তিক ভিডিও ও ক্লাস।</p><a class="dl" href="https://www.youtube.com/@10MinuteSchool" target="_blank" rel="noopener">দেখো →</a></div>
+      <div class="chan reveal"><div class="ic">📱</div><h3>Shikho</h3><p>বাংলায় পড়াশোনার ভিডিও ও ক্লাস।</p><a class="dl" href="https://www.youtube.com/@shikho" target="_blank" rel="noopener">দেখো →</a></div>
       <div class="chan reveal"><div class="ic">🔍</div><h3>সব সাবজেক্টের ক্লাস</h3><p>১৬টি সাবজেক্টের ভিডিও ক্লাসের লিংক এক পেজে।</p><a class="dl" href="classes.html">সব ক্লাস দেখো →</a></div>
     </div>
   </div>
 </section>
-
-<div class="quote wrap reveal">
-  <blockquote>“সফলতা কোনো জাদু নয় — এটি <span class="grad">প্রতিদিনের ছোট ছোট প্রচেষ্টার</span> ফল।”</blockquote>
-  <p>— HSC 2027 ব্যাচের জন্য শুভকামনা রইলো 💚</p>
-</div>
 
 <footer>
   <div class="wrap">
@@ -262,8 +256,9 @@
   </div>
 </footer>
 <script src="assets/app.js?v=20261110-hsc-draft"></script>
+<script src="assets/home-motion.js?v=1"></script>
 <script>
-const words = ["পড়ো প্রতিদিন","রিভিশন দাও নিয়মিত","MCQ প্র্যাকটিস করো","মডেল টেস্ট দাও","A+ তোমার লক্ষ্য","হাল ছেড়ো না"];
+const words = ["বিজ্ঞান", "মানবিক", "ব্যবসায় শিক্ষা", "পড়ার রুটিন", "অনলাইন ক্লাস", "শিক্ষার্থী গ্রুপ"];
 const seq = words.map(w => `<span>${w}</span><i>✦</i>`).join("");
 document.getElementById("mq").innerHTML = seq + seq;
 </script>

@@ -34,6 +34,7 @@ public class OfflineSiteTest {
             assertPage(i, web, overlay, "হোম");
             assertEquals("true", js(i, web, "Boolean(document.querySelector('#cdD') && document.querySelector('#cdD').textContent !== '—')"));
             assertEquals("true", js(i, web, "location.origin === 'https://hsc2027.de5.net'"));
+            assertEquals("true", js(i, web, "(() => {const layer=document.querySelector('.hero-sparkles'); const button=document.querySelector('.motion-toggle'); return !!layer && !!button && getComputedStyle(layer).pointerEvents === 'none' && (matchMedia('(prefers-reduced-motion: reduce)').matches || layer.children.length > 0);})()"));
             // Test countdown progression with a fixed time before its target, regardless of the emulator clock.
             assertEquals("true", js(i, web, "(() => { const now=Date.now; try { Date.now=()=>target-10000; tick(); const before=document.querySelector('#cdS').textContent; Date.now=()=>target-11000; tick(); return before !== document.querySelector('#cdS').textContent; } finally { Date.now=now; tick(); } })()"));
             i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "physics.html"));

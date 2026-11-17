@@ -1,0 +1,28 @@
+/* A little motion around the existing homepage, without moving its text. */
+.hero-sparkles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.hero-grid,.hero .stats{z-index:1}
+.hero-spark{position:absolute;width:5px;height:5px;border-radius:50%;background:#7dffc1;opacity:.32;animation:spark-drift var(--duration,10s) ease-in-out var(--delay,0s) infinite alternate}
+.hero-spark-ring{width:11px;height:11px;background:transparent;border:1px solid #a8ffba;opacity:.22}
+@keyframes spark-drift{from{transform:translate3d(0,0,0) scale(.75);opacity:.12}to{transform:translate3d(9px,var(--drift,-16px),0) scale(1.25);opacity:.42}}
+.college-identity img{animation:logo-bob 7s ease-in-out infinite}
+@keyframes logo-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.dabi-teaser-icon{display:inline-block;animation:icon-sway 8s ease-in-out infinite}
+@keyframes icon-sway{0%,75%,100%{transform:rotate(0)}82%{transform:rotate(-8deg)}90%{transform:rotate(7deg)}}
+.btn-p:focus-visible,.btn-p:hover,.dabi-teaser:focus-visible,.tree-dept:focus-visible{box-shadow:0 0 0 3px #b1ffca66,0 12px 28px #00c85333}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .hero-sparkles{display:none}
+  .blob,.college-identity img,.dabi-teaser-icon,.marquee-track{animation:none!important}
+  .reveal{opacity:1;transform:none;transition:none}
+  *,*::before,*::after{transition-duration:0.01ms!important;animation-duration:0.01ms!important;animation-iteration-count:1!important}
+}
+/* The control also pauses the existing marquee and background effects. */
+.motion-toggle{font:inherit;font-size:13px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:9px;padding:6px 10px;cursor:pointer}
+.motion-toggle:hover,.motion-toggle:focus-visible{color:var(--text);border-color:var(--green2)}
+.motion-toggle:focus-visible{outline:2px solid var(--green2);outline-offset:3px}
+.motion-toggle[hidden]{display:none}
+.motion-paused .hero-sparkles{display:none}
+.motion-paused .blob,.motion-paused .college-identity img,.motion-paused .dabi-teaser-icon,.motion-paused .marquee-track{animation:none!important}
+.motion-paused .reveal{opacity:1;transform:none;transition:none}
+.motion-paused *, .motion-paused *::before, .motion-paused *::after{transition-duration:0.01ms!important;animation-duration:0.01ms!important;animation-iteration-count:1!important}

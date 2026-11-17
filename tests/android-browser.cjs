@@ -118,6 +118,33 @@ const {chromium} = require('playwright-core');
       }
       await page.close();
     }
+    for (const width of [320, 360, 1201]) {
+      for (const reducedMotion of ['reduce', 'no-preference']) {
+        const page = await browser.newPage({viewport:{width, height:720}, reducedMotion});
+        await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+        await page.goto('http://127.0.0.1:8765/index.html');
+        assert.equal(await page.locator('.hero-spark').count(), reducedMotion === 'reduce' ? 0 : (width < 600 ? 7 : 12));
+        assert.equal(await page.locator('.hero-sparkles').getAttribute('aria-hidden'), 'true');
+        assert.equal(await page.locator('.hero-sparkles').evaluate(el => getComputedStyle(el).pointerEvents), 'none');
+        if (reducedMotion === 'reduce') {
+          assert.equal(await page.locator('.motion-toggle').isVisible(), false);
+          assert.equal(await page.locator('.marquee-track').evaluate(el => getComputedStyle(el).animationName), 'none');
+          assert.equal(await page.locator('.reveal').first().evaluate(el => getComputedStyle(el).opacity), '1');
+        } else {
+          await page.locator('.motion-toggle').click();
+          assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন চালু');
+          assert.equal(await page.locator('.marquee-track').evaluate(el => getComputedStyle(el).animationName), 'none');
+          await page.reload();
+          assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন চালু');
+          await page.locator('.motion-toggle').click();
+          assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন বন্ধ');
+        }
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `motion home overflow at ${width}`);
+        await page.locator('a[href="student-group.html"]').click();
+        assert.match(page.url(), /student-group\.html$/);
+        await page.close();
+      }
+    }
     for (const width of [1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:900}});
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
