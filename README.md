@@ -94,3 +94,14 @@ npm run dist:win    # Windows-এ
 ```
 
 Linux AppImage-এ `chmod +x <file>.AppImage` করে চালাতে হয়; কিছু distribution-এ FUSE লাগতে পারে। Windows build unsigned, তাই SmartScreen সতর্ক করতে পারে। শুধু বিশ্বস্ত উৎস থেকে ডাউনলোড করে প্রকাশিত SHA-256 মিলিয়ে নিন। ইনস্টলার স্থানীয় app data মুছে দেয় না, কিন্তু ব্যবহারকারী নিজে app data সরালে tracker হারাবে। `desktop.yml` CI দুই OS-এ offline navigation ও tracker পরীক্ষার পর installer তৈরি করে; প্রয়োজনে workflow dispatch দিয়ে beta release প্রকাশ করা যায়।
+
+### বিশ্বস্ত Windows code signing (প্রস্তুত ব্যবস্থা)
+
+বর্তমান প্রকাশিত Windows beta এখনো **unsigned**; শুধু workflow যোগ হলেই এটি signed হয় না। একটি Windows-এ বিশ্বাসযোগ্য **code-signing certificate**, তার private key-সহ password-protected PFX এবং certificate-এর SHA-1 thumbprint প্রয়োজন। এটি কেবল এমন certificate/provider-এর জন্য যেটি নীতিমালা মেনে PFX export অনুমতি দেয়; অনেক বর্তমান CA certificate-এর private key hardware token বা cloud HSM-এ non-exportable থাকে। সেক্ষেত্রে ওই provider-এর supported HSM/cloud signing integration আলাদাভাবে তৈরি করতে হবে; key export করতে বাধ্য করা যাবে না। Linux AppImage এই Windows Authenticode প্রক্রিয়ায় signed হয় না।
+
+1. GitHub repository Settings → Environments-এ `windows-signing` environment আগে তৈরি করুন, deployment শুধু `main`-এ সীমিত করুন এবং সম্ভব হলে required reviewer অনুমোদন দিন। Secrets-এ শুধু environment-এর মাধ্যমে access দিন। Branch protection ও বিশ্বস্ত maintainer review চালু রাখুন।
+2. ওই environment-এর secrets হিসেবে `WINDOWS_SIGNING_PFX_BASE64` (সম্পূর্ণ PFX-এর single-line base64) ও `WINDOWS_SIGNING_PFX_PASSWORD` দিন। Environment variable `WINDOWS_SIGNING_CERT_SHA1`-এ ঠিক ৪০টি hex অক্ষরের public certificate thumbprint দিন। কখনো certificate, private key, password বা secret-এর মান চ্যাট, লগ বা Git-এ দেবেন না। Repository/environment পরিচালনার অনুমতি শুধু বিশ্বস্ত ব্যক্তিদের দিন।
+3. Actions → **Sign Windows desktop beta** workflow `main` থেকে চালান। সাইনিং শুধু ওই protected environment-এ চলে। Secrets না থাকলে, PFX/ thumbprint না মিললে, signature বিশ্বস্ত না হলে বা timestamp না থাকলে build ব্যর্থ হয়। Installer ও bundled app দুটির স্বাক্ষর যাচাই এবং offline smoke test পাস করার পরেই artifact তৈরি হবে। প্রথমে publish না করে artifact পরীক্ষা করুন।
+4. প্রকাশ করতে workflow-তে `publish_signed_beta` নির্বাচন করলে আলাদা prerelease `desktop-v0.1.0-signed-beta` তৈরি হবে; বিদ্যমান unsigned release পরিবর্তিত হয় না। Tag আগে থেকে থাকলে workflow সেটি overwrite করে না। Signature থাকা মানেই SmartScreen-এর কোনো সতর্কতা থাকবে, এমন নিশ্চয়তা নেই।
+
+CI-তে আলাদা temporary self-signed certificate দিয়ে signing পথ পরীক্ষা হয়; সেটি অবিশ্বস্ত, শুধু পরীক্ষার জন্য এবং কোনো release artifact-এ যায় না। Secret থাকা job-এ CI dependencies-ও key ব্যবহারের সুযোগ পায়; সেই কারণে workflow, lockfile ও dependencies বদল সর্বদা review করুন।

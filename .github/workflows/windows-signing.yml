@@ -1,0 +1,89 @@
+name: Sign Windows desktop beta
+on:
+  workflow_dispatch:
+    inputs:
+      publish_signed_beta:
+        description: Publish the verified signed Windows installer as a new prerelease
+        type: boolean
+        default: false
+        required: true
+permissions:
+  contents: read
+jobs:
+  sign:
+    # Do not expose signing secrets to PRs or arbitrary refs. Protect this environment in settings.
+    if: github.ref == 'refs/heads/main'
+    environment: windows-signing
+    runs-on: windows-2022
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - run: node --test ../tests/desktop.test.cjs
+      - name: Build with protected code-signing certificate
+        shell: pwsh
+        env:
+          WINDOWS_SIGNING_PFX_BASE64: ${{ secrets.WINDOWS_SIGNING_PFX_BASE64 }}
+          WINDOWS_SIGNING_PFX_PASSWORD: ${{ secrets.WINDOWS_SIGNING_PFX_PASSWORD }}
+          WINDOWS_SIGNING_CERT_SHA1: ${{ vars.WINDOWS_SIGNING_CERT_SHA1 }}
+        run: ./scripts/build-signed.ps1
+      - name: Require trusted, matching and timestamped signatures
+        shell: pwsh
+        env:
+          WINDOWS_SIGNING_CERT_SHA1: ${{ vars.WINDOWS_SIGNING_CERT_SHA1 }}
+        run: |
+          $files = @(Get-ChildItem -Path dist-signed -Filter '*.exe' -File)
+          if ($files.Count -ne 1) { throw 'Expected one signed installer.' }
+          ./scripts/verify-signature.ps1 -ExpectedThumbprint $env:WINDOWS_SIGNING_CERT_SHA1 -AppPath 'dist-signed/win-unpacked/HSC 2027.exe' -InstallerPath $files[0].FullName
+      - name: Smoke test signed application
+        env:
+          HSC_DESKTOP_SMOKE: '1'
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath 'dist-signed/win-unpacked/HSC 2027.exe' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Signed app test failed: $($p.ExitCode)" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HSC-2027-Windows-signed
+          path: desktop/dist-signed/*.exe
+          if-no-files-found: error
+          retention-days: 30
+  publish:
+    if: github.ref == 'refs/heads/main' && inputs.publish_signed_beta
+    needs: sign
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: HSC-2027-Windows-signed
+          path: release
+      - name: Publish new prerelease without overwriting the unsigned beta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          cd release
+          test "$(find . -maxdepth 1 -name '*.exe' | wc -l)" -eq 1
+          sha256sum ./*.exe > SHA256SUMS.txt
+          cat > notes.txt <<'NOTES'
+          # HSC 2027 Windows signed beta
+
+          Windows 10/11 x64-এর পরীক্ষামূলক installer। Authenticode যাচাই ও timestamp পরীক্ষার পর প্রকাশিত। Windows SmartScreen স্বাক্ষর থাকার পরও সুনাম বা অন্য কারণে সতর্কতা দেখাতে পারে।
+
+          রুটিন, বিষয় ও tracker-এর স্থানীয় snapshot অফলাইনে চলে; অনলাইন ভিডিও ও বাইরের লিংকে ইন্টারনেট লাগে। Tracker ডেটা অন্য ডিভাইস বা ব্রাউজারের সঙ্গে সিঙ্ক হয় না এবং সাইটের পরবর্তী পরিবর্তনের জন্য নতুন অ্যাপ সংস্করণ লাগে।
+          NOTES
+          gh release create desktop-v0.1.0-signed-beta ./*.exe SHA256SUMS.txt \
+            --target "$GITHUB_SHA" --prerelease \
+            --title 'HSC 2027 Windows signed beta' --notes-file notes.txt
