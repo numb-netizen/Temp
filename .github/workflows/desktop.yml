@@ -1,0 +1,109 @@
+name: Build desktop apps
+on:
+  push:
+    paths: ['desktop/**', 'site/**', 'tests/desktop*.cjs', '.github/workflows/desktop.yml']
+  workflow_dispatch:
+    inputs:
+      publish_beta:
+        description: Publish the tested Windows and Linux builds as a GitHub prerelease
+        type: boolean
+        default: false
+        required: true
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            platform: linux
+          - os: windows-2022
+            platform: windows
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - name: Test URL policy
+        run: node --test ../tests/desktop.test.cjs
+      - name: Test offline app on Linux
+        if: matrix.platform == 'linux'
+        env:
+          HSC_DESKTOP_SMOKE: '1'
+        run: xvfb-run -a npm run smoke -- --no-sandbox
+      - name: Test offline app on Windows
+        if: matrix.platform == 'windows'
+        env:
+          HSC_DESKTOP_SMOKE: '1'
+        run: npm run smoke
+      - name: Build Linux AppImage
+        if: matrix.platform == 'linux'
+        run: npm run dist:linux
+      - name: Build Windows installer
+        if: matrix.platform == 'windows'
+        run: npm run dist:win
+      - name: Smoke test packaged Linux app
+        if: matrix.platform == 'linux'
+        env:
+          HSC_DESKTOP_SMOKE: '1'
+        run: xvfb-run -a ./dist/linux-unpacked/hsc-2027 --no-sandbox
+      - name: Smoke test packaged Windows app
+        if: matrix.platform == 'windows'
+        env:
+          HSC_DESKTOP_SMOKE: '1'
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath 'dist/win-unpacked/HSC 2027.exe' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Packaged app test failed with exit code $($p.ExitCode)" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HSC-2027-desktop-${{ matrix.platform }}
+          path: |
+            desktop/dist/*.AppImage
+            desktop/dist/*.exe
+          if-no-files-found: error
+          retention-days: 30
+  publish:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_beta
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: HSC-2027-desktop-*
+          path: release
+          merge-multiple: true
+      - name: Publish prerelease and checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          cd release
+          ls -l
+          test "$(find . -maxdepth 1 -name '*.exe' | wc -l)" -eq 1
+          test "$(find . -maxdepth 1 -name '*.AppImage' | wc -l)" -eq 1
+          sha256sum ./*.exe ./*.AppImage > SHA256SUMS.txt
+          cat > notes.txt <<'NOTES'
+          # HSC 2027 Desktop beta 0.1.0
+
+          Windows 10/11 x64: ডাউনলোড করা installer চালিয়ে ইনস্টল করুন। Linux x86_64: AppImage-এ execute permission দিয়ে চালান; কিছু Linux-এ FUSE প্রয়োজন।
+
+          অধ্যায় ট্র্যাকার, রুটিন ও সাইটের অন্তর্ভুক্ত পৃষ্ঠাগুলো ইন্টারনেট ছাড়া চলে। YouTube, WhatsApp, বাইরের লিংক ও অনলাইন ফন্টের জন্য ইন্টারনেট এবং ব্রাউজার প্রয়োজন। অ্যাপ ও ওয়েব ব্রাউজারের tracker ডেটা আলাদা; ডিভাইসগুলোর মধ্যে সিঙ্ক হয় না। সাইটের পরবর্তী পরিবর্তন পেতে নতুন অ্যাপ সংস্করণ দরকার; এটি স্বয়ংক্রিয়ভাবে আপডেট হয় না।
+
+          এটি একটি unsigned পরীক্ষামূলক beta; Windows SmartScreen সতর্কতা দেখাতে পারে। কেবল বিশ্বস্ত উৎস থেকে ডাউনলোড করুন, SHA256SUMS.txt দিয়ে integrity মিলিয়ে নিন। এই build-এর tracker তথ্য ডিভাইসে থাকে; অ্যাপের ডেটা মুছে দিলে তা হারাবে।
+          NOTES
+          gh release create desktop-v0.1.0-beta ./*.exe ./*.AppImage SHA256SUMS.txt \
+            --target "$GITHUB_SHA" --prerelease \
+            --title 'HSC 2027 Desktop 0.1.0 beta' --notes-file notes.txt

@@ -1,0 +1,62 @@
+{
+  "name": "hsc-2027-desktop",
+  "version": "0.1.0-beta.1",
+  "description": "HSC 2027 study companion for Windows and Linux",
+  "author": "HSC 2027 study site",
+  "license": "GPL-3.0-or-later",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "smoke": "electron .",
+    "dist:linux": "electron-builder --linux AppImage --x64 --publish never",
+    "dist:win": "electron-builder --win nsis --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "42.11.18",
+    "electron-builder": "26.18.1"
+  },
+  "build": {
+    "appId": "bd.edu.hsc2027.desktop",
+    "productName": "HSC 2027",
+    "artifactName": "HSC-2027-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build-resources"
+    },
+    "files": [
+      "main.cjs",
+      "policy.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../site",
+        "to": "site",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build-resources/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build-resources/icon.png",
+      "category": "Education",
+      "executableName": "hsc-2027"
+    }
+  }
+}
