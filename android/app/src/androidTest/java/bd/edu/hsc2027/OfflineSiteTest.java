@@ -49,6 +49,15 @@ public class OfflineSiteTest {
             i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "teachers.html"));
             assertPage(i, web, overlay, "শিক্ষক পরিচিতি");
             assertEquals("true", js(i, web, "(() => {const c=document.querySelector('#teacher-principal'); if (!c || c.open) return false; c.querySelector('summary').click(); return c.open && c.querySelector('a').getAttribute('href') === 'tel:01712612992';})()"));
+            i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "college-info.html"));
+            assertPage(i, web, overlay, "কলেজ পরিচিতি");
+            assertEquals("true", js(i, web, "Boolean(document.querySelector('#vigilance') && document.querySelector('img[src=\"assets/college-booklet/vigilance.jpg\"]'))"));
+            i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "honours-info.html"));
+            assertPage(i, web, overlay, "স্নাতক (সম্মান)");
+            assertEquals("true", js(i, web, "Boolean(document.querySelector('#bangla') && document.querySelector('#history'))"));
+            i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "college-routine.html"));
+            assertPage(i, web, overlay, "কলেজের ক্লাস রুটিন");
+            assertEquals("true", js(i, web, "Boolean(document.querySelector('img[src=\"assets/college-booklet/class-routine.jpg\"]'))"));
             i.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html"));
             assertPage(i, web, overlay, "পেজটি সরানো হয়েছে");
             assertEquals("true", js(i, web, "!document.querySelector('#support-form')"));
