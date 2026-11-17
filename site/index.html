@@ -12,7 +12,7 @@
 <link rel="icon" href="assets/study-logo.png" type="image/png">
 <script src="assets/app-context.js?v=20261113"></script>
 <link rel="stylesheet" href="assets/style.css?v=20261113-app-context">
-<link rel="stylesheet" href="assets/motion.css?v=1">
+<link rel="stylesheet" href="assets/motion.css?v=2">
 </head>
 <body>
 <nav>
@@ -36,6 +36,7 @@
 <header class="hero">
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
   <div class="hero-sparkles" aria-hidden="true"></div>
+  <div class="hero-orbits" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="orbit orbit-three"></span></div>
   <div class="wrap hero-grid">
     <div>
       <div class="college-identity">
@@ -71,12 +72,12 @@
 </header>
 
 <div class="marquee"><div class="marquee-track" id="mq"></div></div>
-<div class="wrap"><a class="dabi-teaser" href="student-group.html"><span class="dabi-teaser-icon" aria-hidden="true">💬</span><span><strong>শিক্ষার্থী গ্রুপ</strong><small>গ্রুপে যোগ দেওয়ার তথ্য দেখো</small></span><span aria-hidden="true">→</span></a></div>
-<div class="wrap"><a class="dabi-teaser" href="teachers.html"><span class="dabi-teaser-icon" aria-hidden="true">👩‍🏫</span><span><strong>শিক্ষক পরিচিতি</strong><small>শিক্ষকদের নাম, পদবি ও যোগাযোগ দেখো</small></span><span aria-hidden="true">→</span></a></div>
-<div class="wrap"><a class="dabi-teaser" href="college-info.html"><span class="dabi-teaser-icon" aria-hidden="true">🏫</span><span><strong>কলেজ পরিচিতি ও ভিজিল্যান্স টিম</strong><small>কলেজের তথ্য, যোগাযোগ ও টিমের দায়িত্ব</small></span><span aria-hidden="true">→</span></a></div>
-<div class="wrap"><a class="dabi-teaser" href="hsc-2027-routine.html"><span class="dabi-teaser-icon" aria-hidden="true">📋</span><span><strong>HSC ২০২৭ সম্ভাব্য পরীক্ষার রুটিন</strong><small>সংবাদভিত্তিক খসড়া · চূড়ান্ত নয়</small></span><span aria-hidden="true">→</span></a></div>
-<div class="wrap"><a class="dabi-teaser" href="college-routine.html"><span class="dabi-teaser-icon" aria-hidden="true">🗓️</span><span><strong>কলেজের ক্লাস রুটিন</strong><small>একাদশ, দ্বাদশ ও স্নাতক (পাস)</small></span><span aria-hidden="true">→</span></a></div>
-<div class="wrap"><a class="dabi-teaser" href="honours-info.html"><span class="dabi-teaser-icon" aria-hidden="true">🎓</span><span><strong>স্নাতক (সম্মান): বাংলা ও ইতিহাস</strong><small>কোর্স ও ক্লাসের তথ্য</small></span><span aria-hidden="true">→</span></a></div>
+<div class="wrap"><a class="dabi-teaser" data-motion="bob" href="student-group.html"><span class="dabi-teaser-icon" aria-hidden="true">💬</span><span><strong>শিক্ষার্থী গ্রুপ</strong><small>গ্রুপে যোগ দেওয়ার তথ্য দেখো</small></span><span aria-hidden="true">→</span></a></div>
+<div class="wrap"><a class="dabi-teaser" data-motion="sway" href="teachers.html"><span class="dabi-teaser-icon" aria-hidden="true">👩‍🏫</span><span><strong>শিক্ষক পরিচিতি</strong><small>শিক্ষকদের নাম, পদবি ও যোগাযোগ দেখো</small></span><span aria-hidden="true">→</span></a></div>
+<div class="wrap"><a class="dabi-teaser" data-motion="pulse" href="college-info.html"><span class="dabi-teaser-icon" aria-hidden="true">🏫</span><span><strong>কলেজ পরিচিতি ও ভিজিল্যান্স টিম</strong><small>কলেজের তথ্য, যোগাযোগ ও টিমের দায়িত্ব</small></span><span aria-hidden="true">→</span></a></div>
+<div class="wrap"><a class="dabi-teaser" data-motion="bob" href="hsc-2027-routine.html"><span class="dabi-teaser-icon" aria-hidden="true">📋</span><span><strong>HSC ২০২৭ সম্ভাব্য পরীক্ষার রুটিন</strong><small>সংবাদভিত্তিক খসড়া · চূড়ান্ত নয়</small></span><span aria-hidden="true">→</span></a></div>
+<div class="wrap"><a class="dabi-teaser" data-motion="sway" href="college-routine.html"><span class="dabi-teaser-icon" aria-hidden="true">🗓️</span><span><strong>কলেজের ক্লাস রুটিন</strong><small>একাদশ, দ্বাদশ ও স্নাতক (পাস)</small></span><span aria-hidden="true">→</span></a></div>
+<div class="wrap"><a class="dabi-teaser" data-motion="pulse" href="honours-info.html"><span class="dabi-teaser-icon" aria-hidden="true">🎓</span><span><strong>স্নাতক (সম্মান): বাংলা ও ইতিহাস</strong><small>কোর্স ও ক্লাসের তথ্য</small></span><span aria-hidden="true">→</span></a></div>
 
 <!-- COLLEGE PRE-TEST ROUTINE -->
 <section class="exam-section" id="exam-routine" aria-labelledby="exam-title">
@@ -97,7 +98,7 @@
       </div>
       <div class="exam-list" aria-label="বাকি পরীক্ষার তালিকা">
         <h3>📋 বাকি পরীক্ষাগুলো ও সিলেবাস</h3>
-        <p class="syllabus-intro">সিলেবাস দেওয়া তথ্য অনুযায়ী। পরীক্ষা শুরু হলে তার সিলেবাস, শেষ হলে রুটিন থেকে বিষয়টি সরে যাবে।</p>
+        <p class="syllabus-intro">পরীক্ষা শুরু হলে তার সিলেবাস, শেষ হলে রুটিন থেকে বিষয়টি সরে যাবে।</p>
         <p class="exam-empty" id="exam-empty" hidden>সব প্রাক-নির্বাচনী পরীক্ষা শেষ হয়েছে। শুভকামনা! 💚</p>
         <div class="exam-row" data-start="2026-11-11T12:00:00+06:00" data-end="2026-11-11T15:00:00+06:00" data-date="১১ নভেম্বর, বুধবার" data-subject="তথ্য ও যোগাযোগ প্রযুক্তি" hidden><div class="exam-date"><b>১১</b><span>নভে · বুধ</span></div><div><strong>তথ্য ও যোগাযোগ প্রযুক্তি</strong><span>দুপুর ১২:০০ – বিকেল ৩:০০</span><details class="exam-syllabus" hidden><summary>📚 এই পরীক্ষার সিলেবাস দেখো</summary><div class="syllabus-content"><h4>তথ্য ও যোগাযোগ প্রযুক্তি (ICT)</h4><ul><li>অধ্যায় ২: কমিউনিকেশন সিস্টেমস ও নেটওয়ার্কিং</li><li>অধ্যায় ৩: সংখ্যা পদ্ধতি ও ডিজিটাল ডিভাইস</li><li>অধ্যায় ৪: ওয়েব ডিজাইন পরিচিতি এবং HTML</li><li>অধ্যায় ৬: ডাটাবেজ ম্যানেজমেন্ট সিস্টেম (DBMS)</li></ul></div></details></div></div>
         <div class="exam-row" data-start="2026-11-12T12:00:00+06:00" data-end="2026-11-12T15:00:00+06:00" data-date="১২ নভেম্বর, বৃহস্পতিবার" data-subject="পদার্থবিজ্ঞান / অর্থনীতি / হিসাববিজ্ঞান" hidden><div class="exam-date"><b>১২</b><span>নভে · বৃহস্পতি</span></div><div><strong>পদার্থবিজ্ঞান / অর্থনীতি / হিসাববিজ্ঞান</strong><span>দুপুর ১২:০০ – বিকেল ৩:০০</span><details class="exam-syllabus" hidden><summary>📚 এই পরীক্ষার সিলেবাস দেখো</summary><div class="syllabus-content"><h4>পদার্থবিজ্ঞান · ১ম পত্র</h4><ul><li>অধ্যায় ১: ভৌত জগত ও পরিমাপ</li><li>অধ্যায় ২: ভেক্টর; অধ্যায় ৩: গতিবিদ্যা</li><li>অধ্যায় ৪: নিউটনীয় বলবিদ্যা</li><li>অধ্যায় ৫: কাজ, শক্তি ও ক্ষমতা</li><li>অধ্যায় ৬: মহাকর্ষ; অধ্যায় ৭: গাঠনিক ধর্ম</li><li>অধ্যায় ৮: পর্যাবৃত্ত গতি; অধ্যায় ৯: তরঙ্গ</li><li>অধ্যায় ১০: আদর্শ গ্যাস</li></ul><h4>পদার্থবিজ্ঞান · ২য় পত্র</h4><ul><li>অধ্যায় ১: তাপগতিবিদ্যা</li><li>অধ্যায় ২: স্থির তড়িৎ</li><li>অধ্যায় ৩: চল তড়িৎ</li></ul><p>অর্থনীতি ও হিসাববিজ্ঞানের সিলেবাস দেওয়া পিডিএফে নেই।</p></div></details></div></div>

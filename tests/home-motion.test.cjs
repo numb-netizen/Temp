@@ -54,3 +54,16 @@ test('unnecessary advice is trimmed but essential exam information and links rem
   assert.doesNotMatch(read('routine.html'), /মোবাইল পড়ার সময় সাইলেন্ট মোডে রাখো/);
   assert.doesNotMatch(read('classes.html'), /টিপস: ক্লাস দেখার পর/);
 });
+
+
+test('varied decorative effects respect both motion controls without removing notices', () => {
+  const html = read('index.html'), css = read('assets/motion.css');
+  assert.match(html, /class="hero-orbits" aria-hidden="true"/);
+  assert.match(css, /\.hero-orbits\{[^}]*pointer-events:none/);
+  for (const name of ['orbit-spin', 'color-flow', 'card-glow', 'icon-bob', 'icon-pulse']) assert.ok(css.includes(`@keyframes ${name}`), name);
+  for (const kind of ['bob', 'sway', 'pulse']) assert.ok(html.includes(`data-motion="${kind}"`), kind);
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{\.hero-orbits\{display:none\}/);
+  assert.match(css, /\.motion-paused \.hero-orbits\{display:none\}/);
+  assert.match(html, /class="exam-notice-link" href="assets\/pretest-notice-2026.jpg"/);
+  assert.match(html, /<details class="exam-rules"><summary>পরীক্ষার্থীদের জন্য নোটিশের নির্দেশনা<\/summary>/);
+});
