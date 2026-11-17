@@ -128,9 +128,15 @@ const {chromium} = require('playwright-core');
         assert.equal(await page.locator('.hero-sparkles').evaluate(el => getComputedStyle(el).pointerEvents), 'none');
         assert.equal(await page.locator('.hero-orbits').getAttribute('aria-hidden'), 'true');
         assert.equal(await page.locator('.hero-orbits').evaluate(el => getComputedStyle(el).pointerEvents), 'none');
+        assert.equal(await page.locator('.hero-ambient').getAttribute('aria-hidden'), 'true');
+        assert.equal(await page.locator('.hero-ambient').evaluate(el => getComputedStyle(el).pointerEvents), 'none');
+        const ambientSelectors = ['.aurora-one', '.ambient-trace', '.comet-one'];
+        const ambientNames = () => Promise.all(ambientSelectors.map(selector => page.locator(selector).evaluate(el => getComputedStyle(el).animationName)));
         const effectSelectors = ['.orbit-one', '.hero .grad', '.cd-card', '.dabi-teaser[data-motion="bob"] .dabi-teaser-icon', '.dabi-teaser[data-motion="pulse"] .dabi-teaser-icon'];
         const effectNames = () => Promise.all(effectSelectors.map(selector => page.locator(selector).first().evaluate(el => getComputedStyle(el).animationName)));
         if (reducedMotion === 'reduce') {
+          assert.equal(await page.locator('.hero-ambient').isVisible(), false);
+          assert.deepEqual(await ambientNames(), ambientSelectors.map(() => 'none'));
           assert.deepEqual(await effectNames(), effectSelectors.map(() => 'none'));
           assert.equal(await page.locator('.hero-orbits').isVisible(), false);
           assert.equal(await page.locator('h2.title').first().evaluate(el => getComputedStyle(el).animationName), 'none');
@@ -138,8 +144,12 @@ const {chromium} = require('playwright-core');
           assert.equal(await page.locator('.marquee-track').evaluate(el => getComputedStyle(el).animationName), 'none');
           assert.equal(await page.locator('.reveal').first().evaluate(el => getComputedStyle(el).opacity), '1');
         } else {
+          assert.equal(await page.locator('.hero-ambient').isVisible(), true);
+          assert.deepEqual(await ambientNames(), ['aurora-drift', 'trace-flow', 'comet-pass']);
           assert.deepEqual(await effectNames(), ['orbit-spin', 'color-flow', 'card-glow', 'icon-bob', 'icon-pulse']);
           await page.locator('.motion-toggle').click();
+          assert.equal(await page.locator('.hero-ambient').isVisible(), false);
+          assert.deepEqual(await ambientNames(), ambientSelectors.map(() => 'none'));
           assert.deepEqual(await effectNames(), effectSelectors.map(() => 'none'));
           assert.equal(await page.locator('.hero-orbits').isVisible(), false);
           assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন চালু');
@@ -154,6 +164,8 @@ const {chromium} = require('playwright-core');
           await page.locator('.motion-toggle').click();
           assert.equal(await page.locator('.motion-toggle').textContent(), 'অ্যানিমেশন বন্ধ');
           assert.deepEqual(await effectNames(), ['orbit-spin', 'color-flow', 'card-glow', 'icon-bob', 'icon-pulse']);
+          assert.equal(await page.locator('.hero-ambient').isVisible(), true);
+          assert.deepEqual(await ambientNames(), ['aurora-drift', 'trace-flow', 'comet-pass']);
           assert.equal(await page.locator('h2.title').first().evaluate(el => getComputedStyle(el).animationName), 'heading-color-flow');
         }
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `motion home overflow at ${width}`);
