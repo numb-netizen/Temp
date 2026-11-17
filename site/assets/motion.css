@@ -26,3 +26,25 @@
 .motion-paused .blob,.motion-paused .college-identity img,.motion-paused .dabi-teaser-icon,.motion-paused .marquee-track{animation:none!important}
 .motion-paused .reveal{opacity:1;transform:none;transition:none}
 .motion-paused *, .motion-paused *::before, .motion-paused *::after{transition-duration:0.01ms!important;animation-duration:0.01ms!important;animation-iteration-count:1!important}
+
+/* Different decorative motions; they never block the page or the controls. */
+.hero-orbits{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.orbit{position:absolute;border:1px dashed #a1ffbc;opacity:.17;border-radius:50%;animation:orbit-spin 25s linear infinite}
+.orbit::after{content:"";position:absolute;width:7px;height:7px;top:4px;left:50%;border-radius:50%;background:#d5ffc6;box-shadow:0 0 12px #c1ffbf}
+.orbit-one{width:110px;height:110px;top:17%;right:12%}
+.orbit-two{width:68px;height:68px;bottom:19%;left:7%;animation-duration:18s;animation-direction:reverse}
+.orbit-three{width:44px;height:44px;top:49%;left:54%;animation-duration:22s}
+@keyframes orbit-spin{to{transform:rotate(360deg)}}
+.hero .grad{background-size:200% 100%;animation:color-flow 9s ease-in-out infinite alternate}
+@keyframes color-flow{from{background-position:0% 50%}to{background-position:100% 50%}}
+.cd-card{animation:card-glow 6s ease-in-out infinite}
+@keyframes card-glow{0%,100%{box-shadow:0 30px 70px #00000055}50%{box-shadow:0 28px 65px #00000055,0 0 25px #00c8531a}}
+.dabi-teaser[data-motion="bob"] .dabi-teaser-icon{animation:icon-bob 6s ease-in-out infinite}
+.dabi-teaser[data-motion="pulse"] .dabi-teaser-icon{animation:icon-pulse 7s ease-in-out infinite}
+@keyframes icon-bob{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(-5px)}90%{transform:translateY(-2px)}}
+@keyframes icon-pulse{0%,70%,100%{transform:scale(1)}82%{transform:scale(1.12)}90%{transform:scale(.98)}}
+.tree-kid:focus-visible,.tree-kid:hover{box-shadow:0 0 0 2px #00e67666}
+@media(max-width:600px){.orbit-one{width:74px;height:74px;right:7%}.orbit-two{width:52px;height:52px}.orbit-three{display:none}}
+@media(prefers-reduced-motion:reduce){.hero-orbits{display:none}.orbit,.hero .grad,.cd-card,.dabi-teaser[data-motion] .dabi-teaser-icon{animation:none!important}}
+.motion-paused .hero-orbits{display:none}
+.motion-paused .orbit,.motion-paused .hero .grad,.motion-paused .cd-card,.motion-paused .dabi-teaser[data-motion] .dabi-teaser-icon{animation:none!important}
