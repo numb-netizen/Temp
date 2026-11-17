@@ -64,6 +64,10 @@ jobs:
         run: |
           $p = Start-Process -FilePath 'dist/win-unpacked/HSC 2027.exe' -Wait -PassThru
           if ($p.ExitCode -ne 0) { throw "Packaged app test failed with exit code $($p.ExitCode)" }
+      - name: Exercise Windows signing with a throwaway untrusted certificate
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: ./scripts/test-signing.ps1
       - uses: actions/upload-artifact@v4
         with:
           name: HSC-2027-desktop-${{ matrix.platform }}
