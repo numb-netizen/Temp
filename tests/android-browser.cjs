@@ -31,6 +31,7 @@ const {chromium} = require('playwright-core');
         await page.locator('#burger').click();
         assert.equal(await page.locator('#burger').getAttribute('aria-expanded'), 'true');
         await page.locator('#navLinks a[href="science.html"]').click();
+        await page.locator('.theme-toggle').waitFor({state:'visible'});
         assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
       }
       await page.goto('http://127.0.0.1:8765/teachers.html');
