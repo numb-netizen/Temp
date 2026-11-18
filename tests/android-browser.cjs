@@ -116,13 +116,14 @@ const {chromium} = require('playwright-core');
       assert.equal(await page.locator('#feedback-extra').isVisible(), false);
       await page.locator('#feedback-title-input').fill('পরামর্শ');
       await page.locator('#feedback-body').fill('নতুন ধারণা');
-      const [popup] = await Promise.all([page.waitForEvent('popup'), page.locator('.feedback-form button').click()]);
-      await popup.waitForLoadState();
-      const url = new URL(popup.url());
+      // JavaScript is disabled; keep the submission in this tab to inspect it.
+      await page.locator('.feedback-form').evaluate(el => { el.target = '_self'; });
+      await Promise.all([page.waitForURL('https://github.com/numb-netizen/Temp/issues/new?*'), page.locator('.feedback-form button').click()]);
+      const url = new URL(page.url());
       assert.equal(url.searchParams.get('title'), 'পরামর্শ');
       assert.equal(url.searchParams.get('body'), 'নতুন ধারণা');
       assert.equal(url.searchParams.get('feedback_type'), null);
-      await popup.close(); await page.close();
+      await page.close();
     }
     // Theme stays usable beside the menu on narrow screens and across pages.
     for (const width of [320, 360, 1201, 1440]) {
