@@ -79,6 +79,7 @@ const {chromium} = require('playwright-core');
       assert.ok(layout.normal && layout.noOverlap && layout.scrollFits, `feedback layout ${width}: ${JSON.stringify(layout)}`);
       await page.locator('.feedback-banner-link').click();
       assert.match(page.url(), /feedback\.html$/);
+      await page.locator('#feedback-extra').waitFor({state:'visible'});
       assert.equal(await page.locator('#feedback-extra').isVisible(), true);
       await page.locator('#feedback-title-input').fill('ট্র্যাকারের সমস্যা');
       await page.locator('#feedback-body').fill('পেজটি খোলে না & আমি সাহায্য চাই।');
