@@ -39,6 +39,10 @@ function refreshAll(){
   $$(".tcard").forEach(refreshCard);
   refreshOverall();
 }
+function itemIndex(el){
+  const items = el.parentNode.querySelectorAll(".item");
+  return [...items].indexOf(el);
+}
 function loadState(){
   $$(".chap").forEach(el => {
     el.setAttribute("role", "checkbox");
@@ -47,10 +51,26 @@ function loadState(){
       el.classList.add("done");
     el.setAttribute("aria-checked", String(el.classList.contains("done")));
   });
+  $$(".item").forEach((el,i) => {
+    el.setAttribute("role", "checkbox");
+    el.setAttribute("tabindex", "0");
+    const subject = el.dataset.subject || "english-2";
+    const idx = el.dataset.item != null ? el.dataset.item : i;
+    if(localStorage.getItem(KEY(subject + ":" + idx)) === "1")
+      el.classList.add("done");
+    el.setAttribute("aria-checked", String(el.classList.contains("done")));
+  });
   refreshAll();
 }
 function toggleChapter(el){
-  const k = KEY(el.dataset.subject + ":" + el.dataset.chapter);
+  let k;
+  if(el.matches(".item")){
+    const subject = el.dataset.subject || "english-2";
+    const idx = el.dataset.item != null ? el.dataset.item : itemIndex(el);
+    k = KEY(subject + ":" + idx);
+  } else {
+    k = KEY(el.dataset.subject + ":" + el.dataset.chapter);
+  }
   el.classList.toggle("done");
   const done = el.classList.contains("done");
   el.setAttribute("aria-checked", String(done));
@@ -60,12 +80,12 @@ function toggleChapter(el){
   refreshOverall();
 }
 document.addEventListener("click", e => {
-  const el = e.target.closest(".chap");
+  const el = e.target.closest(".chap") || e.target.closest(".item");
   if(el) toggleChapter(el);
 });
 document.addEventListener("keydown", e => {
   if(e.key !== " " && e.key !== "Enter") return;
-  const el = e.target.closest(".chap");
+  const el = e.target.closest(".chap") || e.target.closest(".item");
   if(!el) return;
   e.preventDefault();
   toggleChapter(el);
@@ -75,6 +95,7 @@ if(resetBtn) resetBtn.addEventListener("click", () => {
   if(!confirm("সত্যিই সব অগ্রগতি মুছে ফেলতে চাও?")) return;
   Object.keys(localStorage).filter(k => k.startsWith("hsc2027:")).forEach(k => localStorage.removeItem(k));
   $$(".chap").forEach(el => { el.classList.remove("done"); el.setAttribute("aria-checked", "false"); });
+  $$(".item").forEach(el => { el.classList.remove("done"); el.setAttribute("aria-checked", "false"); });
   refreshAll();
 });
 loadState();
