@@ -36,11 +36,13 @@ The official NCTB pages returned only accessibility-navigation text through the 
 | ফিন্যান্স, ব্যাংকিং ও বিমা | 1, 2 |
 | উৎপাদন ব্যবস্থাপনা ও বিপণন | 1, 2 |
 
-The two new second-paper pages intentionally contain no invented chapter items, percentage or claims of completion. Confirm college offerings and each student's elective/fourth-subject status from enrollment or college information, not from a department card.
+The English second-paper page still has no chapter checklist or progress because its source material has not been verified. The Bangla second-paper page now contains selected preparation topics transcribed from five user-supplied index images: one seven-chapter grammar index, plus partial বাংলা নির্মিতি indexes showing terminology and translation, letter-writing examples and a continuation of topics 19–45. The images do not establish publisher, edition or their applicability to the 2025–26 cohort; they are not official curriculum evidence. The two index sequences use different chapter numbering, and the last image does not show its chapter heading. Translation examples 60–94, most letter examples, and the earlier part of the last list were not supplied; none were invented. A nine-item checklist uses new `hsc2027:bangla-2:<0–8>` keys and its percentages refer only to the displayed selection, not the full syllabus. The original uploaded images are included as compressed references.
+
+Confirm college offerings and each student's elective/fourth-subject status from enrollment or college information, not from a department card.
 
 ## Required next steps
 
 1. Obtain readable official 2025–26 curriculum, textbook tables of contents and any applicable education-board notices (including the linked বাংলা first-paper notice). Scan or upload the actual attachment if the government site cannot be read.
 2. Record the exact source URL, edition, paper, page, code, and verification date per subject. Resolve any differing lists with the relevant board/college, rather than assuming a 2026 examination list applies.
-3. Add complete paper-specific chapters only after review. Preserve each existing `hsc2027:<subject>:<chapter>` key and its meaning; do not relabel/reuse a historical key for a different chapter or silently transfer ambiguous progress. Use fresh stable keys for new items, and an explicit migration only where equivalence is proven.
+3. Treat the Bangla second-paper items as image-based selected preparation, not certified chapters; add complete paper-specific chapters only after review. Preserve each existing `hsc2027:<subject>:<chapter>` key and its meaning; do not relabel/reuse a historical key for a different chapter or silently transfer ambiguous progress. Use fresh stable keys for new items, and an explicit migration only where equivalence is proven.
 4. Only after all topics and paper assignments are checked, replace the selected-list warnings, implement complete per-paper checklists and accurately scoped progress, and mark the PR ready for review.
