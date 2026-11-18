@@ -27,11 +27,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 class Window(Gtk.Window):
     def __init__(self):
+        if SMOKE: print('Creating window', flush=True)
         super().__init__(title='HSC 2027 Lite')
         self.set_default_size(1200, 800)
         self.set_size_request(320, 480)
         self.connect('destroy', Gtk.main_quit)
         data_dir = tempfile.mkdtemp(prefix='hsc-lite-test-') if SMOKE else os.path.join(GLib.get_user_data_dir(), 'hsc2027-lite')
+        if SMOKE: print('Creating WebKit context', flush=True)
         manager = WebKit2.WebsiteDataManager(base_data_directory=data_dir, base_cache_directory=os.path.join(data_dir, 'cache'))
         context = WebKit2.WebContext.new_with_website_data_manager(manager)
         self.web = WebKit2.WebView.new_with_context(context)
@@ -51,6 +53,7 @@ class Window(Gtk.Window):
             self.stage = 0
             self.web.connect('load-changed', self.smoke_loaded)
             GLib.timeout_add_seconds(30, self.timeout)
+        if SMOKE: print('Loading bundled homepage', flush=True)
         self.web.load_uri(ORIGIN+'index.html')
 
     def decide(self, view, decision, kind):
@@ -76,6 +79,7 @@ class Window(Gtk.Window):
 
     def smoke_loaded(self, view, event):
         if event != WebKit2.LoadEvent.FINISHED: return
+        print('Page loaded, stage', self.stage, flush=True)
         if self.stage == 0:
             self.stage = 1
             view.run_javascript("localStorage.setItem('hsc2027:physics:0','1'); localStorage.setItem('site:theme','light');", None, self.seeded, None)
@@ -108,4 +112,5 @@ if __name__ == '__main__':
     win = Window()
     win.show_all()
     Gtk.main()
+    if SMOKE: print('Main loop exited', flush=True)
     server.shutdown()

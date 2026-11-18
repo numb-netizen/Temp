@@ -29,7 +29,7 @@ jobs:
         env:
           WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS: '1'
         run: |
-          if ! xvfb-run -a /usr/bin/hsc-2027-lite --smoke > "$RUNNER_TEMP/lite.log" 2>&1; then
+          if ! timeout 65s xvfb-run -a /usr/bin/hsc-2027-lite --smoke > "$RUNNER_TEMP/lite.log" 2>&1; then
             python3 -c 'import os; s=open(os.path.join(os.environ["RUNNER_TEMP"],"lite.log")).read(); print("::error::"+s.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
             exit 1
           fi
