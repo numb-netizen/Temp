@@ -116,7 +116,7 @@ Windows build: `dotnet publish desktop-lite/windows/HscLite.csproj -c Release -r
 
 ### মতামত ও নিরাপত্তা রিপোর্ট
 
-মেনুবারের **মতামত** বোতামে সাইটের ফর্ম খোলে। বিষয় ও বিবরণ দিলে ফর্ম GitHub-এর নতুন Issue পেজে লেখা নিয়ে যায়; GitHub লগইন করে সেখানে **Submit new issue** না চাপা পর্যন্ত কোনো Issue তৈরি হয় না। Issue প্রকাশ্য, তাই ব্যক্তিগত বা সংবেদনশীল তথ্য দেওয়া যাবে না। এটি কোনো backend বা গোপন GitHub token ছাড়াই চলে; ইন্টারনেট ও GitHub অ্যাকাউন্ট প্রয়োজন। পুরোনো offline app-এ পরিবর্তন পেতে নতুন build দরকার।
+হোমপেজের **মতামত জানাও** অংশ বা যেকোনো পেজের ফুটারের লিংক থেকে সাইটের ফর্ম খোলে। বিষয় ও বিবরণ দিলে ফর্ম GitHub-এর নতুন Issue পেজে লেখা নিয়ে যায়; GitHub লগইন করে সেখানে **Submit new issue** না চাপা পর্যন্ত কোনো Issue তৈরি হয় না। Issue প্রকাশ্য, তাই ব্যক্তিগত বা সংবেদনশীল তথ্য দেওয়া যাবে না। এটি কোনো backend বা গোপন GitHub token ছাড়াই চলে; ইন্টারনেট ও GitHub অ্যাকাউন্ট প্রয়োজন। পুরোনো offline app-এ পরিবর্তন পেতে নতুন build দরকার।
 
 নিরাপত্তা দুর্বলতা পাবলিক Issue-তে না লিখে [গোপন GitHub vulnerability report](https://github.com/numb-netizen/Temp/security/advisories/new) ব্যবহার করুন। বিস্তারিত [SECURITY.md](SECURITY.md)-এ।
 
