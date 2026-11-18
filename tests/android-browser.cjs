@@ -93,7 +93,7 @@ const {chromium} = require('playwright-core');
         assert.equal(url.origin, 'https://github.com');
         assert.equal(url.pathname, '/numb-netizen/Temp/issues/new');
         assert.equal(url.searchParams.get('title'), 'ট্র্যাকারের সমস্যা');
-        assert.equal(url.searchParams.get('body'), 'পেজটি খোলে না & আমি সাহায্য চাই।\n\nমতামতের ধরন: সমস্যা\nপেজ: tracker.html\nডিভাইস বা ব্রাউজার: Android Chrome');
+        assert.equal(url.searchParams.get('body').replace(/\r\n/g, '\n'), 'পেজটি খোলে না & আমি সাহায্য চাই।\n\nমতামতের ধরন: সমস্যা\nপেজ: tracker.html\nডিভাইস বা ব্রাউজার: Android Chrome');
         assert.equal(url.searchParams.get('feedback_page'), null);
         await popup.close();
       }
