@@ -116,18 +116,13 @@ const {chromium} = require('playwright-core');
       assert.equal(await page.locator('#feedback-extra').isVisible(), false);
       await page.locator('#feedback-title-input').fill('পরামর্শ');
       await page.locator('#feedback-body').fill('নতুন ধারণা');
-      // Listen at context level: a no-opener form may open an unassociated tab.
-      const events = [];
-      page.context().on('page', p => events.push('page: ' + p.url()));
-      page.context().on('request', req => events.push('request: ' + req.url()));
-      page.context().on('requestfailed', req => events.push('failed: ' + req.url() + ' ' + JSON.stringify(req.failure())));
-      await page.locator('.feedback-form').evaluate(el => { el.target = '_self'; el.removeAttribute('rel'); });
-      const validity = await page.locator('.feedback-form').evaluate(el => ({valid:el.checkValidity(), target:el.target, action:el.action, data:[...new FormData(el).entries()]}));
-      assert.equal(validity.valid, true, JSON.stringify(validity));
-      let request;
-      try {
-        [request] = await Promise.all([page.context().waitForEvent('request', {predicate: req => req.url().startsWith('https://github.com/numb-netizen/Temp/issues/new?'), timeout:15000}), page.locator('.feedback-form button').click({timeout:5000})]);
-      } catch (e) { throw new Error('No-JS submission failed: '+JSON.stringify({validity, current:page.url(), events, active:await page.evaluate(() => document.activeElement.outerHTML), error:e.message})); }
+      // No-opener navigation may open an unassociated tab. Use a context-level
+      // request listener and bypass Playwright's animation-stability check, which
+      // depends on animation frames that do not run with scripting disabled.
+      const [request] = await Promise.all([
+        page.context().waitForEvent('request', {predicate: req => req.url().startsWith('https://github.com/numb-netizen/Temp/issues/new?')}),
+        page.locator('.feedback-form button').click({force:true})
+      ]);
       const url = new URL(request.url());
       assert.equal(url.searchParams.get('title'), 'পরামর্শ');
       assert.equal(url.searchParams.get('body'), 'নতুন ধারণা');
