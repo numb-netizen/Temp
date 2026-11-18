@@ -28,7 +28,11 @@ jobs:
       - name: Test packaged offline navigation, tracker and theme
         env:
           WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS: '1'
-        run: xvfb-run -a /usr/bin/hsc-2027-lite --smoke
+        run: |
+          if ! xvfb-run -a /usr/bin/hsc-2027-lite --smoke > "$RUNNER_TEMP/lite.log" 2>&1; then
+            python3 -c 'import os; s=open(os.path.join(os.environ["RUNNER_TEMP"],"lite.log")).read(); print("::error::"+s.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A"))'
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: lite-linux
@@ -41,10 +45,10 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Publish standalone executable
+      - name: Publish Windows executable
         shell: pwsh
         run: |
-          dotnet publish desktop-lite/windows/HscLite.csproj -c Release -r win-x64 --self-contained true -o desktop-lite/dist/windows -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+          dotnet publish desktop-lite/windows/HscLite.csproj -c Release -r win-x64 --self-contained false -o desktop-lite/dist/windows -p:PublishSingleFile=true
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item site desktop-lite/dist/windows/site -Recurse
       - name: Test bundled offline navigation, tracker and theme
@@ -87,7 +91,7 @@ jobs:
           cat > notes.txt <<'NOTES'
           # HSC 2027 Lite beta
 
-          Windows 10/11 x64: ZIP পুরোপুরি extract করে HSC-2027-Lite.exe চালান। Microsoft Edge WebView2 Runtime প্রয়োজন; না থাকলে Microsoft থেকে আলাদাভাবে ইনস্টল করতে হবে। এটি unsigned beta, SmartScreen সতর্ক করতে পারে।
+          Windows 10/11 x64: ZIP পুরোপুরি extract করে HSC-2027-Lite.exe চালান। Microsoft Edge WebView2 Runtime ও .NET 8 Desktop Runtime (x64) প্রয়োজন; না থাকলে Microsoft থেকে আলাদাভাবে ইনস্টল করতে হবে। প্রথমবার runtime ডাউনলোডের জন্য ইন্টারনেট ও অতিরিক্ত স্থান লাগবে। এটি unsigned beta, SmartScreen সতর্ক করতে পারে।
 
           Linux: Ubuntu/Debian-ভিত্তিক সিস্টেমে .deb ইনস্টল করুন (যেমন `sudo apt install ./HSC-2027-Lite-0.2.0-beta-linux.deb`)। Python 3, GTK ও WebKitGTK 4.1 প্যাকেজ ইনস্টল হতে পারে; অন্য Linux distribution-এ এই .deb সরাসরি চলবে না।
 
