@@ -93,10 +93,21 @@ if(navLinks) navLinks.addEventListener("click", e => {
 });
 
 /* ---------- REVEAL ON SCROLL ---------- */
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
-}), {threshold:.12});
-$$(".reveal").forEach(el => io.observe(el));
+// Content is visible by default, even when scripts or IntersectionObserver fail.
+if(typeof IntersectionObserver !== "undefined") {
+  const elements = $$(".reveal");
+  try {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+    }), {threshold:.12});
+    elements.forEach(el => {
+      if(el.getBoundingClientRect().top >= window.innerHeight) el.classList.add("reveal-pending");
+      io.observe(el);
+    });
+  } catch (_) {
+    elements.forEach(el => el.classList.remove("reveal-pending"));
+  }
+}
 
 /* ---------- MISC ---------- */
 const yr = $("#year"); if(yr) yr.textContent = bn(new Date().getFullYear());

@@ -107,6 +107,29 @@ const {chromium} = require('playwright-core');
       assert.equal(await page.locator('noscript a[href="https://github.com/numb-netizen/Temp/issues/new"]').count(), 1);
       await page.close();
     }
+    // Search crawlers and users without scripting must see the content, not opacity-zero sections.
+    {
+      const page = await browser.newPage({javaScriptEnabled:false, viewport:{width:360,height:720}});
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      for (const name of ['index.html','physics.html']) {
+        await page.goto('http://127.0.0.1:8765/'+name);
+        const opacities = await page.locator('.reveal').evaluateAll(els => els.map(el => getComputedStyle(el).opacity));
+        assert.ok(opacities.length && opacities.every(value => value === '1'), name);
+      }
+      await page.close();
+    }
+    // The rest of the page still initializes when the observer API is unavailable.
+    {
+      const page = await browser.newPage();
+      await page.addInitScript(() => { delete window.IntersectionObserver; });
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      const errors=[]; page.on('pageerror', error=>errors.push(error.message));
+      await page.goto('http://127.0.0.1:8765/physics.html');
+      assert.notEqual(await page.locator('#year').textContent(), '');
+      assert.equal(await page.locator('.reveal').first().evaluate(el => getComputedStyle(el).opacity), '1');
+      assert.deepEqual(errors, []);
+      await page.close();
+    }
     // Theme stays usable beside the menu on narrow screens and across pages.
     for (const width of [320, 360, 1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:720}});
