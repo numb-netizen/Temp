@@ -57,10 +57,11 @@ const {chromium} = require('playwright-core');
     // Intercept submissions so tests never create an issue.
     for (const width of [320, 360, 768, 1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:720}});
+      let feedbackStatus = 429;
       await page.context().route('**/*', route => {
         const url = new URL(route.request().url());
         if (url.origin === 'http://127.0.0.1:8765') return route.continue();
-        if (url.origin === 'https://cciwbmtmlrlgpgewiaqk.supabase.co' && url.pathname === '/functions/v1/feedback/submit') return route.fulfill({status:202, contentType:'application/json', headers:{'access-control-allow-origin':'*'}, body:'{"accepted":true}'});
+        if (url.origin === 'https://cciwbmtmlrlgpgewiaqk.supabase.co' && url.pathname === '/functions/v1/feedback/submit') return route.fulfill({status:feedbackStatus, contentType:'application/json', headers:{'access-control-allow-origin':'*'}, body:feedbackStatus === 202 ? '{"accepted":true}' : '{"error":"rate_limit"}'});
         return route.abort();
       });
       await page.goto('http://127.0.0.1:8765/index.html');
@@ -82,6 +83,10 @@ const {chromium} = require('playwright-core');
       await page.locator('.feedback-form button').waitFor({state:'visible'});
       await page.locator('#feedback-title-input').fill('ট্র্যাকারের সমস্যা');
       await page.locator('#feedback-body').fill('পেজটি খোলে না & আমি সাহায্য চাই।');
+      await page.locator('.feedback-form button').click();
+      await page.getByRole('status').getByText('এক ঘণ্টা পরে আবার চেষ্টা করো', {exact:false}).waitFor();
+      assert.equal(await page.locator('#feedback-body').inputValue(), 'পেজটি খোলে না & আমি সাহায্য চাই।');
+      feedbackStatus = 202;
       const [request] = await Promise.all([
         page.waitForRequest(req => req.url().endsWith('/functions/v1/feedback/submit') && req.method() === 'POST'),
         page.locator('.feedback-form button').click()
