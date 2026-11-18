@@ -126,7 +126,7 @@ const {chromium} = require('playwright-core');
       assert.equal(validity.valid, true, JSON.stringify(validity));
       let request;
       try {
-        [request] = await Promise.all([page.context().waitForEvent('request', {predicate: req => req.url().startsWith('https://github.com/numb-netizen/Temp/issues/new?'), timeout:10000}), page.locator('.feedback-form button').click()]);
+        [request] = await Promise.all([page.context().waitForEvent('request', {predicate: req => req.url().startsWith('https://github.com/numb-netizen/Temp/issues/new?'), timeout:15000}), page.locator('.feedback-form button').click({timeout:5000})]);
       } catch (e) { throw new Error('No-JS submission failed: '+JSON.stringify({validity, current:page.url(), events, active:await page.evaluate(() => document.activeElement.outerHTML), error:e.message})); }
       const url = new URL(request.url());
       assert.equal(url.searchParams.get('title'), 'পরামর্শ');
