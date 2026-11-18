@@ -113,3 +113,9 @@ CI-তে আলাদা temporary self-signed certificate দিয়ে sign
 দুটোতেই bundled snapshot ও local tracker অফলাইনে কাজ করে; ভিডিও/বাইরের লিংক ও ফন্ট অনলাইন। Lite, পুরোনো Electron অ্যাপ ও ব্রাউজারের tracker storage আলাদা এবং automatic migration/sync নেই; আগের ডেটা দরকার হলে পুরোনো অ্যাপ বা তার data মুছবেন না। নতুন site snapshot পেতে নতুন build দরকার। একটি স্থির loopback port (Windows 19828 / Linux 19829) কেবল স্থানীয় পৃষ্ঠার জন্য ব্যবহৃত হয়; একই সময়ে একাধিক instance বা port দখল থাকলে অ্যাপ চালু হবে না।
 
 Windows build: `dotnet publish desktop-lite/windows/HscLite.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true`, তারপর output-এর পাশে `site` কপি করতে হবে। Linux: `desktop-lite/linux/build-deb.sh`, তারপর `sudo apt install ./desktop-lite/dist/HSC-2027-Lite-0.2.1-beta-linux.deb`। `.github/workflows/desktop-lite.yml` প্যাকেজকৃত apps-এ offline tracker/theme smoke test চালায় ও manual dispatch-এ beta release ও SHA-256 প্রকাশ করে। Linux CI-তে sandbox disable কেবল headless test-এর জন্য; বিতরণকৃত অ্যাপ sandbox বন্ধ করে না।
+
+### মতামত ও নিরাপত্তা রিপোর্ট
+
+মেনুবারের **মতামত** বোতামে সাইটের ফর্ম খোলে। বিষয় ও বিবরণ দিলে ফর্ম GitHub-এর নতুন Issue পেজে লেখা নিয়ে যায়; GitHub লগইন করে সেখানে **Submit new issue** না চাপা পর্যন্ত কোনো Issue তৈরি হয় না। Issue প্রকাশ্য, তাই ব্যক্তিগত বা সংবেদনশীল তথ্য দেওয়া যাবে না। এটি কোনো backend বা গোপন GitHub token ছাড়াই চলে; ইন্টারনেট ও GitHub অ্যাকাউন্ট প্রয়োজন। পুরোনো offline app-এ পরিবর্তন পেতে নতুন build দরকার।
+
+নিরাপত্তা দুর্বলতা পাবলিক Issue-তে না লিখে [গোপন GitHub vulnerability report](https://github.com/numb-netizen/Temp/security/advisories/new) ব্যবহার করুন। বিস্তারিত [SECURITY.md](SECURITY.md)-এ।
