@@ -21,7 +21,7 @@ test('humanities links to sociology without the retired subject', () => {
 test('sociology tracker uses the same separate keys and topics as the subject page', () => {
   const entries = text => [...text.matchAll(/data-subject="sociology" data-chapter="(\d+)"><span class="box"><\/span><span class="nm">([^<]+)<\/span>/g)].map(m => [m[1], m[2]]);
   const subject = read('sociology.html'), tracker = read('tracker.html');
-  assert.equal(entries(subject).length, 8);
+  assert.equal(entries(subject).length, 21);
   assert.deepEqual(entries(subject), entries(tracker));
   assert.doesNotMatch(subject, /data-subject="bangladesh"/);
   assert.doesNotMatch(tracker, /data-subject="bangladesh"/);
