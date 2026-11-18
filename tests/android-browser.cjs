@@ -14,6 +14,50 @@ const {chromium} = require('playwright-core');
       assert.equal(await bing.text(), '<?xml version="1.0"?>\n<users>\n\t<user>76A0C77A1435B5695135852A5F05F622</user>\n</users>');
       await page.close();
     }
+    // Theme stays usable beside the menu on narrow screens and across pages.
+    for (const width of [320, 360, 1201, 1440]) {
+      const page = await browser.newPage({viewport:{width, height:720}});
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      await page.goto('http://127.0.0.1:8765/index.html');
+      const toggle = page.locator('.theme-toggle');
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+      assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+      await toggle.focus();
+      await page.keyboard.press('Enter');
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      assert.equal(await toggle.getAttribute('aria-pressed'), 'true');
+      assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(244, 249, 246)');
+      if (width <= 1200) {
+        await page.locator('#burger').click();
+        assert.equal(await page.locator('#burger').getAttribute('aria-expanded'), 'true');
+        await page.locator('#navLinks a[href="science.html"]').click();
+        await page.locator('.theme-toggle').waitFor({state:'visible'});
+        assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      }
+      await page.goto('http://127.0.0.1:8765/teachers.html');
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      await page.reload();
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      for (const name of ['student-group.html', 'android-app.html', 'tracker.html', 'college-info.html', 'index.html']) {
+        await page.goto('http://127.0.0.1:8765/' + name);
+        assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', name);
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `theme overflow ${name} ${width}`);
+      }
+      await page.locator('.theme-toggle').click();
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+      await page.reload();
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+      await page.close();
+    }
+    {
+      const page = await browser.newPage();
+      await page.addInitScript(() => Object.defineProperty(window, 'localStorage', {get() {throw new Error('blocked');}}));
+      await page.goto('http://127.0.0.1:8765/index.html');
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+      await page.locator('.theme-toggle').click();
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      await page.close();
+    }
     for (const width of [320, 360]) {
       const page = await browser.newPage({viewport:{width, height:568}});
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());

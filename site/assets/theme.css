@@ -1,0 +1,51 @@
+/* Compact, keyboard-accessible control in the main navigation. */
+.nav-in{gap:8px}
+.theme-toggle{width:40px;height:40px;flex:none;display:grid;place-items:center;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);cursor:pointer;font-size:19px;line-height:1;padding:0}
+.theme-toggle[hidden]{display:none}
+.theme-toggle:hover{border-color:var(--green2)}
+.theme-toggle:focus-visible{outline:2px solid var(--green2);outline-offset:3px}
+@media(min-width:1201px){.links{gap:8px;font-size:13px}}
+@media(max-width:1200px){.nav-in>.brand{flex:1;overflow:hidden}.nav-in .brand-copy{overflow:hidden}.nav-in .brand-name{overflow:hidden;text-overflow:ellipsis}.burger{flex:none}}
+
+/* Light mode overrides; no changes to the default dark palette. */
+:root[data-theme="light"]{color-scheme:light;--bg:#f4f9f6;--bg2:#e9f3ed;--panel:#fff;--line:#cddfd4;--green:#087348;--green2:#00683b;--red:#ae2638;--gold:#805000;--text:#172f22;--muted:#455e50}
+:root[data-theme="light"] body{background:var(--bg);color:var(--text)}
+:root[data-theme="light"] nav{background:rgba(248,252,249,.95)}
+:root[data-theme="light"] .links a:hover,:root[data-theme="light"] .links a.active{color:#004b2c}
+:root[data-theme="light"] .burger{color:var(--text)}
+@media(max-width:1200px){:root[data-theme="light"] .links{background:#f9fcfa}}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+:root[data-theme="light"] h1,:root[data-theme="light"] h2,:root[data-theme="light"] h1 .grad,:root[data-theme="light"] h2 .grad,:root[data-theme="light"] .grad,:root[data-theme="light"] .teacher-section h2{background-image:linear-gradient(92deg,#005f36,#157249 48%,#795100);color:transparent}
+}
+:root[data-theme="light"] .btn-p,:root[data-theme="light"] .dl,:root[data-theme="light"] .nav-cta{background:#087348;color:#fff}
+:root[data-theme="light"] .btn-g{background:#fff;color:var(--text)}
+:root[data-theme="light"] .cd-card{background:rgba(255,255,255,.88);box-shadow:0 22px 56px #315b4020}
+:root[data-theme="light"] .cd-cell,:root[data-theme="light"] .exam-timer div{background:#edf7f0}
+:root[data-theme="light"] .marquee{background:#e6f2ea}
+:root[data-theme="light"] .crumbs .cur{color:var(--text)}
+:root[data-theme="light"] .tree-root .node-root{background:#087348;color:#fff}
+:root[data-theme="light"] .tree-dept{background:#fff;color:var(--text)}
+:root[data-theme="light"] .tree-dept:hover{background:#dff1e5;color:#064a2b}
+:root[data-theme="light"] .tree-kid{background:#f0f8f2;color:var(--muted)}
+:root[data-theme="light"] .tree-kid:hover{color:#064a2b}
+:root[data-theme="light"] .bar{background:#dcebe1}
+:root[data-theme="light"] .chap:hover{background:#eaf5ed}
+:root[data-theme="light"] .chap.done .box{color:#fff}
+:root[data-theme="light"] footer{background:#e5f1e9}
+:root[data-theme="light"] .copy{color:var(--muted)}
+:root[data-theme="light"] .exam-countdown{background:linear-gradient(145deg,#e0f3e6,#f8fcf9)}
+:root[data-theme="light"] .exam-syllabus{background:#f3faf5}
+:root[data-theme="light"] .dabi-teaser{background:linear-gradient(110deg,#e1f3e6,#f8fcf9)}
+:root[data-theme="light"] .dabi-teaser strong{color:var(--text)}
+:root[data-theme="light"] .teacher-copy strong,:root[data-theme="light"] .vigilance-card a{color:var(--text)}
+:root[data-theme="light"] .teacher-card summary:hover,:root[data-theme="light"] .council-card summary:hover{background:#eaf5ed}
+:root[data-theme="light"] .group-card{background:linear-gradient(145deg,#f9fdfa,#e4f3e9);box-shadow:0 20px 50px #315b401c}
+:root[data-theme="light"] .group-flow{background:#fff}
+:root[data-theme="light"] .android-lead,:root[data-theme="light"] .android-steps p,:root[data-theme="light"] .android-note p{color:var(--muted)}
+:root[data-theme="light"] .android-kicker{background:#e4f4e9;color:#075b36;border-color:#a8cfb4}
+:root[data-theme="light"] .android-note{background:linear-gradient(145deg,#e1f2e6,#f8fcf9)}
+:root[data-theme="light"] .android-steps li>span{background:#e3f3e8}
+/* The phone illustration intentionally stays dark. */
+:root[data-theme="light"] .android-phone{color:#eef7f0}
+:root[data-theme="light"] .android-phone strong span{color:#7ff5ad}
+:root[data-theme="light"] .android-phone-card span{color:#b7cfbd}
