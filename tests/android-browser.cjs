@@ -121,12 +121,13 @@ const {chromium} = require('playwright-core');
       page.context().on('page', p => events.push('page: ' + p.url()));
       page.context().on('request', req => events.push('request: ' + req.url()));
       page.context().on('requestfailed', req => events.push('failed: ' + req.url() + ' ' + JSON.stringify(req.failure())));
+      await page.locator('.feedback-form').evaluate(el => { el.target = '_self'; el.removeAttribute('rel'); });
       const validity = await page.locator('.feedback-form').evaluate(el => ({valid:el.checkValidity(), target:el.target, action:el.action, data:[...new FormData(el).entries()]}));
       assert.equal(validity.valid, true, JSON.stringify(validity));
       let request;
       try {
         [request] = await Promise.all([page.context().waitForEvent('request', {predicate: req => req.url().startsWith('https://github.com/numb-netizen/Temp/issues/new?'), timeout:10000}), page.locator('.feedback-form button').click()]);
-      } catch (e) { throw new Error('No-JS submission failed: '+JSON.stringify({validity, current:page.url(), events, error:e.message})); }
+      } catch (e) { throw new Error('No-JS submission failed: '+JSON.stringify({validity, current:page.url(), events, active:await page.evaluate(() => document.activeElement.outerHTML), error:e.message})); }
       const url = new URL(request.url());
       assert.equal(url.searchParams.get('title'), 'পরামর্শ');
       assert.equal(url.searchParams.get('body'), 'নতুন ধারণা');
