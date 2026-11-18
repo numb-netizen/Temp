@@ -45,12 +45,26 @@ const {chromium} = require('playwright-core');
       item = page.locator('.chap[data-subject="physics"][data-chapter="0"]');
       assert.equal(await item.getAttribute('aria-checked'), 'true');
       assert.equal(await page.evaluate(() => localStorage.getItem('hsc2027:physics:0')), '1');
-      for (const name of ['bangla-2.html','english-2.html']) {
-        await page.goto('http://127.0.0.1:8765/' + name);
-        assert.ok(await page.getByText('তালিকা এখনো প্রকাশের জন্য যাচাই করা হয়নি।').count());
-        assert.equal(await page.locator('.chap').count(), 0);
-        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-      }
+      await page.goto('http://127.0.0.1:8765/english-2.html');
+      assert.ok(await page.getByText('তালিকা এখনো প্রকাশের জন্য যাচাই করা হয়নি।').count());
+      assert.equal(await page.locator('.chap').count(), 0);
+      await page.goto('http://127.0.0.1:8765/bangla-2.html');
+      assert.equal(await page.locator('.chap[data-subject="bangla-2"]').count(), 9);
+      assert.ok(await page.getByText('পূর্ণ সরকারি পাঠ্যসূচি নয়', {exact:false}).count());
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      await page.evaluate(() => localStorage.setItem('hsc2027:bangla:0', '1'));
+      let banglaItem = page.locator('.chap[data-subject="bangla-2"][data-chapter="0"]');
+      await banglaItem.focus(); await page.keyboard.press('Space');
+      assert.equal(await banglaItem.getAttribute('aria-checked'), 'true');
+      assert.equal(await page.evaluate(() => localStorage.getItem('hsc2027:bangla-2:0')), '1');
+      await page.goto('http://127.0.0.1:8765/tracker.html');
+      banglaItem = page.locator('.chap[data-subject="bangla-2"][data-chapter="0"]');
+      assert.equal(await banglaItem.getAttribute('aria-checked'), 'true');
+      assert.equal(await page.evaluate(() => localStorage.getItem('hsc2027:bangla:0')), '1');
+      await page.goto('http://127.0.0.1:8765/bangla-2.html');
+      assert.equal(await page.locator('.chap[data-subject="bangla-2"][data-chapter="0"]').getAttribute('aria-checked'), 'true');
+      await page.locator('.bangla2-image summary').first().click();
+      assert.equal(await page.locator('.bangla2-image img').first().isVisible(), true);
       await page.close();
     }
     // Feedback is in normal page flow, not the navigation or a floating overlay.

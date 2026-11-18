@@ -1,0 +1,13 @@
+/* Image-sourced preparation stays readable on narrow screens and without JS. */
+.bangla2-content{max-width:760px;margin-top:28px}
+.bangla2-content .title{font-size:clamp(24px,4vw,28px);margin-bottom:10px}
+.bangla2-content .lead,.bangla2-note{color:var(--muted);line-height:1.7}
+.bangla2-content .tcard{margin:18px 0}
+.bangla2-detail{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:12px 0;padding:14px 18px}
+.bangla2-detail summary{cursor:pointer;font-weight:700;line-height:1.5}
+.bangla2-detail summary:focus-visible{outline:2px solid var(--green2);outline-offset:3px}
+.bangla2-detail p,.bangla2-detail ol{color:var(--muted);line-height:1.7}
+.bangla2-detail ol{padding-left:1.5em}
+.bangla2-detail li{margin:8px 0}
+.bangla2-source-title{margin-top:30px}
+.bangla2-image img{display:block;width:100%;height:auto;margin-top:14px;border-radius:8px}
