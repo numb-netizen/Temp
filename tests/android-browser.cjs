@@ -14,6 +14,46 @@ const {chromium} = require('playwright-core');
       assert.equal(await bing.text(), '<?xml version="1.0"?>\n<users>\n\t<user>76A0C77A1435B5695135852A5F05F622</user>\n</users>');
       await page.close();
     }
+    // Feedback is visible in the navigation, never a floating layer. GitHub is
+    // intercepted so this test does not create a real issue or require login.
+    for (const width of [320, 360, 768, 1201, 1440]) {
+      const page = await browser.newPage({viewport:{width, height:720}});
+      await page.context().route('**/*', route => {
+        const url = new URL(route.request().url());
+        if (url.origin === 'http://127.0.0.1:8765') return route.continue();
+        if (url.origin === 'https://github.com' && url.pathname === '/numb-netizen/Temp/issues/new') return route.fulfill({status:200, contentType:'text/html', body:'issue preview'});
+        return route.abort();
+      });
+      await page.goto('http://127.0.0.1:8765/index.html');
+      const cta = page.locator('.feedback-cta');
+      assert.equal(await cta.isVisible(), true, `feedback button ${width}`);
+      const layout = await page.evaluate(() => {
+        const get = s => document.querySelector(s).getBoundingClientRect();
+        const brand = get('nav .brand'), cta = get('.feedback-cta'), theme = get('.theme-toggle');
+        const burger = get('#burger');
+        return {fits: cta.left >= brand.right && cta.right <= theme.left && theme.right <= innerWidth,
+          burgerFits: getComputedStyle(document.querySelector('#burger')).display === 'none' || (theme.right <= burger.left && burger.right <= innerWidth),
+          scrollFits: document.documentElement.scrollWidth <= innerWidth};
+      });
+      assert.ok(layout.fits && layout.burgerFits && layout.scrollFits, `feedback nav ${width}: ${JSON.stringify(layout)}`);
+      await cta.click();
+      assert.match(page.url(), /feedback\.html$/);
+      assert.equal(await page.locator('#feedback-title-input').getAttribute('required'), '');
+      await page.locator('#feedback-title-input').fill('ট্র্যাকারের সমস্যা');
+      await page.locator('#feedback-body').fill('পেজটি খোলে না & আমি সাহায্য চাই।');
+      const [popup] = await Promise.all([page.waitForEvent('popup'), page.locator('.feedback-form button').click()]);
+      await popup.waitForLoadState();
+      const url = new URL(popup.url());
+      assert.equal(url.origin, 'https://github.com');
+      assert.equal(url.pathname, '/numb-netizen/Temp/issues/new');
+      assert.equal(url.searchParams.get('title'), 'ট্র্যাকারের সমস্যা');
+      assert.equal(url.searchParams.get('body'), 'পেজটি খোলে না & আমি সাহায্য চাই।');
+      await popup.close();
+      await page.locator('.theme-toggle').click();
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      await page.close();
+    }
     // Theme stays usable beside the menu on narrow screens and across pages.
     for (const width of [320, 360, 1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:720}});

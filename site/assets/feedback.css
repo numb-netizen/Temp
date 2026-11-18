@@ -1,0 +1,13 @@
+.feedback-card p{color:var(--muted);line-height:1.75}
+.feedback-card .feedback-notice,.feedback-card .feedback-security{padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--panel);line-height:1.7;color:var(--text)}
+.feedback-card .feedback-security a,.feedback-card noscript a{color:var(--green2);text-decoration:underline;text-underline-offset:3px;font-weight:700;overflow-wrap:anywhere}
+.feedback-form{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin:24px 0 0}
+.feedback-form label{font-weight:700;margin-top:6px}
+.feedback-form input,.feedback-form textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);padding:12px 14px;font:inherit;line-height:1.6}
+.feedback-form textarea{resize:vertical;min-height:150px}
+.feedback-form input:focus-visible,.feedback-form textarea:focus-visible,.feedback-form button:focus-visible,.feedback-cta:focus-visible{outline:2px solid var(--green2);outline-offset:3px}
+.feedback-form input::placeholder,.feedback-form textarea::placeholder{color:var(--muted);opacity:1}
+.feedback-form button{align-self:flex-start;font-family:inherit;cursor:pointer;border:0;margin-top:8px}
+.feedback-card .feedback-help{font-size:13px;margin:0}
+.feedback-card .feedback-note{font-size:14px}
+@media(max-width:480px){.feedback-form button{align-self:stretch}}
