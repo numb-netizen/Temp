@@ -30,8 +30,10 @@ const {chromium} = require('playwright-core');
       if (width <= 1200) {
         await page.locator('#burger').click();
         assert.equal(await page.locator('#burger').getAttribute('aria-expanded'), 'true');
-        await page.locator('#navLinks a[href="teachers.html"]').click();
-      } else await page.goto('http://127.0.0.1:8765/teachers.html');
+        await page.locator('#navLinks a[href="science.html"]').click();
+        assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      }
+      await page.goto('http://127.0.0.1:8765/teachers.html');
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
       await page.reload();
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
