@@ -1,13 +1,35 @@
+/* The homepage invitation is in normal document flow, never an overlay. */
+.feedback-invite{padding:22px 0 0}
+.feedback-banner{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:23px 26px;border:1px solid var(--line);border-radius:20px;background:var(--panel)}
+.feedback-banner-copy{display:flex;align-items:center;gap:16px;min-width:0}
+.feedback-banner-icon{flex:none;display:grid;place-items:center;width:50px;height:50px;border-radius:16px;background:var(--bg2);font-size:25px}
+.feedback-banner h2{font-size:clamp(22px,3vw,28px);line-height:1.3;margin:4px 0}
+.feedback-banner p{color:var(--muted);line-height:1.5;margin:0}
+.feedback-banner-link{flex:none;text-align:center;white-space:nowrap}
+.feedback-banner-link:focus-visible{outline:2px solid var(--green2);outline-offset:3px}
 .feedback-card p{color:var(--muted);line-height:1.75}
+.feedback-card .feedback-intro{max-width:670px}
+.feedback-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:24px 0}
+.feedback-steps div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.feedback-steps span{display:grid;place-items:center;width:27px;height:27px;border-radius:9px;background:var(--bg2);color:var(--green2);font-weight:700;margin-bottom:8px}
+.feedback-steps strong,.feedback-steps small{display:block;line-height:1.5}
+.feedback-steps small{color:var(--muted);margin-top:3px}
 .feedback-card .feedback-notice,.feedback-card .feedback-security{padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--panel);line-height:1.7;color:var(--text)}
-.feedback-card .feedback-security a,.feedback-card noscript a{color:var(--green2);text-decoration:underline;text-underline-offset:3px;font-weight:700;overflow-wrap:anywhere}
+.feedback-card .feedback-security a,.feedback-card noscript a,.feedback-next a{color:var(--green2);text-decoration:underline;text-underline-offset:3px;font-weight:700;overflow-wrap:anywhere}
 .feedback-form{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin:24px 0 0}
 .feedback-form label{font-weight:700;margin-top:6px}
-.feedback-form input,.feedback-form textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);padding:12px 14px;font:inherit;line-height:1.6}
+.feedback-form input,.feedback-form textarea,.feedback-form select{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);padding:12px 14px;font:inherit;line-height:1.6}
 .feedback-form textarea{resize:vertical;min-height:150px}
-.feedback-form input:focus-visible,.feedback-form textarea:focus-visible,.feedback-form button:focus-visible,.feedback-cta:focus-visible{outline:2px solid var(--green2);outline-offset:3px}
+.feedback-form input:focus-visible,.feedback-form textarea:focus-visible,.feedback-form select:focus-visible,.feedback-form button:focus-visible{outline:2px solid var(--green2);outline-offset:3px}
 .feedback-form input::placeholder,.feedback-form textarea::placeholder{color:var(--muted);opacity:1}
 .feedback-form button{align-self:flex-start;font-family:inherit;cursor:pointer;border:0;margin-top:8px}
+.feedback-form .feedback-extra{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:14px;padding:16px;margin:6px 0 0;min-width:0}
+.feedback-form .feedback-extra[hidden]{display:none}
+.feedback-extra legend{font-weight:700;padding:0 5px}
+.feedback-extra legend span{font-weight:400;color:var(--muted)}
+.feedback-extra p{font-size:13px;margin:0}
 .feedback-card .feedback-help{font-size:13px;margin:0}
 .feedback-card .feedback-note{font-size:14px}
-@media(max-width:480px){.feedback-form button{align-self:stretch}}
+.feedback-next{display:flex;flex-direction:column;gap:4px;margin:22px 0;color:var(--muted);font-size:14px}
+@media(max-width:650px){.feedback-banner{align-items:stretch;flex-direction:column}.feedback-banner-link{align-self:flex-start}.feedback-steps{grid-template-columns:1fr}.feedback-steps div{display:grid;grid-template-columns:27px 1fr;column-gap:10px}.feedback-steps span{grid-row:span 2;margin:0}.feedback-steps small{margin:0}}
+@media(max-width:480px){.feedback-banner{padding:20px}.feedback-banner-link{align-self:stretch}.feedback-form button{align-self:stretch}}

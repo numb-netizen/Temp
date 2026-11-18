@@ -53,8 +53,8 @@ const {chromium} = require('playwright-core');
       }
       await page.close();
     }
-    // Feedback is visible in the navigation, never a floating layer. GitHub is
-    // intercepted so this test does not create a real issue or require login.
+    // Feedback is in normal page flow, not the navigation or a floating overlay.
+    // Intercept GitHub so these tests never create an issue.
     for (const width of [320, 360, 768, 1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:720}});
       await page.context().route('**/*', route => {
@@ -64,34 +64,64 @@ const {chromium} = require('playwright-core');
         return route.abort();
       });
       await page.goto('http://127.0.0.1:8765/index.html');
-      const cta = page.locator('.feedback-cta');
-      assert.equal(await cta.isVisible(), true, `feedback button ${width}`);
+      assert.equal(await page.locator('nav a[href="feedback.html"]').count(), 0);
+      assert.equal(await page.locator('footer a[href="feedback.html"]').count(), 1);
+      const invite = page.locator('.feedback-invite');
+      assert.equal(await invite.isVisible(), true);
       const layout = await page.evaluate(() => {
-        const get = s => document.querySelector(s).getBoundingClientRect();
-        const brand = get('nav .brand'), cta = get('.feedback-cta'), theme = get('.theme-toggle');
-        const burger = get('#burger');
-        return {fits: cta.left >= brand.right && cta.right <= theme.left && theme.right <= innerWidth,
-          burgerFits: getComputedStyle(document.querySelector('#burger')).display === 'none' || (theme.right <= burger.left && burger.right <= innerWidth),
+        const box = document.querySelector('.feedback-invite').getBoundingClientRect();
+        const before = document.querySelector('.marquee').getBoundingClientRect();
+        const after = document.querySelector('.feedback-invite').nextElementSibling.getBoundingClientRect();
+        return {normal: getComputedStyle(document.querySelector('.feedback-invite')).position === 'static',
+          noOverlap: before.bottom <= box.top && box.bottom <= after.top,
           scrollFits: document.documentElement.scrollWidth <= innerWidth};
       });
-      assert.ok(layout.fits && layout.burgerFits && layout.scrollFits, `feedback nav ${width}: ${JSON.stringify(layout)}`);
-      await cta.click();
+      assert.ok(layout.normal && layout.noOverlap && layout.scrollFits, `feedback layout ${width}: ${JSON.stringify(layout)}`);
+      await page.locator('.feedback-banner-link').click();
       assert.match(page.url(), /feedback\.html$/);
-      assert.equal(await page.locator('#feedback-title-input').getAttribute('required'), '');
+      assert.equal(await page.locator('#feedback-extra').isVisible(), true);
       await page.locator('#feedback-title-input').fill('ট্র্যাকারের সমস্যা');
       await page.locator('#feedback-body').fill('পেজটি খোলে না & আমি সাহায্য চাই।');
-      const [popup] = await Promise.all([page.waitForEvent('popup'), page.locator('.feedback-form button').click()]);
-      await popup.waitForLoadState();
-      const url = new URL(popup.url());
-      assert.equal(url.origin, 'https://github.com');
-      assert.equal(url.pathname, '/numb-netizen/Temp/issues/new');
-      assert.equal(url.searchParams.get('title'), 'ট্র্যাকারের সমস্যা');
-      assert.equal(url.searchParams.get('body'), 'পেজটি খোলে না & আমি সাহায্য চাই।');
-      await popup.close();
+      await page.locator('#feedback-kind').selectOption('সমস্যা');
+      await page.locator('#feedback-page').fill('tracker.html');
+      await page.locator('#feedback-device').fill('Android Chrome');
+      for (let i=0; i<2; i++) {
+        const [popup] = await Promise.all([page.waitForEvent('popup'), page.locator('.feedback-form button').click()]);
+        await popup.waitForLoadState();
+        const url = new URL(popup.url());
+        assert.equal(url.origin, 'https://github.com');
+        assert.equal(url.pathname, '/numb-netizen/Temp/issues/new');
+        assert.equal(url.searchParams.get('title'), 'ট্র্যাকারের সমস্যা');
+        assert.equal(url.searchParams.get('body'), 'পেজটি খোলে না & আমি সাহায্য চাই।\n\nমতামতের ধরন: সমস্যা\nপেজ: tracker.html\nডিভাইস বা ব্রাউজার: Android Chrome');
+        assert.equal(url.searchParams.get('feedback_page'), null);
+        await popup.close();
+      }
+      assert.equal(await page.locator('#feedback-body').inputValue(), 'পেজটি খোলে না & আমি সাহায্য চাই।');
       await page.locator('.theme-toggle').click();
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.close();
+    }
+    // Core title/body submission still works when JavaScript is unavailable.
+    {
+      const page = await browser.newPage({javaScriptEnabled:false, viewport:{width:360,height:720}});
+      await page.context().route('**/*', route => {
+        const url = new URL(route.request().url());
+        if (url.origin === 'http://127.0.0.1:8765') return route.continue();
+        if (url.origin === 'https://github.com' && url.pathname === '/numb-netizen/Temp/issues/new') return route.fulfill({status:200, contentType:'text/html', body:'issue preview'});
+        return route.abort();
+      });
+      await page.goto('http://127.0.0.1:8765/feedback.html');
+      assert.equal(await page.locator('#feedback-extra').isVisible(), false);
+      await page.locator('#feedback-title-input').fill('পরামর্শ');
+      await page.locator('#feedback-body').fill('নতুন ধারণা');
+      const [popup] = await Promise.all([page.waitForEvent('popup'), page.locator('.feedback-form button').click()]);
+      await popup.waitForLoadState();
+      const url = new URL(popup.url());
+      assert.equal(url.searchParams.get('title'), 'পরামর্শ');
+      assert.equal(url.searchParams.get('body'), 'নতুন ধারণা');
+      assert.equal(url.searchParams.get('feedback_type'), null);
+      await popup.close(); await page.close();
     }
     // Theme stays usable beside the menu on narrow screens and across pages.
     for (const width of [320, 360, 1201, 1440]) {
@@ -304,8 +334,8 @@ const {chromium} = require('playwright-core');
       const result = await page.evaluate(() => {
         const brand = document.querySelector('nav .brand').getBoundingClientRect();
         const links = document.querySelector('#navLinks').getBoundingClientRect();
-        const cta = document.querySelector('.nav-cta').getBoundingClientRect();
-        return {noOverlap: brand.right <= links.left && links.right <= cta.left, fits: cta.right <= innerWidth};
+        const toggle = document.querySelector('.theme-toggle').getBoundingClientRect();
+        return {noOverlap: brand.right <= links.left && links.right <= toggle.left, fits: toggle.right <= innerWidth};
       });
       assert.ok(result.noOverlap && result.fits, `desktop nav overflow at ${width}: ${JSON.stringify(result)}`);
       assert.ok(await page.locator('#navLinks a[href="android-app.html"]').isVisible());

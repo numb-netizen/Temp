@@ -16,16 +16,14 @@
 <link rel="stylesheet" href="assets/style.css?v=20261113-app-context">
 <link rel="stylesheet" href="assets/heading-motion.css?v=1">
 <link rel="stylesheet" href="assets/student-group.css">
-<link rel="stylesheet" href="assets/feedback.css?v=1">
+<link rel="stylesheet" href="assets/feedback.css?v=2">
 <link rel="stylesheet" href="assets/theme.css?v=1">
-<link rel="stylesheet" href="assets/feedback-nav.css?v=1">
 </head>
 <body>
 <nav>
   <div class="wrap nav-in">
     <a class="brand" href="index.html"><img class="brand-logo" src="assets/study-logo.png" width="44" height="44" alt=""><span class="brand-copy"><span class="brand-name" lang="en">Chunarughat Government College</span><span class="brand-batch">HSC <em>2027</em></span></span></a>
     <div class="links" id="navLinks"><a href="index.html" class="">হোম</a><a href="science.html" class="">বিজ্ঞান</a><a href="arts.html" class="">মানবিক</a><a href="commerce.html" class="">ব্যবসায়</a><a href="classes.html" class="">অনলাইন ক্লাস</a><a href="tracker.html" class="">ট্র্যাকার</a><a href="routine.html" class="">রুটিন</a><a href="android-app.html">অ্যাপ ডাউনলোড</a><a href="#contact">যোগাযোগ</a></div>
-    <a class="nav-cta feedback-cta" href="feedback.html" aria-current="page">✉ মতামত</a>
     <button class="theme-toggle" type="button" aria-label="লাইট মোড" aria-pressed="false" title="লাইট মোড চালু করো" hidden><span aria-hidden="true">☀️</span></button>
     <button class="burger" id="burger" aria-label="মেনু" aria-controls="navLinks" aria-expanded="false">☰</button>
   </div>
@@ -35,18 +33,36 @@
     <div class="crumbs"><a href="index.html">হোম</a><span class="sep">›</span><span class="cur">মতামত</span></div>
     <section class="group-card feedback-card" aria-labelledby="feedback-title">
       <div class="eyebrow">তোমার কথা গুরুত্বপূর্ণ</div>
-      <h1 id="feedback-title">মতামত ও সমস্যা জানাও</h1>
-      <p>সাইট বা অ্যাপের ভুল, সমস্যা কিংবা নতুন কোনো পরামর্শ জানাও। তোমার লেখা GitHub-এ নিয়ে যাওয়া হবে; সেখানে দেখে নিশ্চিত করলে সেটি একটি পাবলিক Issue হবে।</p>
-      <div class="feedback-notice"><strong>খেয়াল রাখো:</strong> Issue সবাই দেখতে পারে। ফোন নম্বর, রোল নম্বর, পাসওয়ার্ড বা অন্য ব্যক্তিগত তথ্য লিখো না। GitHub অ্যাকাউন্টে লগইন করে সেখানে <strong>Submit new issue</strong> চাপতে হবে।</div>
+      <h1 id="feedback-title">তোমার মতামত জানাও</h1>
+      <p class="feedback-intro">কোনো ভুল, সাইট ব্যবহারের সমস্যা অথবা নতুন ধারণা? নিচে লিখে জানাও। তোমার পরামর্শ আমাদের সাইটকে আরও ভালো করতে সাহায্য করবে।</p>
+      <div class="feedback-steps" aria-label="কীভাবে মতামত পাঠাবে">
+        <div><span>১</span><strong>লিখে জানাও</strong><small>বিষয় ও বিস্তারিত লেখো</small></div>
+        <div><span>২</span><strong>GitHub-এ দেখো</strong><small>লগইন করে লেখা যাচাই করো</small></div>
+        <div><span>৩</span><strong>Issue প্রকাশ করো</strong><small>Submit new issue চাপো</small></div>
+      </div>
+      <div class="feedback-notice"><strong>প্রকাশ্য তথ্য:</strong> GitHub Issue সবাই দেখতে পারে। ফোন নম্বর, রোল নম্বর, পাসওয়ার্ড বা অন্য ব্যক্তিগত তথ্য লিখো না। নিরাপত্তার দুর্বলতা থাকলে নিচের গোপন রিপোর্টের পথ ব্যবহার করো।</div>
       <form class="feedback-form" action="https://github.com/numb-netizen/Temp/issues/new" method="get" target="_blank" rel="noopener noreferrer">
-        <label for="feedback-title-input">সংক্ষেপে বিষয়টি কী?</label>
+        <label for="feedback-title-input">সংক্ষেপে বিষয়টি কী? <span aria-hidden="true">*</span></label>
         <input id="feedback-title-input" name="title" type="text" required maxlength="120" placeholder="যেমন: ট্র্যাকারে একটি সমস্যা" autocomplete="off">
-        <label for="feedback-body">বিস্তারিত বলো</label>
-        <textarea id="feedback-body" name="body" required maxlength="500" rows="7" placeholder="কোন পেজে কী হয়েছে, বা তোমার কী পরামর্শ? সমস্যা হলে কীভাবে দেখা যায় বলো।" aria-describedby="feedback-help"></textarea>
-        <p id="feedback-help" class="feedback-help">সর্বোচ্চ ৫০০ অক্ষর। সমস্যা হলে ডিভাইস ও ব্রাউজারের নাম দিতে পারো। সংবেদনশীল বা ব্যক্তিগত তথ্য দিও না।</p>
-        <button class="btn btn-p" type="submit">GitHub-এ চালিয়ে যাও ↗</button>
+        <label for="feedback-body">বিস্তারিত বলো <span aria-hidden="true">*</span></label>
+        <textarea id="feedback-body" name="body" required maxlength="500" rows="7" placeholder="কোন পেজে কী হয়েছে, বা কী পরিবর্তন চাইছো? সমস্যা হলে সেটি দেখার ধাপ লেখো।" aria-describedby="feedback-help"></textarea>
+        <p id="feedback-help" class="feedback-help">সর্বোচ্চ ৫০০ অক্ষর। সংবেদনশীল বা ব্যক্তিগত তথ্য দিও না।</p>
+        <fieldset id="feedback-extra" class="feedback-extra" hidden disabled>
+          <legend>আরও তথ্য <span>(ঐচ্ছিক)</span></legend>
+          <p>সমস্যাটি বুঝতে এগুলো কাজে লাগতে পারে। এগুলোও পাবলিক Issue-তে যুক্ত হবে।</p>
+          <label for="feedback-kind">মতামতের ধরন</label>
+          <select id="feedback-kind" name="feedback_type">
+            <option value="">নির্বাচন করো</option><option value="সমস্যা">সমস্যা</option><option value="তথ্যে ভুল">তথ্যে ভুল</option><option value="নতুন পরামর্শ">নতুন পরামর্শ</option><option value="অন্য কিছু">অন্য কিছু</option>
+          </select>
+          <label for="feedback-page">কোন পেজে?</label>
+          <input id="feedback-page" name="feedback_page" type="text" maxlength="100" placeholder="যেমন: tracker.html" autocomplete="off">
+          <label for="feedback-device">ডিভাইস বা ব্রাউজার</label>
+          <input id="feedback-device" name="feedback_device" type="text" maxlength="80" placeholder="যেমন: Android, Chrome" autocomplete="off">
+        </fieldset>
+        <button class="btn btn-p" type="submit">GitHub-এ লেখা দেখে পাঠাও ↗</button>
       </form>
-      <p class="feedback-note">বাটন চাপলে ইন্টারনেট ও GitHub লগইন লাগবে। শুধু ফর্ম পূরণ করলে Issue তৈরি হয় না; GitHub-এ নিশ্চিত করার পরই প্রকাশিত হয়।</p>
+      <p class="feedback-note">শুধু ফর্ম পূরণ করলে Issue তৈরি হয় না। GitHub অ্যাকাউন্টে লগইন করে সেখানে <strong>Submit new issue</strong> চাপার পর প্রকাশিত হবে; ইন্টারনেট প্রয়োজন।</p>
+      <div class="feedback-next"><a href="https://github.com/numb-netizen/Temp/issues" target="_blank" rel="noopener noreferrer">আগের মতামত ও Issue দেখো ↗</a><span>প্রকাশের পর একই Issue-তে অগ্রগতি দেখা যাবে।</span></div>
       <p class="feedback-security"><strong>নিরাপত্তাজনিত দুর্বলতা?</strong> পাবলিক Issue-তে লিখো না। <a href="https://github.com/numb-netizen/Temp/security/advisories/new" target="_blank" rel="noopener noreferrer">গোপনে নিরাপত্তা রিপোর্ট পাঠাও ↗</a></p>
       <noscript><p>ফর্ম ব্যবহার করতে সমস্যা হলে <a href="https://github.com/numb-netizen/Temp/issues/new" target="_blank" rel="noopener noreferrer">সরাসরি GitHub-এ Issue খুলতে পারো ↗</a>।</p></noscript>
     </section>
@@ -70,6 +86,7 @@
         <a href="classes.html">🎥 অনলাইন ক্লাস</a>
         <a href="tracker.html">✅ অধ্যায় ট্র্যাকার</a>
         <a href="routine.html">🕐 স্টাডি রুটিন</a>
+        <a href="feedback.html">💬 মতামত ও সমস্যা জানাও</a>
         <a href="android-app.html">📱 Android অ্যাপ</a>
       </div>
       <div class="contact-info" id="contact">
@@ -84,6 +101,7 @@
     <script src="assets/credit.js?v=20261112"></script>
   </div>
 </footer>
+<script src="assets/feedback.js?v=1"></script>
 <script src="assets/app.js?v=syllabus-access-1"></script>
 </body>
 </html>

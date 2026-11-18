@@ -16,8 +16,8 @@
 <link rel="stylesheet" href="assets/style.css?v=20261113-app-context">
 <link rel="stylesheet" href="assets/heading-motion.css?v=1">
 <link rel="stylesheet" href="assets/motion.css?v=3">
+<link rel="stylesheet" href="assets/feedback.css?v=2">
 <link rel="stylesheet" href="assets/theme.css?v=1">
-<link rel="stylesheet" href="assets/feedback-nav.css?v=1">
 </head>
 <body>
 <nav>
@@ -32,7 +32,6 @@
       <a href="tracker.html">ট্র্যাকার</a>
       <a href="routine.html">রুটিন</a>
     <a href="android-app.html">অ্যাপ ডাউনলোড</a><a href="#contact">যোগাযোগ</a></div>
-    <a class="nav-cta feedback-cta" href="feedback.html">✉ মতামত</a>
     <button class="theme-toggle" type="button" aria-label="লাইট মোড" aria-pressed="false" title="লাইট মোড চালু করো" hidden><span aria-hidden="true">☀️</span></button>
     <button class="burger" id="burger" aria-label="মেনু" aria-controls="navLinks" aria-expanded="false">☰</button>
   </div>
@@ -91,6 +90,15 @@
 </header>
 
 <div class="marquee"><div class="marquee-track" id="mq"></div></div>
+<section class="feedback-invite" aria-labelledby="feedback-invite-title">
+  <div class="wrap"><div class="feedback-banner">
+    <div class="feedback-banner-copy"><span class="feedback-banner-icon" aria-hidden="true">💬</span><div>
+      <div class="eyebrow">তোমার মতামত</div><h2 id="feedback-invite-title">একসাথে সাইটটি আরও ভালো করি</h2>
+      <p>ভুল পেয়েছো বা নতুন কোনো পরামর্শ আছে? আমাদের জানাও।</p>
+    </div></div>
+    <a class="btn btn-p feedback-banner-link" href="feedback.html">মতামত জানাও →</a>
+  </div></div>
+</section>
 <div class="wrap"><a class="dabi-teaser" data-motion="bob" href="student-group.html"><span class="dabi-teaser-icon" aria-hidden="true">💬</span><span><strong>শিক্ষার্থী গ্রুপ</strong><small>গ্রুপে যোগ দেওয়ার তথ্য দেখো</small></span><span aria-hidden="true">→</span></a></div>
 <div class="wrap"><a class="dabi-teaser" data-motion="sway" href="teachers.html"><span class="dabi-teaser-icon" aria-hidden="true">👩‍🏫</span><span><strong>শিক্ষক পরিচিতি</strong><small>শিক্ষকদের নাম, পদবি ও যোগাযোগ দেখো</small></span><span aria-hidden="true">→</span></a></div>
 <div class="wrap"><a class="dabi-teaser" data-motion="pulse" href="college-info.html"><span class="dabi-teaser-icon" aria-hidden="true">🏫</span><span><strong>কলেজ পরিচিতি ও ভিজিল্যান্স টিম</strong><small>কলেজের তথ্য, যোগাযোগ ও টিমের দায়িত্ব</small></span><span aria-hidden="true">→</span></a></div>
@@ -266,6 +274,7 @@
         <a href="classes.html">🎥 অনলাইন ক্লাস</a>
         <a href="tracker.html">✅ অধ্যায় ট্র্যাকার</a>
         <a href="routine.html">🕐 স্টাডি রুটিন</a>
+        <a href="feedback.html">💬 মতামত ও সমস্যা জানাও</a>
         <a href="android-app.html">📱 Android অ্যাপ</a>
       </div>
       <div class="contact-info" id="contact">
