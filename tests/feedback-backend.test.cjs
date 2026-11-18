@@ -36,3 +36,26 @@ test('anonymous text cannot inject markdown or mention users in an issue', () =>
   assert.ok(value.includes('@\u200beveryone')); assert.ok(value.includes('&lt;script&gt;'));
   assert.ok(value.includes('\\[link\\]\\(https://example\\.org\\)'));
 });
+test('issue processor creates once, recovers after mark failure, and marks delivered items', async () => {
+  const {run} = require('../scripts/process-feedback.cjs');
+  const oldFetch = global.fetch, oldEnv = {...process.env};
+  const item = {id:'aabbccdd-1234-4567-8901-123456789abc', title:'Hello', body:'@someone <b>hello</b>', created_at:'2026-01-01T00:00:00Z'};
+  const calls = [], created = [];
+  let existing = false;
+  process.env.ACTIONS_ID_TOKEN_REQUEST_URL = 'https://oidc.example/token';
+  process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN = 'test-only'; process.env.GITHUB_TOKEN = 'test-only';
+  global.fetch = async (url, options={}) => {
+    url = String(url); calls.push({url,options});
+    if (url.startsWith('https://oidc.example/')) return Response.json({value:'test-oidc'});
+    if (url.endsWith('/feedback/queue')) return Response.json([item]);
+    if (url.includes('/issues?')) return Response.json(existing ? [{number:17,body:`<!-- site-feedback:${item.id} -->`}] : []);
+    if (url.endsWith('/issues') && options.method === 'POST') { created.push(JSON.parse(options.body)); return Response.json({number:17}); }
+    if (url.endsWith('/feedback/mark')) return Response.json({marked:true});
+    throw Error('Unexpected URL '+url);
+  };
+  try {
+    await run(); assert.equal(created.length,1); assert.match(created[0].body, /@\u200bsomeone/); assert.ok(created[0].body.includes(`<!-- site-feedback:${item.id} -->`));
+    assert.deepEqual(JSON.parse(calls.find(c => c.url.endsWith('/feedback/mark')).options.body), {id:item.id,issue_number:17});
+    existing = true; await run(); assert.equal(created.length,1, 'existing issue must not be recreated on retry');
+  } finally { global.fetch = oldFetch; process.env = oldEnv; }
+});
