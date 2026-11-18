@@ -18,7 +18,7 @@ test('humanities navigation and online classes point to history', () => {
 test('history tracker entries match the subject page and do not reuse geography keys', () => {
   const entries = text => [...text.matchAll(/data-subject="history" data-chapter="(\d+)"><span class="box"><\/span><span class="nm">([^<]+)<\/span>/g)].map(m => [m[1], m[2]]);
   const subject = read('history.html'), tracker = read('tracker.html');
-  assert.equal(entries(subject).length, 8);
+  assert.equal(entries(subject).length, 14);
   assert.deepEqual(entries(subject), entries(tracker));
   assert.doesNotMatch(subject, /data-subject="geography"/);
   assert.doesNotMatch(tracker, /data-subject="geography"/);
