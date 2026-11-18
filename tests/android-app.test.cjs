@@ -13,7 +13,8 @@ test('every page has a working app link inside its navigation and footer', () =>
     const nav = html.match(/<div class="links" id="navLinks">([\s\S]*?)<\/div>/);
     assert.ok(nav, name);
     assert.ok(html.indexOf('src="assets/app-context.js?v=20261113"') >= 0, name);
-    assert.ok(html.indexOf('src="assets/app-context.js?v=20261113"') < html.indexOf('href="assets/style.css?v=20261113-app-context"'), name);
+    const style = html.search(/href="assets\/style\.css\?v=[^"]+"/);
+    assert.ok(style >= 0 && html.indexOf('src="assets/app-context.js?v=20261113"') < style, name);
     assert.equal((nav[1].match(/href="android-app\.html"/g) || []).length, 1, name);
     assert.match(html, /id="burger"[^>]*aria-controls="navLinks"[^>]*aria-expanded="false"/, name);
     assert.match(html.match(/<footer[\s\S]*?<\/footer>/)[0], /href="android-app\.html"/, name);

@@ -2,8 +2,7 @@
 
 চুনারুঘাট সরকারি কলেজের HSC ব্যাচ ২০২৭-এর শিক্ষার্থীদের জন্য তৈরি স্টাডি প্ল্যাটফর্ম।
 
-**কাস্টম ডোমেইন (সেটআপের পর):** https://hsc2027.de5.net/
-**বর্তমান URL (সেটআপ পরিবর্তনের আগে):** https://numb-netizen.github.io/Temp/site/
+**সাইটের মূল ঠিকানা:** https://hsc2027.de5.net/
 
 ## ওয়েবসাইটের কাঠামো (Hierarchical / Tree Structure)
 
@@ -46,7 +45,18 @@ GitHub Actions deployment-এর পর কাস্টম ডোমেইন �
 
 ## সার্চ ইঞ্জিন sitemap
 
-সাইটের `sitemap.xml`-এ প্রকাশ্য ও প্রাসঙ্গিক পেজগুলোর মূল ডোমেইনের URL আছে; `robots.txt` সার্চ ইঞ্জিনকে সেটির অবস্থান জানায়। সরানো দাবি পেজ, Google যাচাই ফাইল এবং মেনু থেকে বাদ দেওয়া পুরোনো ভূগোল পেজ তালিকায় নেই। `node scripts/generate-sitemap.cjs` চালালে প্রকাশ্য পেজ থেকে sitemap নতুন করে তৈরি হয়; Pages deployment-এও এটি স্বয়ংক্রিয়ভাবে চলে। `noindex` পেজ ও পুরোনো compatibility পেজ অন্তর্ভুক্ত হয় না। `node scripts/generate-sitemap.cjs --check` দিয়ে জমা দেওয়া তালিকা হালনাগাদ আছে কি না যাচাই করা যায়। Sitemap জমা দিলেও Google index করবে এমন নিশ্চয়তা নেই।
+সাইটের `sitemap.xml`-এ প্রকাশ্য ও প্রাসঙ্গিক পেজগুলোর মূল HTTPS ডোমেইনের URL আছে; `robots.txt` সার্চ ইঞ্জিনকে সেটির অবস্থান জানায়। প্রতিটি পাবলিক পেজে আলাদা বিবরণ ও sitemap-এর সঙ্গে মেলে এমন canonical URL আছে। হোমপেজে WebSite structured data এবং শেয়ারের জন্য Open Graph তথ্যও আছে। সরানো আবেদন ও ভুল তালিকা এবং পুরোনো ভূগোল compatibility পেজে `noindex` আছে; পুরোনো URL ও ডেটা/অগ্রগতি না মুছে সেগুলো sitemap থেকে বাদ রাখা হয়েছে।
+
+`node scripts/generate-sitemap.cjs` চালালে sitemap নতুন করে তৈরি হয়; Pages deployment-এও এটি স্বয়ংক্রিয়ভাবে চলে। `node scripts/generate-sitemap.cjs --check` দিয়ে জমা দেওয়া তালিকা যাচাই করা যায়। সাইটের জন্য ফাইল থাকা মানেই কোনো Search Console বা Bing অ্যাকাউন্টে মালিকানা যাচাই বা sitemap জমা হয়েছে এমন নয়।
+
+### Google ও Bing-এ নিবন্ধন
+
+1. [Google Search Console](https://search.google.com/search-console/) খুলে নিজের Google অ্যাকাউন্টে **Add property → URL prefix**-এ `https://hsc2027.de5.net/` দিন। HTML-file পদ্ধতিতে আপনার অ্যাকাউন্টের জন্য দেওয়া ফাইল লাগবে। রিপোতে থাকা `googleb7da7b15e33059e0.html` কেবল যে অ্যাকাউন্টের জন্য ইস্যু হয়েছে সেটির যাচাইয়ে কাজে লাগবে; অন্য অ্যাকাউন্টের জন্য আলাদা ফাইল লাগতে পারে। নির্দেশনা: [Google ownership verification](https://support.google.com/webmasters/answer/9008080)।
+2. মালিকানা যাচাই হলে **Sitemaps**-এ `https://hsc2027.de5.net/sitemap.xml` জমা দিন। **URL inspection** দিয়ে হোমপেজ পরীক্ষা ও প্রয়োজনে indexing request করা যায়। জমা দেওয়া সফল ও index হওয়া আলাদা বিষয়।
+3. [Bing Webmaster Tools](https://www.bing.com/webmasters/) থেকে সাইট যোগ ও যাচাই করুন, অথবা আগে যাচাই করা Search Console property [import করুন](https://blogs.bing.com/webmaster/2019/9/Import-sites-from-Search-Console-to-Bing-Webmaster-Tools/)। এরপর Sitemaps-এ একই URL জমা দিন। আগের `BingSiteAuth.xml` ফাইলও নির্দিষ্ট যাচাইয়ের জন্য; অ্যাকাউন্টে যাচাই সম্পন্ন হয়েছে কি না নিজে দেখুন।
+4. নতুন পেজ যোগ করলে নির্ভুল বিষয়ভিত্তিক title ও description, canonical এবং হোম থেকে সাধারণ HTML লিংক দিন; `node --test tests/seo.test.cjs` ও sitemap check চালান। যাচাই ফাইল নিজের অ্যাকাউন্ট অনুযায়ী না বদলে সরাবেন না।
+
+সার্চ ইঞ্জিন নিজস্ব সময়ে crawl/index করে এবং title/snippet নিজে বেছে নিতে পারে; sitemap, structured data বা indexing request থেকে ranking বা নির্দিষ্ট সময়ে উপস্থিতির নিশ্চয়তা নেই। HSC 2027-এর পূর্ণ সিলেবাস এখনো যাচাইকৃত নয়।
 
 ## লোকাল প্রিভিউ
 

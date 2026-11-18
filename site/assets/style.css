@@ -216,8 +216,10 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .foot a{display:block;color:var(--muted);font-size:14px;margin:5px 0;transition:.2s}
 .foot a:hover{color:var(--green2)}
 .copy{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);color:#5f7a6a;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
+.reveal{opacity:1;transform:none;transition:opacity .7s ease,transform .7s ease}
+.reveal.reveal-pending{opacity:0;transform:translateY(26px)}
+.reveal.reveal-pending.in,.reveal.reveal-pending:focus-within{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal.reveal-pending{opacity:1;transform:none;transition:none}}
 
 /* ---------- COLLEGE PRE-TEST ROUTINE ---------- */
 .exam-section{padding:70px 0 80px;background:linear-gradient(180deg,var(--bg),var(--bg2))}
