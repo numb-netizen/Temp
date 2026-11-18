@@ -33,3 +33,5 @@
 .feedback-next{display:flex;flex-direction:column;gap:4px;margin:22px 0;color:var(--muted);font-size:14px}
 @media(max-width:650px){.feedback-banner{align-items:stretch;flex-direction:column}.feedback-banner-link{align-self:flex-start}.feedback-steps{grid-template-columns:1fr}.feedback-steps div{display:grid;grid-template-columns:27px 1fr;column-gap:10px}.feedback-steps span{grid-row:span 2;margin:0}.feedback-steps small{margin:0}}
 @media(max-width:480px){.feedback-banner{padding:20px}.feedback-banner-link{align-self:stretch}.feedback-form button{align-self:stretch}}
+.feedback-form button:disabled{opacity:.65;cursor:wait}
+.feedback-form #feedback-status{min-height:1.5em;margin:0;color:var(--text)}

@@ -54,13 +54,13 @@ const {chromium} = require('playwright-core');
       await page.close();
     }
     // Feedback is in normal page flow, not the navigation or a floating overlay.
-    // Intercept GitHub so these tests never create an issue.
+    // Intercept submissions so tests never create an issue.
     for (const width of [320, 360, 768, 1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:720}});
       await page.context().route('**/*', route => {
         const url = new URL(route.request().url());
         if (url.origin === 'http://127.0.0.1:8765') return route.continue();
-        if (url.origin === 'https://github.com' && url.pathname === '/numb-netizen/Temp/issues/new') return route.fulfill({status:200, contentType:'text/html', body:'issue preview'});
+        if (url.origin === 'https://cciwbmtmlrlgpgewiaqk.supabase.co' && url.pathname === '/functions/v1/feedback/submit') return route.fulfill({status:202, contentType:'application/json', headers:{'access-control-allow-origin':'*'}, body:'{"accepted":true}'});
         return route.abort();
       });
       await page.goto('http://127.0.0.1:8765/index.html');
@@ -79,54 +79,27 @@ const {chromium} = require('playwright-core');
       assert.ok(layout.normal && layout.noOverlap && layout.scrollFits, `feedback layout ${width}: ${JSON.stringify(layout)}`);
       await page.locator('.feedback-banner-link').click();
       assert.match(page.url(), /feedback\.html$/);
-      await page.locator('#feedback-extra').waitFor({state:'visible'});
-      assert.equal(await page.locator('#feedback-extra').isVisible(), true);
+      await page.locator('.feedback-form button').waitFor({state:'visible'});
       await page.locator('#feedback-title-input').fill('ট্র্যাকারের সমস্যা');
       await page.locator('#feedback-body').fill('পেজটি খোলে না & আমি সাহায্য চাই।');
-      await page.locator('#feedback-kind').selectOption('সমস্যা');
-      await page.locator('#feedback-page').fill('tracker.html');
-      await page.locator('#feedback-device').fill('Android Chrome');
-      for (let i=0; i<2; i++) {
-        const [popup] = await Promise.all([page.waitForEvent('popup'), page.locator('.feedback-form button').click()]);
-        await popup.waitForLoadState();
-        const url = new URL(popup.url());
-        assert.equal(url.origin, 'https://github.com');
-        assert.equal(url.pathname, '/numb-netizen/Temp/issues/new');
-        assert.equal(url.searchParams.get('title'), 'ট্র্যাকারের সমস্যা');
-        assert.equal(url.searchParams.get('body').replace(/\r\n/g, '\n'), 'পেজটি খোলে না & আমি সাহায্য চাই।\n\nমতামতের ধরন: সমস্যা\nপেজ: tracker.html\nডিভাইস বা ব্রাউজার: Android Chrome');
-        assert.equal(url.searchParams.get('feedback_page'), null);
-        await popup.close();
-      }
-      assert.equal(await page.locator('#feedback-body').inputValue(), 'পেজটি খোলে না & আমি সাহায্য চাই।');
+      const [request] = await Promise.all([
+        page.waitForRequest(req => req.url().endsWith('/functions/v1/feedback/submit') && req.method() === 'POST'),
+        page.locator('.feedback-form button').click()
+      ]);
+      assert.deepEqual(request.postDataJSON(), {title:'ট্র্যাকারের সমস্যা', body:'পেজটি খোলে না & আমি সাহায্য চাই।'});
+      await page.getByRole('status').getByText('তোমার মতামত গ্রহণ করা হয়েছে।', {exact:false}).waitFor();
+      assert.equal(await page.locator('#feedback-body').inputValue(), '');
       await page.locator('.theme-toggle').click();
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.close();
     }
-    // Core title/body submission still works when JavaScript is unavailable.
+    // Without JavaScript, the button is disabled rather than claiming success.
     {
       const page = await browser.newPage({javaScriptEnabled:false, viewport:{width:360,height:720}});
-      await page.context().route('**/*', route => {
-        const url = new URL(route.request().url());
-        if (url.origin === 'http://127.0.0.1:8765') return route.continue();
-        if (url.origin === 'https://github.com' && url.pathname === '/numb-netizen/Temp/issues/new') return route.fulfill({status:200, contentType:'text/html', body:'issue preview'});
-        return route.abort();
-      });
       await page.goto('http://127.0.0.1:8765/feedback.html');
-      assert.equal(await page.locator('#feedback-extra').isVisible(), false);
-      await page.locator('#feedback-title-input').fill('পরামর্শ');
-      await page.locator('#feedback-body').fill('নতুন ধারণা');
-      // No-opener navigation may open an unassociated tab. Use a context-level
-      // request listener and bypass Playwright's animation-stability check, which
-      // depends on animation frames that do not run with scripting disabled.
-      const [request] = await Promise.all([
-        page.context().waitForEvent('request', {predicate: req => req.url().startsWith('https://github.com/numb-netizen/Temp/issues/new?')}),
-        page.locator('.feedback-form button').click({force:true})
-      ]);
-      const url = new URL(request.url());
-      assert.equal(url.searchParams.get('title'), 'পরামর্শ');
-      assert.equal(url.searchParams.get('body'), 'নতুন ধারণা');
-      assert.equal(url.searchParams.get('feedback_type'), null);
+      assert.equal(await page.locator('.feedback-form button').isDisabled(), true);
+      assert.equal(await page.locator('noscript a[href="https://github.com/numb-netizen/Temp/issues/new"]').count(), 1);
       await page.close();
     }
     // Theme stays usable beside the menu on narrow screens and across pages.

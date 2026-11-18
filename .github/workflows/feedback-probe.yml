@@ -1,0 +1,33 @@
+name: Verify feedback service (temporary)
+on:
+  push:
+    branches: [arena/872506de-temp]
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify public endpoint and OIDC claim format
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          (async () => {
+            const base = 'https://cciwbmtmlrlgpgewiaqk.supabase.co/functions/v1/feedback';
+            let res = await fetch(base+'/submit', {method:'OPTIONS',headers:{origin:'https://hsc2027.de5.net','access-control-request-method':'POST','access-control-request-headers':'content-type'}});
+            assert.equal(res.status,204); assert.equal(res.headers.get('access-control-allow-origin'),'https://hsc2027.de5.net');
+            res = await fetch(base+'/queue'); assert.equal(res.status,401);
+            res = await fetch(base+'/submit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({title:'',body:'x'})}); assert.equal(res.status,400);
+            res = await fetch(base+'/submit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({title:'feedback-probe-'+process.env.RUN_ID,body:'Automated connectivity verification'})});
+            assert.equal(res.status,202, 'feedback insert: '+res.status); assert.deepEqual(await res.json(), {accepted:true});
+            const url = new URL(process.env.ACTIONS_ID_TOKEN_REQUEST_URL); url.searchParams.set('audience','https://hsc2027.de5.net/feedback-processor');
+            const r = await fetch(url,{headers:{authorization:'Bearer '+process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}}); assert.equal(r.status,200);
+            const token = (await r.json()).value; const claims = JSON.parse(Buffer.from(token.split('.')[1], 'base64url'));
+            assert.equal(claims.repository,'numb-netizen/Temp'); assert.equal(claims.ref,'refs/heads/arena/872506de-temp'); assert.equal(claims.aud,'https://hsc2027.de5.net/feedback-processor');
+            res = await fetch(base+'/queue',{headers:{authorization:'Bearer '+token}}); assert.equal(res.status,401);
+            console.log('Live endpoint accepted probe, denied untrusted queue requests; OIDC claims verified.');
+          })().catch(e=>{console.error(e.message);process.exit(1)});
+          NODE

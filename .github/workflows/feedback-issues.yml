@@ -1,0 +1,25 @@
+name: Deliver site feedback to GitHub Issues
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+  id-token: write
+concurrency:
+  group: feedback-issues
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Publish queued feedback
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/process-feedback.cjs
