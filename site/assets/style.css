@@ -153,8 +153,8 @@ h1{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(40px,7vw,
 .overall small{color:var(--muted)}
 .reset{background:none;border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:8px 16px;font-family:inherit;cursor:pointer;transition:.25s}
 .reset:hover{color:var(--red);border-color:var(--red)}
-.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-@media(max-width:820px){.track-grid{grid-template-columns:1fr}}
+.track-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media(max-width:820px){.track-grid{grid-template-columns:minmax(0,1fr)}}
 .tcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
 .tcard header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
 .tcard h3{margin:0;font-size:18px}
@@ -166,12 +166,12 @@ h1{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(40px,7vw,
 .chap.done .box{background:var(--green2);border-color:var(--green2)}
 .chap.done .box::after{content:"✓";font-weight:800}
 .chap.done .nm{color:var(--muted);text-decoration:line-through}
-.chap .nm{flex:1}
+.chap .nm{flex:1;min-width:0;overflow-wrap:anywhere}
 
 /* English 2nd paper topic items (no .chap wrapper): visible check boxes */
 .item{display:flex;align-items:flex-start;gap:11px;padding:9px 10px;border-radius:12px;cursor:default;font-size:15px;user-select:none}
 .item .box{width:22px;height:22px;flex:none;border:2px solid var(--muted);border-radius:7px;display:grid;place-items:center;font-size:13px;color:#04150a;transition:.2s;margin-top:2px}
-.item .nm{flex:1}
+.item .nm{flex:1;min-width:0;overflow-wrap:anywhere}
 .item.done{background:rgba(255,255,255,.06)}
 .item.done .box{background:var(--green2);border-color:var(--green2)}
 .item.done .box::after{content:"✓";font-weight:800}
