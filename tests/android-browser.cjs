@@ -118,7 +118,11 @@ const {chromium} = require('playwright-core');
       await page.locator('#feedback-body').fill('নতুন ধারণা');
       // JavaScript is disabled; keep the submission in this tab to inspect it.
       await page.locator('.feedback-form').evaluate(el => { el.target = '_self'; });
-      await Promise.all([page.waitForURL('https://github.com/numb-netizen/Temp/issues/new?*'), page.locator('.feedback-form button').click()]);
+      const validity = await page.locator('.feedback-form').evaluate(el => ({valid:el.checkValidity(), target:el.target, action:el.action, data:[...new FormData(el).entries()]}));
+      assert.equal(validity.valid, true, JSON.stringify(validity));
+      try {
+        await Promise.all([page.waitForURL(url => url.origin === 'https://github.com' && url.pathname === '/numb-netizen/Temp/issues/new', {timeout:10000}), page.locator('.feedback-form button').click()]);
+      } catch (e) { throw new Error('No-JS submission failed: '+JSON.stringify({validity, current:page.url(), error:e.message})); }
       const url = new URL(page.url());
       assert.equal(url.searchParams.get('title'), 'পরামর্শ');
       assert.equal(url.searchParams.get('body'), 'নতুন ধারণা');
