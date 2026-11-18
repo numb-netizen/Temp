@@ -33,7 +33,7 @@ function refreshOverall(){
   if($("#overallPct")) $("#overallPct").textContent = bn(pct) + "%";
   if($("#overallBar")) $("#overallBar").style.width = pct + "%";
   if($("#overallTxt")) $("#overallTxt").textContent =
-    bn(done) + "টি বিষয় সম্পন্ন · আরও " + bn(all.length - done) + "টি বাকি";
+    bn(done) + "টি তালিকার আইটেম সম্পন্ন · আরও " + bn(all.length - done) + "টি বাকি";
 }
 function refreshAll(){
   $$(".tcard").forEach(refreshCard);
@@ -41,26 +41,40 @@ function refreshAll(){
 }
 function loadState(){
   $$(".chap").forEach(el => {
+    el.setAttribute("role", "checkbox");
+    el.setAttribute("tabindex", "0");
     if(localStorage.getItem(KEY(el.dataset.subject + ":" + el.dataset.chapter)) === "1")
       el.classList.add("done");
+    el.setAttribute("aria-checked", String(el.classList.contains("done")));
   });
   refreshAll();
 }
-document.addEventListener("click", e => {
-  const el = e.target.closest(".chap");
-  if(!el) return;
+function toggleChapter(el){
   const k = KEY(el.dataset.subject + ":" + el.dataset.chapter);
   el.classList.toggle("done");
-  el.classList.contains("done") ? localStorage.setItem(k, "1") : localStorage.removeItem(k);
+  const done = el.classList.contains("done");
+  el.setAttribute("aria-checked", String(done));
+  done ? localStorage.setItem(k, "1") : localStorage.removeItem(k);
   const card = el.closest(".tcard");
   if(card) refreshCard(card);
   refreshOverall();
+}
+document.addEventListener("click", e => {
+  const el = e.target.closest(".chap");
+  if(el) toggleChapter(el);
+});
+document.addEventListener("keydown", e => {
+  if(e.key !== " " && e.key !== "Enter") return;
+  const el = e.target.closest(".chap");
+  if(!el) return;
+  e.preventDefault();
+  toggleChapter(el);
 });
 const resetBtn = $("#resetBtn");
 if(resetBtn) resetBtn.addEventListener("click", () => {
   if(!confirm("সত্যিই সব অগ্রগতি মুছে ফেলতে চাও?")) return;
   Object.keys(localStorage).filter(k => k.startsWith("hsc2027:")).forEach(k => localStorage.removeItem(k));
-  $$(".chap").forEach(el => el.classList.remove("done"));
+  $$(".chap").forEach(el => { el.classList.remove("done"); el.setAttribute("aria-checked", "false"); });
   refreshAll();
 });
 loadState();

@@ -31,7 +31,7 @@ test('subject and tracker entries remain synchronized with unique stable keys', 
   assert.doesNotMatch(read('assets/app.js'), /removeItem\(KEY\("(?:bangladesh|bangla|math)/);
   for (const item of ['সাহিত্যে খেলা','নেকলেস','সিরাজউদ্দৌলা','পদ্মা']) assert.ok(read('bangla.html').includes(`>${item}</span>`),item);
   for (const old of ['আমার পথ','বায়ান্নর দিনগুলো','পদ্মা নদীর মাঝি']) assert.ok(!entries(tracker,'bangla').some(x=>x[1]===old));
-  for (const subject of ['bangla','english']) assert.ok(read(subject+'.html').includes('২য় পত্রের প্রস্তুতি এখানে নেই'));
+  for (const subject of ['bangla','english']) assert.ok(read(subject+'.html').includes(subject + '-2.html'));
 });
 
 test('correct business subject names and both paper areas are available', () => {
