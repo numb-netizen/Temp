@@ -138,6 +138,11 @@ h1{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(40px,7vw,
 .dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
 @media(max-width:820px){.dept-grid{grid-template-columns:1fr}}
 .source-tag{font-size:13px;color:var(--muted);background:rgba(0,0,0,.03);border-left:3px solid var(--green2);padding:8px 12px;margin-top:10px;border-radius:0 6px 6px 0}
+.routine-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:15px}
+.routine-table th,.routine-table td{border:1px solid var(--line);padding:10px;text-align:left}
+.routine-table th{background:var(--panel);color:var(--ink)}
+.routine-table tr:nth-child(even){background:rgba(0,0,0,.02)}
+.routine-note{font-size:13px;color:var(--muted);margin-top:8px}
 .dept{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px;transition:.3s;display:block}
 .dept:hover{transform:translateY(-6px);border-color:#00c85366}
 .dept .ic{font-size:42px}
