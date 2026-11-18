@@ -105,3 +105,11 @@ Linux AppImage-এ `chmod +x <file>.AppImage` করে চালাতে হ�
 4. প্রকাশ করতে workflow-তে `publish_signed_beta` নির্বাচন করলে আলাদা prerelease `desktop-v0.1.0-signed-beta` তৈরি হবে; বিদ্যমান unsigned release পরিবর্তিত হয় না। Tag আগে থেকে থাকলে workflow সেটি overwrite করে না। Signature থাকা মানেই SmartScreen-এর কোনো সতর্কতা থাকবে, এমন নিশ্চয়তা নেই।
 
 CI-তে আলাদা temporary self-signed certificate দিয়ে signing পথ পরীক্ষা হয়; সেটি অবিশ্বস্ত, শুধু পরীক্ষার জন্য এবং কোনো release artifact-এ যায় না। Secret থাকা job-এ CI dependencies-ও key ব্যবহারের সুযোগ পায়; সেই কারণে workflow, lockfile ও dependencies বদল সর্বদা review করুন।
+
+### Lightweight desktop beta
+
+`desktop-lite/` হলো আলাদা Lite সংস্করণ: Windows x64-এ WebView2 এবং Linux-এ system WebKitGTK ব্যবহার করে, Electron-এর browser bundle নয়। Windows ZIP পুরো extract করে চালাতে হয়; Microsoft **.NET 8 Desktop Runtime x64** ও **Edge WebView2 Runtime** আগে থেকে না থাকলে আলাদা ইনস্টল করতে হবে। অ্যাপ unsigned, SmartScreen সতর্ক করতে পারে। Linux `.deb` Ubuntu/Debian ও WebKitGTK 4.1-এর জন্য, সিস্টেম dependencies ইনস্টল করতে হতে পারে; এটি সব distribution-এর AppImage বিকল্প নয়। Dependencies ডাউনলোড/ইনস্টল করতে ইন্টারনেট ও অতিরিক্ত জায়গা লাগতে পারে।
+
+দুটোতেই bundled snapshot ও local tracker অফলাইনে কাজ করে; ভিডিও/বাইরের লিংক ও ফন্ট অনলাইন। Lite, পুরোনো Electron অ্যাপ ও ব্রাউজারের tracker storage আলাদা এবং automatic migration/sync নেই; আগের ডেটা দরকার হলে পুরোনো অ্যাপ বা তার data মুছবেন না। নতুন site snapshot পেতে নতুন build দরকার। একটি স্থির loopback port (Windows 19828 / Linux 19829) কেবল স্থানীয় পৃষ্ঠার জন্য ব্যবহৃত হয়; একই সময়ে একাধিক instance বা port দখল থাকলে অ্যাপ চালু হবে না।
+
+Windows build: `dotnet publish desktop-lite/windows/HscLite.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true`, তারপর output-এর পাশে `site` কপি করতে হবে। Linux: `desktop-lite/linux/build-deb.sh`, তারপর `sudo apt install ./desktop-lite/dist/HSC-2027-Lite-0.2.0-beta-linux.deb`। `.github/workflows/desktop-lite.yml` প্যাকেজকৃত apps-এ offline tracker/theme smoke test চালায় ও manual dispatch-এ beta release ও SHA-256 প্রকাশ করে। Linux CI-তে sandbox disable কেবল headless test-এর জন্য; বিতরণকৃত অ্যাপ sandbox বন্ধ করে না।

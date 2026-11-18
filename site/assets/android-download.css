@@ -31,3 +31,8 @@
 .android-page a:focus-visible{outline:2px solid var(--green2);outline-offset:4px}
 @media(max-width:800px){.android-hero{grid-template-columns:1fr;gap:20px}.android-visual{min-height:320px}.android-details{grid-template-columns:1fr}}
 @media(max-width:480px){.android-page{padding-top:100px}.android-hero{padding-top:25px!important}.android-panel{padding:24px}.android-actions{align-items:stretch;flex-direction:column}.android-download{text-align:center}.android-release-link{text-align:center}.android-copy h1{font-size:38px}}
+
+.desktop-download{margin:0 0 28px;line-height:1.7}
+.desktop-download p{color:var(--muted);margin:14px 0 0}
+.desktop-download .android-actions{margin:20px 0}
+.desktop-download h2{margin-bottom:10px}

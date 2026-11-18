@@ -32,7 +32,7 @@ class Window(Gtk.Window):
         self.set_size_request(320, 480)
         self.connect('destroy', Gtk.main_quit)
         data_dir = tempfile.mkdtemp(prefix='hsc-lite-test-') if SMOKE else os.path.join(GLib.get_user_data_dir(), 'hsc2027-lite')
-        manager = WebKit2.WebsiteDataManager.new(base_data_directory=data_dir, base_cache_directory=os.path.join(data_dir, 'cache'))
+        manager = WebKit2.WebsiteDataManager(base_data_directory=data_dir, base_cache_directory=os.path.join(data_dir, 'cache'))
         context = WebKit2.WebContext.new_with_website_data_manager(manager)
         self.web = WebKit2.WebView.new_with_context(context)
         self.web.get_settings().set_enable_developer_extras(False)
