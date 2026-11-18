@@ -6,7 +6,7 @@ const root = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root,p),'utf8');
 test('desktop download links and runtime, offline and data limitations are visible', () => {
   const html = read('site/android-app.html');
-  for (const item of ['desktop-lite-v0.2.0-beta/HSC-2027-Lite-0.2.0-beta-win-x64.zip','desktop-lite-v0.2.0-beta/HSC-2027-Lite-0.2.0-beta-linux.deb','WebView2 Runtime','.NET 8 Desktop Runtime','WebKitGTK 4.1','unsigned','স্থানান্তর হয় না']) assert.ok(html.includes(item), item);
+  for (const item of ['desktop-lite-v0.2.1-beta/HSC-2027-Lite-0.2.1-beta-win-x64.zip','desktop-lite-v0.2.1-beta/HSC-2027-Lite-0.2.1-beta-linux.deb','WebView2 Runtime','.NET 10 Desktop Runtime','WebKitGTK 4.1','unsigned','স্থানান্তর হয় না']) assert.ok(html.includes(item), item);
 });
 test('lite builds bundle the site, deny permissions and gate releases on both smoke tests', () => {
   const win = read('desktop-lite/windows/Program.cs'), linux = read('desktop-lite/linux/hsc-lite.py');

@@ -14,7 +14,7 @@ ln -s /opt/hsc-2027-lite/hsc-lite.py "$tmp/usr/bin/hsc-2027-lite"
 cp desktop/build-resources/icon.png "$tmp/usr/share/icons/hicolor/256x256/apps/hsc-2027-lite.png"
 cat > "$tmp/DEBIAN/control" <<'CONTROL'
 Package: hsc-2027-lite
-Version: 0.2.0~beta1
+Version: 0.2.1~beta1
 Section: education
 Priority: optional
 Architecture: all
@@ -33,4 +33,4 @@ Icon=hsc-2027-lite
 Categories=Education;
 Terminal=false
 DESKTOP
-dpkg-deb --root-owner-group -Zxz --build "$tmp" "$out/HSC-2027-Lite-0.2.0-beta-linux.deb"
+dpkg-deb --root-owner-group -Zxz --build "$tmp" "$out/HSC-2027-Lite-0.2.1-beta-linux.deb"

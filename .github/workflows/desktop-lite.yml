@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
       - name: Publish Windows executable
         shell: pwsh
         run: |
@@ -59,7 +59,7 @@ jobs:
       - name: Package Windows ZIP
         shell: pwsh
         run: |
-          Compress-Archive -Path desktop-lite/dist/windows/* -DestinationPath desktop-lite/dist/HSC-2027-Lite-0.2.0-beta-win-x64.zip
+          Compress-Archive -Path desktop-lite/dist/windows/* -DestinationPath desktop-lite/dist/HSC-2027-Lite-0.2.1-beta-win-x64.zip
           Get-Item desktop-lite/dist/*.zip | Select-Object Name,Length
       - uses: actions/upload-artifact@v4
         with:
@@ -85,16 +85,16 @@ jobs:
         run: |
           set -euo pipefail
           cd release
-          test -f HSC-2027-Lite-0.2.0-beta-win-x64.zip
-          test -f HSC-2027-Lite-0.2.0-beta-linux.deb
+          test -f HSC-2027-Lite-0.2.1-beta-win-x64.zip
+          test -f HSC-2027-Lite-0.2.1-beta-linux.deb
           sha256sum *.zip *.deb > SHA256SUMS.txt
           cat > notes.txt <<'NOTES'
           # HSC 2027 Lite beta
 
-          Windows 10/11 x64: ZIP পুরোপুরি extract করে HSC-2027-Lite.exe চালান। Microsoft Edge WebView2 Runtime ও .NET 8 Desktop Runtime (x64) প্রয়োজন; না থাকলে Microsoft থেকে আলাদাভাবে ইনস্টল করতে হবে। প্রথমবার runtime ডাউনলোডের জন্য ইন্টারনেট ও অতিরিক্ত স্থান লাগবে। এটি unsigned beta, SmartScreen সতর্ক করতে পারে।
+          Windows 10/11 x64: ZIP পুরোপুরি extract করে HSC-2027-Lite.exe চালান। Microsoft Edge WebView2 Runtime ও .NET 10 Desktop Runtime (x64) প্রয়োজন; না থাকলে Microsoft থেকে আলাদাভাবে ইনস্টল করতে হবে। প্রথমবার runtime ডাউনলোডের জন্য ইন্টারনেট ও অতিরিক্ত স্থান লাগবে। এটি unsigned beta, SmartScreen সতর্ক করতে পারে।
 
-          Linux: Ubuntu/Debian-ভিত্তিক সিস্টেমে .deb ইনস্টল করুন (যেমন `sudo apt install ./HSC-2027-Lite-0.2.0-beta-linux.deb`)। Python 3, GTK ও WebKitGTK 4.1 প্যাকেজ ইনস্টল হতে পারে; অন্য Linux distribution-এ এই .deb সরাসরি চলবে না।
+          Linux: Ubuntu/Debian-ভিত্তিক সিস্টেমে .deb ইনস্টল করুন (যেমন `sudo apt install ./HSC-2027-Lite-0.2.1-beta-linux.deb`)। Python 3, GTK ও WebKitGTK 4.1 প্যাকেজ ইনস্টল হতে পারে; অন্য Linux distribution-এ এই .deb সরাসরি চলবে না।
 
           প্যাকেজে থাকা পৃষ্ঠা ও ট্র্যাকার অফলাইনে চলে; ভিডিও, WhatsApp, বাইরের লিংক ও ফন্টের জন্য ইন্টারনেট লাগে। সাইটের নতুন তথ্য পেতে নতুন অ্যাপ সংস্করণ লাগবে। Lite অ্যাপের ট্র্যাকার পুরোনো Electron অ্যাপ, ওয়েব ও অন্য ডিভাইস থেকে আলাদা; স্বয়ংক্রিয় স্থানান্তর নেই। পুরোনো অ্যাপের তথ্য রাখতে সেটি আনইনস্টল করবেন না। স্বয়ংক্রিয় আপডেট নেই। স্থানীয় পৃষ্ঠার জন্য অ্যাপ শুধু কম্পিউটারের loopback-এ ছোট সার্ভার ব্যবহার করে।
           NOTES
-          gh release create desktop-lite-v0.2.0-beta *.zip *.deb SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title 'HSC 2027 Lite 0.2.0 beta' --notes-file notes.txt
+          gh release create desktop-lite-v0.2.1-beta *.zip *.deb SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title 'HSC 2027 Lite 0.2.1 beta' --notes-file notes.txt
