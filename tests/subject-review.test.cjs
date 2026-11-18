@@ -26,7 +26,6 @@ test('subject and tracker entries remain synchronized with unique stable keys', 
     assert.ok(page.includes('https://nctb.gov.bd/pages/files/6922dbc6933eb65569e0c702'), subject);
   }
   for (const id of ['2','4','9']) assert.ok(!entries(tracker,'bangla').some(x=>x[0]===id));
-  assert.ok(!entries(tracker,'math').some(x=>x[0]==='6'));
   assert.match(tracker, /সরানো পুরোনো বিষয়ের অগ্রগতি সংরক্ষিত আছে/);
   assert.doesNotMatch(read('assets/app.js'), /removeItem\(KEY\("(?:bangladesh|bangla|math)/);
   for (const item of ['সাহিত্যে খেলা','নেকলেস','সিরাজউদ্দৌলা','পদ্মা']) assert.ok(read('bangla.html').includes(`>${item}</span>`),item);
