@@ -14,6 +14,45 @@ const {chromium} = require('playwright-core');
       assert.equal(await bing.text(), '<?xml version="1.0"?>\n<users>\n\t<user>76A0C77A1435B5695135852A5F05F622</user>\n</users>');
       await page.close();
     }
+    for (const width of [360, 1440]) {
+      const page = await browser.newPage({viewport:{width,height:800}});
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      const errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+      for (const name of ['science','arts','commerce','tracker','bangla','bangla-2','english','english-2','ict','physics','chemistry','math','biology','economics','sociology','civics','history','accounting','business','finance','marketing']) {
+        await page.goto('http://127.0.0.1:8765/' + name + '.html');
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `syllabus overflow ${name} ${width}`);
+      }
+      assert.deepEqual(errors, [], `syllabus script errors at ${width}`);
+      await page.close();
+    }
+    // Existing chapter keys remain usable across the tracker and subject page.
+    {
+      const page = await browser.newPage({viewport:{width:360,height:720}});
+      await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
+      await page.goto('http://127.0.0.1:8765/physics.html');
+      await page.evaluate(() => localStorage.setItem('hsc2027:physics:0', '1'));
+      await page.reload();
+      let item = page.locator('.chap[data-subject="physics"][data-chapter="0"]');
+      assert.equal(await item.getAttribute('role'), 'checkbox');
+      assert.equal(await item.getAttribute('aria-checked'), 'true');
+      await item.focus();
+      await page.keyboard.press('Space');
+      assert.equal(await item.getAttribute('aria-checked'), 'false');
+      await page.keyboard.press('Enter');
+      assert.equal(await item.getAttribute('aria-checked'), 'true');
+      await page.goto('http://127.0.0.1:8765/tracker.html');
+      item = page.locator('.chap[data-subject="physics"][data-chapter="0"]');
+      assert.equal(await item.getAttribute('aria-checked'), 'true');
+      assert.equal(await page.evaluate(() => localStorage.getItem('hsc2027:physics:0')), '1');
+      for (const name of ['bangla-2.html','english-2.html']) {
+        await page.goto('http://127.0.0.1:8765/' + name);
+        assert.ok(await page.getByText('তালিকা এখনো প্রকাশের জন্য যাচাই করা হয়নি।').count());
+        assert.equal(await page.locator('.chap').count(), 0);
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      }
+      await page.close();
+    }
     // Feedback is visible in the navigation, never a floating layer. GitHub is
     // intercepted so this test does not create a real issue or require login.
     for (const width of [320, 360, 768, 1201, 1440]) {
