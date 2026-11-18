@@ -19,16 +19,18 @@ tick(); setInterval(tick, 1000);
 const KEY = k => "hsc2027:" + k;
 function refreshCard(card){
   const chaps = card.querySelectorAll(".chap");
-  const done  = card.querySelectorAll(".chap.done").length;
-  const pct   = chaps.length ? Math.round(done / chaps.length * 100) : 0;
+  const items = card.querySelectorAll(".item");
+  const all   = chaps.length + items.length;
+  const done  = card.querySelectorAll(".chap.done").length + card.querySelectorAll(".item.done").length;
+  const pct   = all ? Math.round(done / all * 100) : 0;
   const bar = card.querySelector(".bar i");
-  const cnt = card.querySelector(".cnt");
+  const cnt = card.querySelector(".cnt, .prog");
   if(bar) bar.style.width = pct + "%";
-  if(cnt) cnt.textContent = bn(done) + "/" + bn(chaps.length) + " · " + bn(pct) + "%";
+  if(cnt) cnt.textContent = bn(done) + "/" + bn(all) + " · " + bn(pct) + "%";
 }
 function refreshOverall(){
-  const all  = $$(".chap");
-  const done = $$(".chap.done").length;
+  const all  = $$(".chap").concat($$(".item"));
+  const done = $$(".chap.done").length + $$(".item.done").length;
   const pct  = all.length ? Math.round(done / all.length * 100) : 0;
   if($("#overallPct")) $("#overallPct").textContent = bn(pct) + "%";
   if($("#overallBar")) $("#overallBar").style.width = pct + "%";
