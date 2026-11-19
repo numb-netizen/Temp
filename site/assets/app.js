@@ -135,40 +135,29 @@ if(typeof IntersectionObserver !== "undefined") {
 /* ---------- MISC ---------- */
 const yr = $("#year"); if(yr) yr.textContent = bn(new Date().getFullYear());
 
-/* ---------- PRE-TEST EXAMS (Bangladesh time; hide after the scheduled end) ---------- */
-const pretest = document.querySelector("#pretest-routine");
-if(pretest){
-  const rows = [...pretest.querySelectorAll(".exam-row")];
-  const timer = document.querySelector("#exam-timer");
-  function updatePretest(){
+/* ---------- PARENTS' MEETING (Bangladesh time; each day marked done after it ends) ---------- */
+const meeting = document.querySelector("#parents-meeting");
+if(meeting){
+  const rows = [...meeting.querySelectorAll(".meet-row")];
+  const bdDay = t => Math.floor((t + 6 * 36e5) / 864e5);   // calendar day in UTC+6
+  function updateMeeting(){
     const now = Date.now();
-    const remaining = rows.filter(row => now < Date.parse(row.dataset.end));
+    let done = 0;
     rows.forEach(row => {
-      row.hidden = now >= Date.parse(row.dataset.end);
-      const syllabus = row.querySelector(".exam-syllabus");
-      if(syllabus) syllabus.hidden = now >= Date.parse(row.dataset.start);
+      const start = Date.parse(row.dataset.start), end = Date.parse(row.dataset.end);
+      const status = row.querySelector(".meet-status");
+      const days = bdDay(start) - bdDay(now);
+      let state = "soon", text;
+      if(now >= end){ state = "done"; text = "✓ সম্পন্ন হয়েছে"; done++; }
+      else if(now >= start){ state = "live"; text = "আজ সকাল ১১টায় শুরু হয়েছে"; }
+      else if(days === 0){ state = "today"; text = "আজ সকাল ১১টায়"; }
+      else if(days === 1){ state = "today"; text = "আগামীকাল"; }
+      else text = "আর " + bn(days) + " দিন বাকি";
+      row.dataset.state = state;
+      status.textContent = text;
     });
-    document.querySelector("#exam-empty").hidden = remaining.length > 0;
-    timer.hidden = remaining.length === 0;
-    const next = remaining[0];
-    if(!next){
-      document.querySelector("#exam-next-title").textContent = "সব পরীক্ষা শেষ";
-      document.querySelector("#exam-next-date").textContent = "প্রাক-নির্বাচনী পরীক্ষার রুটিন সম্পন্ন হয়েছে।";
-      document.querySelector("#exam-countdown-label").textContent = "";
-      return;
-    }
-    const start = Date.parse(next.dataset.start);
-    const end = Date.parse(next.dataset.end);
-    const inProgress = now >= start;
-    const difference = Math.max(0, (inProgress ? end : start) - now);
-    document.querySelector("#exam-next-title").textContent = next.dataset.subject;
-    document.querySelector("#exam-next-date").textContent = next.dataset.date + " · দুপুর ১২:০০ – বিকেল ৩:০০";
-    document.querySelector("#exam-countdown-label").textContent = inProgress ? "পরীক্ষা চলছে · শেষ হতে বাকি" : "পরীক্ষা শুরু হতে বাকি";
-    document.querySelector("#exam-days").textContent = bn(Math.floor(difference / 864e5));
-    document.querySelector("#exam-hours").textContent = bn(Math.floor(difference / 36e5) % 24);
-    document.querySelector("#exam-minutes").textContent = bn(Math.floor(difference / 6e4) % 60);
-    document.querySelector("#exam-seconds").textContent = bn(Math.floor(difference / 1e3) % 60);
+    document.querySelector("#meet-done").hidden = done < rows.length;
   }
-  updatePretest();
-  setInterval(updatePretest, 1000);
+  updateMeeting();
+  setInterval(updateMeeting, 60000);
 }
