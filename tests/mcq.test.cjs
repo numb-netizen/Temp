@@ -109,3 +109,14 @@ test('migration: visitors can only ever read verified questions, and only the pu
   assert.match(migration, /CHECK \(status <> 'verified' OR \(verified_at IS NOT NULL AND verified_by IS NOT NULL\)\)/);
   assert.doesNotMatch(migration, /dabi_public_supporters|feedback_queue/, 'existing tables are untouched');
 });
+
+test('docs point MCQ data at the separate "mcq exam" Supabase project, not Dabi, with no keys', () => {
+  const doc = fs.readFileSync(path.join(root, 'docs/mcq-bank.md'), 'utf8');
+  assert.match(doc, /"mcq exam"/);
+  assert.match(doc, /jwzznffykcxghigkwzab/);
+  assert.doesNotMatch(doc, /cciwbmtmlrlgpgewiaqk/, 'MCQ docs must not send people to the Dabi project');
+  for (const f of ['docs/mcq-bank.md', 'scripts/mcq.cjs', 'README.md']) {
+    const s = fs.readFileSync(path.join(root, f), 'utf8');
+    assert.doesNotMatch(s, /eyJhbGciOi[\w-]{20,}|sb_secret_\w+|service_role_key\s*[:=]/, `${f} must not contain Supabase keys`);
+  }
+});
