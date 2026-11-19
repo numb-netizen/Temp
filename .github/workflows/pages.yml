@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      indexnow_all:
+        description: 'Ask Bing (IndexNow) to recrawl every page, not only the changed ones'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -23,8 +28,11 @@ jobs:
     steps:
       - name: Check out site
         uses: actions/checkout@v4
+        with:
+          # Full history: real per-page <lastmod> dates and the IndexNow change list come from git.
+          fetch-depth: 0
       - name: Generate public sitemap
-        run: node scripts/generate-sitemap.cjs
+        run: node scripts/generate-sitemap.cjs --lastmod
       - name: Generate offline update manifest
         run: node scripts/offline-manifest.cjs site
       - name: Configure Pages
@@ -36,3 +44,15 @@ jobs:
       - name: Deploy site
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Notify Bing via IndexNow
+        # Search engines are told only after the new pages are live. A failure here never undoes the deploy.
+        continue-on-error: true
+        env:
+          BEFORE: ${{ github.event.before }}
+          ALL: ${{ inputs.indexnow_all }}
+        run: |
+          if [ "$ALL" = "true" ] || [ -z "$BEFORE" ]; then
+            node scripts/indexnow.cjs --all
+          else
+            node scripts/indexnow.cjs --before "$BEFORE" --after "$GITHUB_SHA"
+          fi
