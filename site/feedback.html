@@ -20,6 +20,7 @@
 <link rel="icon" href="assets/study-logo.png" type="image/png">
 <script src="assets/app-context.js?v=20261113"></script>
 <script src="assets/theme.js?v=1"></script>
+<script src="assets/clarity.js?v=1" async></script>
 <script src="assets/heading-motion.js?v=1"></script>
 <link rel="stylesheet" href="assets/style.css?v=20261120-notice">
 <link rel="stylesheet" href="assets/heading-motion.css?v=1">
@@ -45,7 +46,7 @@
       <h1 id="feedback-title">তোমার মতামত জানাও</h1>
       <p class="feedback-intro">কোনো ভুল, সাইট ব্যবহারের সমস্যা অথবা নতুন ধারণা? নিচে লিখে জানাও। তোমার পরামর্শ আমাদের সাইটকে আরও ভালো করতে সাহায্য করবে।</p>
       <div class="feedback-notice"><strong>প্রকাশ্য তথ্য:</strong> তোমার লেখা GitHub Issue হিসেবে সবাই দেখতে পারবে। ফোন নম্বর, রোল নম্বর, পাসওয়ার্ড বা ব্যক্তিগত তথ্য লিখো না। নিরাপত্তার দুর্বলতা নিচের গোপন রিপোর্টের পথে জানাও।</div>
-      <form class="feedback-form" id="feedback-form">
+      <form class="feedback-form" id="feedback-form" data-clarity-mask="True">
         <label for="feedback-title-input">বিষয় <span aria-hidden="true">*</span></label>
         <input id="feedback-title-input" name="title" type="text" required maxlength="120" placeholder="যেমন: ট্র্যাকারে সমস্যা" autocomplete="off">
         <label for="feedback-body">তোমার মতামত <span aria-hidden="true">*</span></label>
