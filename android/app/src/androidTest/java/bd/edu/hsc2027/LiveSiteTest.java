@@ -40,7 +40,7 @@ public class LiveSiteTest {
             assertNotNull(web); assertNotNull(overlay); assertNotNull(detail);
             instrumentation.runOnMainSync(() -> assertTrue("App marker missing from WebView user agent",
                     web.getSettings().getUserAgentString().contains("HSC2027App")));
-            assertPage(instrumentation, web, overlay, detail, "হোম");
+            assertPage(instrumentation, web, overlay, detail, "HSC 2027 স্টাডি প্ল্যাটফর্ম");
             // Use a fresh URL to avoid a previously cached copy of the live HTML.
             instrumentation.runOnMainSync(() -> web.loadUrl(NavigationPolicy.HOME + "dabi.html?appcheck=retired"));
             assertPage(instrumentation, web, overlay, detail, "পেজটি সরানো হয়েছে");
