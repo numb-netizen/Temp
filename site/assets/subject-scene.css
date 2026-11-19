@@ -54,6 +54,20 @@
 .subject-scene .sc-ballot{animation-name:sc-ballot;animation-timing-function:linear}
 .subject-scene .sc-slot{animation-name:sc-slot}
 .subject-scene .sc-voted{animation-name:sc-voted}
+.subject-scene .sc-turn{animation-name:sc-turn}
+.subject-scene .sc-sand-top{animation-name:sc-sand-top;animation-timing-function:cubic-bezier(.62,0,.92,.7)}
+.subject-scene .sc-sand-bottom{animation-name:sc-sand-bottom;animation-timing-function:cubic-bezier(.3,.1,.7,.9)}
+.subject-scene .sc-stream{animation-name:sc-stream;animation-timing-function:linear}
+.subject-scene .sc-stack{animation-name:sc-stack}
+.subject-scene .sc-coin-in{animation-name:sc-coin-in;animation-timing-function:linear}
+.subject-scene .fb-line{fill:none;stroke:var(--sc-b);stroke-width:2.4;stroke-linecap:round}
+/* Still state (reduced motion / paused): half the sand in each bulb. */
+.subject-scene .sand-top{transform:translateY(36px)}
+.subject-scene .sand-bottom{transform:translateY(16px)}
+.subject-scene .calc-key rect{transition:fill-opacity .12s}
+.subject-scene .calc-key.pressed rect{fill-opacity:.95}
+.subject-scene .calc-key.pressed .calc-label{fill:var(--sc-paper)}
+.subject-scene .calc-eq rect{fill:var(--sc-b)}
 .subject-scene .sc-hue{animation-name:sc-hue;animation-duration:9s}
 @keyframes sc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(var(--b,-9px))}}
 @keyframes sc-spin{to{transform:rotate(360deg)}}
@@ -83,6 +97,15 @@
 @keyframes sc-ballot{0%{transform:translateY(-56px);opacity:0}15%{opacity:1}40%,50%{transform:translateY(0);animation-timing-function:ease-in}80%,100%{transform:translateY(36px);opacity:1}}
 @keyframes sc-slot{0%,45%,100%{stroke-width:2.2}60%{stroke-width:5}}
 @keyframes sc-voted{0%,72%{transform:scale(0);opacity:0}82%{transform:scale(1.25);opacity:1}92%{transform:scale(1);opacity:1}100%{opacity:0}}
+/* Hourglass: sand drains and piles up, then the glass turns over and starts again. */
+@keyframes sc-turn{0%,84%{transform:rotate(0)}100%{transform:rotate(180deg)}}
+@keyframes sc-sand-top{0%{transform:translateY(0)}80%,100%{transform:translateY(74px)}}
+@keyframes sc-sand-bottom{0%{transform:translateY(34px)}80%,100%{transform:translateY(0)}}
+@keyframes sc-stream{0%,78%{opacity:1}82%,100%{opacity:0}}
+/* Coin falls onto the stack top, bounces slightly, then fades for the next one. */
+@keyframes sc-stack{0%{transform:translateY(-70px);opacity:0;animation-timing-function:ease-in}20%{opacity:1}50%{transform:translateY(0);animation-timing-function:ease-out}57%{transform:translateY(-4px);animation-timing-function:ease-in}64%,85%{transform:translateY(0);opacity:1}100%{transform:translateY(0);opacity:0}}
+/* Piggy-bank coin: drops to the slot, then slides fully inside (hidden by the clip). */
+@keyframes sc-coin-in{0%{transform:translateY(-56px);opacity:0}15%{opacity:1}40%,50%{transform:translateY(0);animation-timing-function:ease-in}80%,100%{transform:translateY(28px);opacity:1}}
 @keyframes sc-hue{0%,100%{fill:var(--sc-a)}33%{fill:var(--sc-c)}66%{fill:var(--sc-b)}}
 
 @media(max-width:1100px) and (min-width:761px){.subject-scene{opacity:.36}:root[data-theme="light"] .subject-scene{opacity:.45}}
