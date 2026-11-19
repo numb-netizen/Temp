@@ -69,7 +69,7 @@ h1{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(40px,7vw,
 .btn-g{border:1px solid var(--line);background:var(--panel);color:#fff}
 .btn-g:hover{border-color:var(--green);transform:translateY(-3px)}
 .cd-card{background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:26px;padding:28px;backdrop-filter:blur(14px);box-shadow:0 30px 70px #00000055}
-.cd-card h3{margin:0 0 4px;font-family:"Baloo Da 2";font-size:20px}
+.cd-card h3,.cd-card .cd-title{margin:0 0 4px;font-family:"Baloo Da 2";font-size:20px;font-weight:700}
 .cd-card p{margin:0 0 20px;color:var(--muted);font-size:14px}
 .cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .cd-cell{background:#04150a99;border:1px solid var(--line);border-radius:16px;padding:16px 6px;text-align:center}
@@ -222,10 +222,10 @@ h1{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(40px,7vw,
 .quote p{color:var(--muted);margin-top:16px}
 footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.foot h4{margin:0 0 10px;font-size:16px}
-.foot a{display:block;color:var(--muted);font-size:14px;margin:5px 0;transition:.2s}
+.foot h3,.foot h4{margin:0 0 10px;font-size:16px}
+.foot a{display:flex;align-items:center;min-height:24px;color:var(--muted);font-size:14px;margin:3px 0;transition:.2s}
 .foot a:hover{color:var(--green2)}
-.copy{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);color:#5f7a6a;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.copy{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);color:#6d8878;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .reveal{opacity:1;transform:none;transition:opacity .7s ease,transform .7s ease}
 .reveal.reveal-pending{opacity:0;transform:translateY(26px)}
 .reveal.reveal-pending.in,.reveal.reveal-pending:focus-within{opacity:1;transform:none}
@@ -275,3 +275,5 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .structure-note{max-width:680px;margin:12px 0 0;color:var(--muted);font-size:15px;line-height:1.7}.structure-note strong{color:var(--green2)}
 .ict-inspiration{text-align:center;color:var(--muted);font-size:10px;line-height:1.4;margin:14px 0 0;opacity:.8}
 .ict-inspiration[hidden]{display:none}
+/* Heading for screen readers only: keeps heading levels in order without changing the visible design. */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

@@ -123,8 +123,10 @@ if(typeof IntersectionObserver !== "undefined") {
     const io = new IntersectionObserver(es => es.forEach(e => {
       if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
     }), {threshold:.12});
-    elements.forEach(el => {
-      if(el.getBoundingClientRect().top >= window.innerHeight) el.classList.add("reveal-pending");
+    // Measure every element first, then write classes, so layout is computed once instead of per element.
+    const below = elements.map(el => el.getBoundingClientRect().top >= window.innerHeight);
+    elements.forEach((el, i) => {
+      if(below[i]) el.classList.add("reveal-pending");
       io.observe(el);
     });
   } catch (_) {
@@ -133,7 +135,7 @@ if(typeof IntersectionObserver !== "undefined") {
 }
 
 /* ---------- MISC ---------- */
-const yr = $("#year"); if(yr) yr.textContent = bn(new Date().getFullYear());
+const yr = $("#year"); if(yr) yr.textContent = new Date().getFullYear().toLocaleString("bn-BD", {useGrouping:false}); // "২০২৬", not "২,০২৬"
 
 /* ---------- PARENTS' MEETING (Bangladesh time; each day marked done after it ends) ---------- */
 const meeting = document.querySelector("#parents-meeting");

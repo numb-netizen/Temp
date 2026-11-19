@@ -39,7 +39,9 @@ test('the finished pre-test routine is gone and the parents meeting notice takes
 });
 
 test('the original notice image is shown with a source label and is available offline', () => {
-  assert.match(html, /<img src="assets\/parents-meeting-notice-2026\.jpg" width="1376" height="768" loading="lazy" alt="[^"]*অভিভাবক সমাবেশ-২০২৬[^"]*">/);
+  // A light 800px WebP for the page; the full JPG stays for wide screens and opens when tapped.
+  assert.match(html, /<a href="assets\/parents-meeting-notice-2026\.jpg" target="_blank" rel="noopener"><img src="assets\/parents-meeting-notice-2026-800\.webp" srcset="assets\/parents-meeting-notice-2026-800\.webp 800w, assets\/parents-meeting-notice-2026\.jpg 1376w" sizes="[^"]+" width="1376" height="768" loading="lazy" decoding="async" alt="[^"]*অভিভাবক সমাবেশ-২০২৬[^"]*">/);
+  assert.ok(fs.statSync(path.join(site, 'assets/parents-meeting-notice-2026-800.webp')).size < 100 * 1024);
   assert.match(html, /<figcaption>📖 এখান থেকে নেওয়া — কলেজের মূল বিজ্ঞপ্তি/);
   const file = path.join(site, 'assets/parents-meeting-notice-2026.jpg');
   assert.ok(fs.statSync(file).size < 400 * 1024, 'compressed for phones');
