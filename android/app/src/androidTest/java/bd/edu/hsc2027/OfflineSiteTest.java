@@ -31,7 +31,7 @@ public class OfflineSiteTest {
         try {
             WebView web = activity.findViewById(android.R.id.content).findViewWithTag("site-webview");
             View overlay = activity.findViewById(android.R.id.content).findViewWithTag("error-overlay");
-            assertPage(i, web, overlay, "হোম");
+            assertPage(i, web, overlay, "HSC 2027 স্টাডি প্ল্যাটফর্ম");
             assertEquals("true", js(i, web, "Boolean(document.querySelector('#cdD') && document.querySelector('#cdD').textContent !== '—')"));
             assertEquals("true", js(i, web, "location.origin === 'https://hsc2027.de5.net'"));
             assertEquals("true", js(i, web, "(() => {const layer=document.querySelector('.hero-sparkles'); const button=document.querySelector('.motion-toggle'); return !!layer && !!button && getComputedStyle(layer).pointerEvents === 'none' && (matchMedia('(prefers-reduced-motion: reduce)').matches || layer.children.length > 0);})()"));
