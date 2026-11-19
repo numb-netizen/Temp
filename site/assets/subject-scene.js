@@ -150,10 +150,17 @@
         txt(214, 52, '৳', 30, a('sc-bob', 4, -1)) + txt(300, 50, '%', 26, a('sc-bob', 5, -3));
     },
     history: function () {
-      return '<path class="k" d="M44 40h72M44 236h72M52 40c0 50 24 60 28 98-4 38-28 48-28 98M108 40c0 50-24 60-28 98 4 38 28 48 28 98"/>' +
-        '<path' + a('fb sc-drain', 6, 0) + ' d="M58 60h44c-6 30-16 44-22 62-6-18-16-32-22-62z"/>' +
-        '<path' + a('fb sc-grow', 6, 0) + ' d="M60 228h40c-4-22-12-34-20-50-8 16-16 28-20 50z"/>' +
-        '<path' + a('k2 sa sc-flow', 1, 0, 'stroke-dasharray:4 6;--len:10') + ' d="M80 124v104"/>' +
+      // Each sand body is clipped to the inside of its bulb, so it can never leave the glass.
+      // Top and bottom fill states mirror each other around the neck (y 138), so after the
+      // half turn the loop restarts seamlessly.
+      return '<defs><clipPath id="scene-sand-top"><path d="M55 43H105C105 92 83 102 80 137C77 102 55 92 55 43Z"/></clipPath>' +
+        '<clipPath id="scene-sand-bottom"><path d="M55 233H105C105 184 83 174 80 139C77 174 55 184 55 233Z"/></clipPath></defs>' +
+        '<g' + a('sc-turn', 9, 0, 'transform-box:view-box;transform-origin:80px 138px') + '>' +
+        '<g clip-path="url(#scene-sand-top)"><path' + a('fb sand-top sc-sand-top', 9, 0) + ' d="M50 66L80 76L110 66V150H50Z"/></g>' +
+        '<g' + a('sc-stream', 9, 0) + '><path' + a('fb-line sc-flow', .6, 0, 'stroke-dasharray:3 5;--len:8') + ' d="M80 136V232"/></g>' +
+        '<g clip-path="url(#scene-sand-bottom)"><path' + a('fb sand-bottom sc-sand-bottom', 9, 0) + ' d="M50 210L80 200L110 210V240H50Z"/></g>' +
+        '<path class="k" d="M44 40h72M44 236h72M52 40c0 50 24 60 28 98-4 38-28 48-28 98M108 40c0 50-24 60-28 98 4 38 28 48 28 98"/>' +
+        '<path class="hl" d="M58 50c2 30 10 44 16 56"/></g>' +
         '<path class="k fl-paper" d="M150 64h120v150H150z"/><path class="k fa-soft" d="M144 56h132a8 8 0 0 1 0 16H144a8 8 0 0 1 0-16zM144 206h132a8 8 0 0 1 0 16H144a8 8 0 0 1 0-16z"/>' +
         '<path' + a('k2 sc-draw', 5, 0) + ' pathLength="1" d="M166 96h88M166 116h70M166 136h88M166 156h56M166 176h80"/>' +
         '<circle' + a('fc sc-pulse', 4, 0) + ' cx="356" cy="120" r="34" opacity=".8"/>' +
@@ -181,11 +188,16 @@
     },
     accounting: function () {
       var keys = '';
-      for (var r = 0; r < 4; r++) for (var c = 0; c < 3; c++) keys += '<rect' + a('k2 fa-soft sc-key', 3.6, (-(r * 3 + c) * .3).toFixed(1)) + ' x="' + (52 + c * 26) + '" y="' + (112 + r * 26) + '" width="18" height="18" rx="4"/>';
+      var labels = ['7', '8', '9', '4', '5', '6', '1', '2', '3', 'C', '0', '='];
+      for (var r = 0; r < 4; r++) for (var c = 0; c < 3; c++) {
+        var key = labels[r * 3 + c], kx = 52 + c * 26, ky = 112 + r * 26;
+        keys += '<g class="calc-key' + (key === '=' ? ' calc-eq' : '') + '" data-k="' + key + '"><rect class="k2 fa-soft" x="' + kx + '" y="' + ky + '" width="18" height="18" rx="4"/>' +
+          '<text class="t calc-label" x="' + (kx + 9) + '" y="' + (ky + 13.5) + '" font-size="11" text-anchor="middle">' + key + '</text></g>';
+      }
       var beads = '';
       for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) beads += '<circle' + a((i % 2 ? 'fb' : 'fa') + ' k2 sc-drift', 3 + i * .6, (-j * .3 - i).toFixed(1), '--x:' + (18 - j * 4) + 'px') + ' cx="' + (330 + j * 14) + '" cy="' + (128 + i * 34) + '" r="7"/>';
       return '<rect class="k" x="40" y="54" width="102" height="180" rx="12"/><rect class="k fb-soft" x="52" y="68" width="78" height="32" rx="5"/>' +
-        txt(62, 92, '৳ 12,500', 15, a('sc-blink', 2.4, 0, 'animation-timing-function:ease-in-out')) + keys +
+        '<text class="t calc-display" x="125" y="91" font-size="15" text-anchor="end">৳ 12,500</text><rect' + a('fa sc-blink', 1, 0) + ' x="127" y="78" width="1.6" height="15"/>' + keys +
         '<path class="k fl-paper" d="M170 60h120v170H170z"/><path class="k2" d="M170 88h120M230 60v170M170 116h120M170 144h120M170 172h120M170 200h120"/>' +
         txt(186, 80, 'Dr.', 14) + txt(246, 80, 'Cr.', 14) +
         '<path' + a('k sa sc-draw', 4, 0) + ' pathLength="1" d="M190 102l6 6 12-12M250 130l6 6 12-12M190 158l6 6 12-12"/>' +
@@ -204,9 +216,13 @@
       var stack = '';
       for (var i = 0; i < 5; i++) stack += '<ellipse class="k fb-soft" cx="80" cy="' + (224 - i * 12) + '" rx="34" ry="9"/>';
       for (var j = 0; j < 3; j++) stack += '<ellipse class="k fb-soft" cx="140" cy="' + (224 - j * 12) + '" rx="26" ry="7"/>';
-      return stack + '<g' + a('sc-drop', 2.8, 0) + '><ellipse class="k fb" cx="80" cy="150" rx="34" ry="9"/>' + txt(73, 156, '৳', 14) + '</g>' +
-        '<ellipse class="k fc-soft" cx="262" cy="170" rx="64" ry="46"/><circle class="k fc-soft" cx="324" cy="164" r="16"/><path class="k" d="M224 132l-8-22 26 12M210 208v18M236 212v16M286 212v16M310 204v20M248 128h28"/>' +
-        '<circle class="fb" cx="288" cy="150" r="4"/><g' + a('sc-drop', 2.8, -1.4) + '><circle class="k fb" cx="262" cy="104" r="12"/>' + txt(256, 110, '৳', 14) + '</g>' +
+      // The top coin of the stack sits at cy 176, so the next one lands at cy 164.
+      return stack + '<g' + a('sc-stack', 3.2, 0) + '><ellipse class="k fb" cx="80" cy="164" rx="34" ry="9"/>' + txt(74, 169, '৳', 13) + '</g>' +
+        '<ellipse class="k fc-soft" cx="262" cy="170" rx="64" ry="46"/><circle class="k fc-soft" cx="324" cy="164" r="16"/><path class="k" d="M224 132l-8-22 26 12M210 208v18M236 212v16M286 212v16M310 204v20"/>' +
+        '<circle class="fb" cx="288" cy="150" r="4"/>' +
+        '<defs><clipPath id="scene-piggy-clip"><rect x="230" y="40" width="70" height="88"/></clipPath></defs>' +
+        '<g clip-path="url(#scene-piggy-clip)"><g' + a('sc-coin-in', 3.2, -1.6) + '><circle class="k fb" cx="262" cy="116" r="12"/>' + txt(256, 122, '৳', 14) + '</g></g>' +
+        '<path' + a('k sc-slot', 3.2, -1.6) + ' d="M248 128h28"/>' +
         '<path' + a('k sa sc-draw', 4, 0) + ' pathLength="1" d="M350 92l14-16 14 8 20-30"/>' +
         txt(186, 64, '৳', 30, a('sc-bob', 4, -1)) + txt(372, 132, '%', 26, a('sc-bob', 5, -2)) + txt(354, 222, '$', 24, a('sc-bob', 4.4, -3));
     },
@@ -244,13 +260,47 @@
 
   // CSS rules cannot stop SMIL motion, so pause it for reduced motion or the site pause setting.
   var svg = wrap.firstChild;
-  if (!svg || !svg.pauseAnimations || typeof window === 'undefined') return;
+  if (!svg || typeof window === 'undefined') return;
   var reduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function isStill() {
+    return !!((reduce && reduce.matches) || document.documentElement.classList.contains('motion-paused'));
+  }
   function sync() {
-    var still = (reduce && reduce.matches) || document.documentElement.classList.contains('motion-paused');
-    if (still) svg.pauseAnimations(); else svg.unpauseAnimations();
+    if (!svg.pauseAnimations) return;
+    if (isStill()) svg.pauseAnimations(); else svg.unpauseAnimations();
   }
   sync();
+  if (name === 'accounting' && svg.querySelector) typeOnCalculator(svg, isStill);
   if (reduce && reduce.addEventListener) reduce.addEventListener('change', sync);
   if (window.MutationObserver) new MutationObserver(sync).observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
+
+  // Presses random keys: digits build an amount, = shows it formatted, C clears.
+  function typeOnCalculator(svg, isStill) {
+    var display = svg.querySelector('.calc-display'), all = svg.querySelectorAll('.calc-key'), byKey = {}, value = '', shown = false;
+    if (!display || !all.length) return;
+    for (var i = 0; i < all.length; i++) byKey[all[i].getAttribute('data-k')] = all[i];
+    function show(text) { display.textContent = '৳ ' + text; }
+    function pick() {
+      var roll = Math.random();
+      if (value.length >= 3 && (roll < .16 || value.length >= 5)) return '=';
+      if (value.length && roll > .985) return 'C';
+      var digit = String(Math.floor(Math.random() * 10));
+      return digit === '0' && !value ? String(1 + Math.floor(Math.random() * 9)) : digit;
+    }
+    function tick() {
+      setTimeout(tick, 260 + Math.random() * 520);
+      if (isStill() || document.hidden) return;
+      var key = pick(), el = byKey[key];
+      if (el) {
+        el.classList.add('pressed');
+        setTimeout(function () { el.classList.remove('pressed'); }, 160);
+      }
+      if (key === 'C') { value = ''; shown = false; show('0'); return; }
+      if (key === '=') { show(Number(value).toLocaleString('en-IN')); value = ''; shown = true; return; }
+      if (shown) shown = false;
+      value += key;
+      show(value);
+    }
+    setTimeout(tick, 900);
+  }
 }());

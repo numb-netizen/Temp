@@ -21,8 +21,8 @@ test('every subject page opts into its own themed header scene', () => {
   for (const name of subjects) {
     const html = read(`${name}.html`);
     assert.match(html, new RegExp(`<header class="page-head" data-scene="${name}">`), name);
-    assert.ok(html.includes('assets/subject-scene.css?v=2'), name);
-    assert.ok(html.includes('<script src="assets/subject-scene.js?v=2" defer></script>'), name);
+    assert.ok(html.includes('assets/subject-scene.css?v=3'), name);
+    assert.ok(html.includes('<script src="assets/subject-scene.js?v=3" defer></script>'), name);
   }
 });
 
@@ -92,4 +92,42 @@ test('new motion assets are available offline', () => {
   const manifest = JSON.parse(read('offline-manifest.json'));
   for (const p of ['assets/subject-scene.js', 'assets/subject-scene.css', 'assets/light-motion.css'])
     assert.ok(manifest.files.some(x => x.path === p), p);
+});
+
+test('history sand stays inside the glass, finance coins land on the stack and enter the piggy bank', () => {
+  const history = render('history').innerHTML;
+  // Both sand bodies are clipped to the inside of their bulbs.
+  assert.match(history, /<g clip-path="url\(#scene-sand-top\)"><path class="fb sand-top sc-sand-top"/);
+  assert.match(history, /<g clip-path="url\(#scene-sand-bottom\)"><path class="fb sand-bottom sc-sand-bottom"/);
+  assert.match(history, /class="sc-turn" style="[^"]*transform-origin:80px 138px"/, 'turns around the neck');
+  const css = read('assets/subject-scene.css');
+  assert.match(css, /@keyframes sc-sand-top\{0%\{transform:translateY\(0\)\}80%,100%\{transform:translateY\(74px\)\}\}/, 'top surface (y 66) drains past the neck (y 137)');
+  assert.match(css, /@keyframes sc-turn\{0%,84%\{transform:rotate\(0\)\}100%\{transform:rotate\(180deg\)\}\}/);
+  const finance = render('finance').innerHTML;
+  assert.match(finance, /cx="80" cy="176" rx="34"/, 'top of the stack');
+  assert.match(finance, /class="sc-stack"[^>]*><ellipse class="k fb" cx="80" cy="164"/, 'falling coin rests one coin above it');
+  assert.match(finance, /<g clip-path="url\(#scene-piggy-clip\)"><g class="sc-coin-in"[^>]*><circle class="k fb" cx="262" cy="116" r="12"/);
+  assert.match(css, /@keyframes sc-coin-in\{[^\n]*80%,100%\{transform:translateY\(28px\)/, 'coin top (y 104) ends below the slot (y 128)');
+});
+
+test('the accounting calculator types random amounts and stops when motion is off', () => {
+  const html = render('accounting').innerHTML;
+  assert.deepEqual([...html.matchAll(/data-k="([^"]+)"/g)].map(m => m[1]), ['7', '8', '9', '4', '5', '6', '1', '2', '3', 'C', '0', '=']);
+  // Drive the typing loop with fake timers and a fake SVG.
+  const timers = [], display = {textContent: '৳ 12,500'}, paused = {value: false};
+  const keys = [...html.matchAll(/data-k="([^"]+)"/g)].map(m => ({key: m[1], classList: {add() {}, remove() {}}, getAttribute: () => m[1]}));
+  const svg = {pauseAnimations() {}, unpauseAnimations() {}, querySelector: sel => sel === '.calc-display' ? display : null, querySelectorAll: () => keys};
+  const head = {getAttribute: () => 'accounting', querySelector: () => null, insertBefore: el => { el.firstChild = svg; }};
+  const document = {hidden: false, querySelector: () => head, createElement: () => ({setAttribute() {}}),
+    documentElement: {classList: {contains: () => paused.value}}};
+  vm.runInNewContext(read('assets/subject-scene.js'), {document, window: {}, setTimeout: (fn, ms) => timers.push(fn), Math, Number, String});
+  const seen = new Set();
+  for (let i = 0; i < 400; i++) { timers.shift()(); seen.add(display.textContent); }
+  assert.ok(seen.size > 30, 'many different amounts appear');
+  for (const text of seen) assert.match(text, /^৳ [\d,]{1,6}$/, 'fits the calculator screen');
+  assert.ok([...seen].some(t => t.includes(',')), '= shows a formatted total');
+  paused.value = true;
+  const before = display.textContent;
+  for (let i = 0; i < 50; i++) timers.shift()();
+  assert.equal(display.textContent, before, 'no typing while motion is paused');
 });
