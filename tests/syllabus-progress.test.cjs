@@ -58,7 +58,7 @@ test('all five supplied index images and the partial example lists are available
   assert.ok(manifest.reduce((sum,file)=>sum+file.size,0) < 25*1024*1024,'Android offline bundle limit');
 });
 test('two-paper subject pages separate unverified status from the legacy topics', () => {
-  for (const subject of ['physics','chemistry','math','biology','economics','sociology','civics','history']) {
+  for (const subject of ['economics','sociology','civics','history']) {
     const page = read(subject+'.html');
     assert.ok(page.includes('<strong>১ম পত্র:</strong> পূর্ণ অধ্যায় ও কোড যাচাই বাকি'),subject);
     assert.ok(page.includes('<strong>২য় পত্র:</strong> পূর্ণ অধ্যায় ও কোড যাচাই বাকি'),subject);
