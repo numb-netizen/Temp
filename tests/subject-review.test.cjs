@@ -38,8 +38,6 @@ test('correct business subject names and both paper areas are available', () => 
     for (const title of ['ব্যবসায় সংগঠন ও ব্যবস্থাপনা','উৎপাদন ব্যবস্থাপনা ও বিপণন']) assert.ok(read(page).includes(title), `${page}: ${title}`);
   }
   for (const subject of ['business','marketing']) for (const paper of ['১ম পত্র:', '২য় পত্র:']) {
-    // The older marketing topics are general second-paper concepts and keep their saved keys.
-    if (subject === 'marketing' && paper === '২য় পত্র:') continue;
     assert.ok(read(subject+'.html').includes(paper),`${subject}: ${paper}`);
   }
 });
