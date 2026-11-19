@@ -11,7 +11,9 @@
     return ' class="' + cls + '" style="--t:' + t + 's;--d:' + d + 's' + (extra ? ';' + extra : '') + '"';
   }
   function txt(x, y, s, size, anim) {
-    return '<text class="t"' + (anim || '') + ' x="' + x + '" y="' + y + '" font-size="' + size + '">' + s + '</text>';
+    // Merge an animation class into the text's own class (a second class attribute would be ignored).
+    var attrs = anim ? anim.replace(' class="', ' class="t ') : ' class="t"';
+    return '<text' + attrs + ' x="' + x + '" y="' + y + '" font-size="' + size + '">' + s + '</text>';
   }
   function bubbles(cx, cy, n, spread, h) { // bubbles rising from a liquid surface
     var out = '';
@@ -45,11 +47,26 @@
           '<path class="k" d="M' + x + ' 110v84a11 11 0 0 0 22 0v-84"/><path class="k" d="M' + (x - 3) + ' 110h28"/>' +
           '<path' + a('k2 sc-rise', 3.4, -i * 1.1, '--h:-34px') + ' d="M' + (x + 11) + ' 104c-6-6 6-10 0-16s6-10 0-16"/>';
       }
-      return '<rect class="k" x="38" y="222" width="94" height="12" rx="4"/><path class="k" d="M112 222v-26c0-28-8-50-28-66"/>' +
-        '<rect class="k fa-soft" x="56" y="168" width="62" height="8" rx="3"/><path class="k" d="M86 176v12"/>' +
-        '<g transform="rotate(-28 80 110)"><rect class="k" x="70" y="70" width="22" height="70" rx="5"/><rect class="k fb-soft" x="65" y="54" width="32" height="17" rx="4"/><path class="k" d="M76 140v12h10v-12"/></g>' +
-        '<path' + a('fb sc-pulse', 2.4, 0) + ' d="M88 160l-9 8h18z" opacity=".75"/>' +
-        '<circle' + a('k2 sc-pulse', 2.4, -1.2) + ' cx="88" cy="172" r="10"/>' +
+      var cells = '';
+      for (var c = 0; c < 4; c++) cells += '<g' + a('sc-drift', 3 + c * .8, -c, '--x:' + (c % 2 ? -7 : 7) + 'px') + '><ellipse class="k2 ' + (c % 2 ? 'fc-soft' : 'fa-soft') + '" cx="' + [114, 140, 124, 146][c] + '" cy="' + [36, 30, 56, 52][c] + '" rx="9" ry="6"/><circle class="' + (c % 2 ? 'fc' : 'fa') + '" cx="' + [114, 140, 124, 146][c] + '" cy="' + [36, 30, 56, 52][c] + '" r="2.4"/></g>';
+      return '<rect class="k fa-soft" x="30" y="218" width="108" height="16" rx="8"/><path class="k2" d="M42 226h84"/>' +
+        '<circle' + a('fb sc-pulse', 2.4, 0) + ' cx="80" cy="210" r="14" fill-opacity=".3"/><circle class="k fb" cx="80" cy="210" r="6"/>' +
+        '<path' + a('fb sc-pulse', 2.4, -.3) + ' d="M74 204h12l-3-18h-6z" fill-opacity=".45"/>' +
+        '<path class="k fa-soft" d="M120 218C127 182 129 146 114 118L102 104L98 128C108 150 108 182 100 218Z"/>' +
+        '<rect class="k fb-soft" x="72" y="179" width="16" height="7" rx="2"/>' +
+        '<rect class="k fl-paper" x="42" y="170" width="84" height="9" rx="3"/><path class="k2" d="M50 168l12-2M110 168l-12-2"/>' +
+        '<rect class="k fc-soft" x="58" y="165" width="44" height="5" rx="1.5"/><circle' + a('fc sc-pulse', 2, 0) + ' cx="80" cy="167.5" r="2.6"/>' +
+        '<g transform="rotate(-30 78 106)"><rect class="k fl-paper" x="69" y="54" width="18" height="54" rx="5"/><path class="hl" d="M74 60v42"/>' +
+        '<rect class="k fb-soft" x="65" y="44" width="26" height="12" rx="4"/><rect class="k fa" x="67" y="80" width="22" height="6" rx="2"/></g>' +
+        '<rect class="k fa-soft" x="62" y="104" width="40" height="28" rx="9"/><path class="hl" d="M68 112h18"/>' +
+        '<path class="k fb-soft" d="M64 132h34l-5 9H69z"/><path class="k fl-paper" d="M76 141h10v15h-10z"/><path class="k fb" d="M78 156h6v5h-6z"/>' +
+        '<path class="k2" d="M70 141l-4 13M92 141l4 13"/>' +
+        '<g' + a('sc-spin', 9, 0) + '><circle class="k fl-paper" cx="114" cy="162" r="10"/><path class="k2" d="M114 153v5M114 166v5M105 162h5M118 162h5"/></g><circle class="k fb" cx="114" cy="162" r="3.5"/>' +
+        '<circle class="k fl-paper" cx="117" cy="186" r="5.5"/>' +
+        '<defs><clipPath id="scene-lens-clip"><circle cx="130" cy="44" r="26"/></clipPath></defs>' +
+        '<circle class="fl-paper" cx="130" cy="44" r="26"/><g clip-path="url(#scene-lens-clip)"><path class="k2" d="M104 44h52M130 18v52" stroke-dasharray="3 4"/>' + cells + '</g>' +
+        '<circle class="k" cx="130" cy="44" r="26" stroke-width="3.5"/><path class="hl" d="M112 32a22 22 0 0 1 12-10"/>' +
+        '<path class="k2" d="M53 49L104 44" stroke-dasharray="2 5"/>' +
         '<path class="k" d="M164 150h120M164 226h120M168 150v76M280 150v76"/>' + tubes +
         '<path class="fl fc sc-hue" style="--d:-1s" d="M323 198h60l12 22a6 6 0 0 1-5 9h-74a6 6 0 0 1-5-9z"/>' + bubbles(353, 214, 6, 18, -112) +
         '<path class="k" d="M340 118v42l-28 58a8 8 0 0 0 7 12h68a8 8 0 0 0 7-12l-28-58v-42M333 118h40"/>' +
@@ -57,9 +74,15 @@
         '<g' + a('sc-bob', 5, -2) + '><path class="k2" d="M226 52l26-14M252 38l20 16"/><circle class="k fa" cx="226" cy="52" r="8"/><circle class="k fb" cx="252" cy="38" r="10"/><circle class="k fc" cx="272" cy="54" r="7"/></g>';
     },
     physics: function () {
-      var orbits = '';
-      for (var i = 0; i < 3; i++) orbits += '<g transform="rotate(' + (i * 60) + ' 110 130)"><ellipse class="k2" cx="110" cy="130" rx="76" ry="25"/><circle class="fb" cx="186" cy="130" r="5"/></g>';
-      return '<g' + a('sc-spin', 22, 0) + '>' + orbits + '</g><circle' + a('fa sc-pulse', 2.6, 0) + ' cx="110" cy="130" r="11"/>' +
+      var orbits = '', dur = [2.6, 3.4, 4.2];
+      for (var i = 0; i < 3; i++) {
+        // Alternate the travel direction; negative begin times spread the electrons out.
+        var orbit = i % 2 ? 'M186 130a76 25 0 1 0-152 0a76 25 0 1 0 152 0' : 'M186 130a76 25 0 1 1-152 0a76 25 0 1 1 152 0';
+        orbits += '<g transform="rotate(' + (i * 60) + ' 110 130)"><ellipse class="k2" cx="110" cy="130" rx="76" ry="25"/>' +
+          '<g class="electron"><circle class="fb" r="10" opacity=".28"/><circle class="k fb" r="5"/>' +
+          '<animateMotion dur="' + dur[i] + 's" begin="' + (-i * 1.1).toFixed(1) + 's" repeatCount="indefinite" path="' + orbit + '"/></g></g>';
+      }
+      return orbits + '<circle' + a('fa-soft sc-pulse', 2.6, -1.3) + ' cx="110" cy="130" r="20"/><circle' + a('fa sc-pulse', 2.6, 0) + ' cx="110" cy="130" r="11"/>' +
         '<defs><clipPath id="scene-wave-clip"><rect x="210" y="30" width="200" height="80"/></clipPath></defs>' +
         '<g clip-path="url(#scene-wave-clip)"><path' + a('k sa sc-slide', 3, 0, '--x:-60px') + ' d="M210 70q15-30 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0"/></g>' +
         '<path class="k" d="M280 132h76"/><g' + a('sc-swing', 3.2, 0, '--a:22deg') + '><path class="k" d="M318 132v80"/><circle class="k fb-soft" cx="318" cy="222" r="13"/></g>' +
@@ -144,8 +167,10 @@
         '<path class="k" d="M276 228V82M248 228h56M276 82v-8"/><g' + a('sc-tilt', 4, 0) + '>' +
         '<path class="k" d="M224 92h104"/><path class="k2" d="M224 92l-18 46M224 92l18 46M328 92l-18 46M328 92l18 46"/>' +
         '<path class="k fb-soft" d="M200 138h48a24 14 0 0 1-48 0zM304 138h48a24 14 0 0 1-48 0z"/></g><circle' + a('fb sc-pulse', 3, 0) + ' cx="276" cy="80" r="7"/>' +
-        '<path class="k fa-soft" d="M352 170h56v58h-56z"/><path class="k" d="M368 170h24"/>' +
-        '<g' + a('sc-drop', 3.4, 0) + '><path class="k fl-paper" d="M370 120h20v30h-20z"/><path class="k2" d="M374 132l4 4 8-8"/></g>';
+        '<defs><clipPath id="scene-ballot-clip"><rect x="340" y="40" width="80" height="130"/></clipPath></defs>' +
+        '<g clip-path="url(#scene-ballot-clip)"><g' + a('sc-ballot', 4, 0) + '><path class="k fl-paper" d="M370 138h20v30h-20z"/><path class="k sa" d="M374 152l4 4 8-8"/></g></g>' +
+        '<path class="k fa-soft" d="M352 170h56v58h-56z"/><path class="k2" d="M352 186h56"/><path' + a('k sb sc-slot', 4, 0) + ' d="M368 170h24"/>' +
+        txt(372, 214, '✓', 20, a('fb sc-voted', 4, 0));
     },
     sociology: function () {
       var links = 'M86 82L196 120M196 120L310 76M196 120L130 196M196 120L270 196M310 76L370 150M270 196L370 150M86 82L130 196';
@@ -216,4 +241,16 @@
   wrap.setAttribute('aria-hidden', 'true');
   wrap.innerHTML = '<svg viewBox="0 0 420 260" focusable="false" preserveAspectRatio="xMidYMid meet">' + scenes[name]() + '</svg>';
   head.insertBefore(wrap, head.firstChild);
+
+  // CSS rules cannot stop SMIL motion, so pause it for reduced motion or the site pause setting.
+  var svg = wrap.firstChild;
+  if (!svg || !svg.pauseAnimations || typeof window === 'undefined') return;
+  var reduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function sync() {
+    var still = (reduce && reduce.matches) || document.documentElement.classList.contains('motion-paused');
+    if (still) svg.pauseAnimations(); else svg.unpauseAnimations();
+  }
+  sync();
+  if (reduce && reduce.addEventListener) reduce.addEventListener('change', sync);
+  if (window.MutationObserver) new MutationObserver(sync).observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
 }());

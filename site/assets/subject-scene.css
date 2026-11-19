@@ -11,6 +11,8 @@
 .subject-scene .sa{stroke:var(--sc-a);stroke-opacity:1}
 .subject-scene .sc{stroke:var(--sc-c)}
 .subject-scene .sc2{stroke:var(--sc-c)}
+.subject-scene .sb{stroke:var(--sc-b)}
+.subject-scene .hl{fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-opacity:.7}
 .subject-scene .fa{fill:var(--sc-a)}
 .subject-scene .fb{fill:var(--sc-b)}
 .subject-scene .fc{fill:var(--sc-c)}
@@ -49,6 +51,9 @@
 .subject-scene .sc-key{animation-name:sc-key}
 .subject-scene .sc-flicker{transform-origin:50% 0;animation-name:sc-flicker;animation-direction:alternate}
 .subject-scene .sc-shoot{animation-name:sc-shoot;animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+.subject-scene .sc-ballot{animation-name:sc-ballot;animation-timing-function:linear}
+.subject-scene .sc-slot{animation-name:sc-slot}
+.subject-scene .sc-voted{animation-name:sc-voted}
 .subject-scene .sc-hue{animation-name:sc-hue;animation-duration:9s}
 @keyframes sc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(var(--b,-9px))}}
 @keyframes sc-spin{to{transform:rotate(360deg)}}
@@ -74,6 +79,10 @@
 @keyframes sc-key{0%,80%,100%{fill-opacity:.2}88%{fill-opacity:.9}}
 @keyframes sc-flicker{0%{transform:scaleY(.8)}100%{transform:scaleY(1.35)}}
 @keyframes sc-shoot{0%{transform:translate(-90px,60px);opacity:0}30%{transform:translate(0,0);opacity:1}85%{opacity:1}100%{opacity:0}}
+/* Ballot: drops to the slot, pauses, then slides fully inside (hidden by the box's clip). */
+@keyframes sc-ballot{0%{transform:translateY(-56px);opacity:0}15%{opacity:1}40%,50%{transform:translateY(0);animation-timing-function:ease-in}80%,100%{transform:translateY(36px);opacity:1}}
+@keyframes sc-slot{0%,45%,100%{stroke-width:2.2}60%{stroke-width:5}}
+@keyframes sc-voted{0%,72%{transform:scale(0);opacity:0}82%{transform:scale(1.25);opacity:1}92%{transform:scale(1);opacity:1}100%{opacity:0}}
 @keyframes sc-hue{0%,100%{fill:var(--sc-a)}33%{fill:var(--sc-c)}66%{fill:var(--sc-b)}}
 
 @media(max-width:1100px) and (min-width:761px){.subject-scene{opacity:.36}:root[data-theme="light"] .subject-scene{opacity:.45}}
