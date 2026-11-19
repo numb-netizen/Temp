@@ -1,0 +1,69 @@
+/* Light-mode-only motion. The dark theme's effects use pale greens that vanish on a
+   light background, so light mode gets its own colours and a few extra gentle effects.
+   Everything here is decorative, ignores the pointer, and stops for reduced motion or
+   when the visitor pauses animation. */
+:root[data-theme="light"]{--lm-green:#0b8a52;--lm-teal:#0f8f8a;--lm-gold:#d99a00;--lm-rose:#e0607e}
+
+/* Home hero: recolour the existing effects so they are visible on a light background. */
+:root[data-theme="light"] .hero-spark{background:var(--lm-green);opacity:.6;box-shadow:0 0 10px #0b8a5277}
+:root[data-theme="light"] .hero-spark-ring{background:transparent;border-color:var(--lm-gold);opacity:.5}
+:root[data-theme="light"] .orbit{border-color:var(--lm-green);opacity:.32}
+:root[data-theme="light"] .orbit::after{background:var(--lm-gold);box-shadow:0 0 12px #d99a00aa}
+:root[data-theme="light"] .aurora-one{background:radial-gradient(ellipse,rgba(18,170,108,.24) 0%,rgba(15,143,138,.12) 38%,transparent 70%)}
+:root[data-theme="light"] .aurora-two{background:radial-gradient(ellipse,rgba(240,176,32,.20) 0%,rgba(224,96,126,.08) 45%,transparent 70%)}
+:root[data-theme="light"] .ambient-trace{stroke:var(--lm-green);stroke-opacity:.5}
+:root[data-theme="light"] .ambient-comet{background:var(--lm-gold);box-shadow:0 0 10px #d99a00}
+:root[data-theme="light"] .ambient-comet::before{background:linear-gradient(90deg,transparent,#d99a00)}
+/* A soft sun that breathes in the hero's top corner, with slow light rays. */
+:root[data-theme="light"] .hero::before{content:"";position:absolute;z-index:0;pointer-events:none;width:520px;height:520px;top:-210px;right:-150px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,206,84,.55) 0%,rgba(255,214,120,.22) 32%,transparent 66%);animation:lm-sun 9s ease-in-out infinite}
+:root[data-theme="light"] .hero::after{content:"";position:absolute;z-index:0;pointer-events:none;width:900px;height:900px;top:-560px;right:-470px;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(255,196,64,.13) 0deg 7deg,transparent 7deg 20deg);
+  -webkit-mask:radial-gradient(circle,#000 18%,transparent 62%);mask:radial-gradient(circle,#000 18%,transparent 62%);animation:lm-rays 60s linear infinite}
+@keyframes lm-sun{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}
+@keyframes lm-rays{to{transform:rotate(360deg)}}
+
+/* Every page header: drifting colour wash and rising bokeh bubbles. */
+:root[data-theme="light"] .page-head .blob.b1{background:#2fcf8a40}
+:root[data-theme="light"] .page-head::before{content:"";position:absolute;inset:-30% -10%;z-index:0;pointer-events:none;
+  background:radial-gradient(40% 50% at 18% 30%,rgba(47,207,138,.20),transparent 70%),radial-gradient(35% 45% at 82% 25%,rgba(255,196,64,.20),transparent 70%),radial-gradient(30% 40% at 60% 85%,rgba(15,143,138,.14),transparent 70%);
+  animation:lm-wash 18s ease-in-out infinite alternate}
+:root[data-theme="light"] .page-head::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.7;
+  background-image:radial-gradient(circle,rgba(11,138,82,.28) 0 3px,transparent 4px),radial-gradient(circle,rgba(217,154,0,.30) 0 2px,transparent 3px),radial-gradient(circle,rgba(15,143,138,.22) 0 4px,transparent 5px);
+  background-size:180px 180px,130px 130px,240px 240px;background-position:0 0,40px 60px,90px 20px;animation:lm-bokeh 26s linear infinite}
+:root[data-theme="light"] .page-head>.wrap{position:relative;z-index:1}
+@keyframes lm-wash{0%{transform:translate3d(-3%,0,0) scale(1)}100%{transform:translate3d(3%,-4%,0) scale(1.08)}}
+@keyframes lm-bokeh{to{background-position:0 -180px,40px -70px,90px -220px}}
+
+/* Cards: icons float gently, and a sheen sweeps across on hover or keyboard focus. */
+:root[data-theme="light"] .subj .ic,:root[data-theme="light"] .dept .ic,:root[data-theme="light"] .res .ic{display:inline-block;animation:lm-float 5s ease-in-out infinite}
+:root[data-theme="light"] .subj:nth-child(3n+2) .ic,:root[data-theme="light"] .dept:nth-child(2) .ic{animation-delay:-1.6s}
+:root[data-theme="light"] .subj:nth-child(3n) .ic,:root[data-theme="light"] .dept:nth-child(3) .ic{animation-delay:-3.2s}
+@keyframes lm-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-4deg)}}
+:root[data-theme="light"] .dept{position:relative;overflow:hidden}
+:root[data-theme="light"] .subj::after,:root[data-theme="light"] .dept::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-18deg);opacity:0}
+:root[data-theme="light"] .subj:hover::after,:root[data-theme="light"] .subj:focus-visible::after,:root[data-theme="light"] .dept:hover::after,:root[data-theme="light"] .dept:focus-visible::after{animation:lm-sheen .9s ease-out}
+:root[data-theme="light"] .subj:hover,:root[data-theme="light"] .dept:hover{box-shadow:0 18px 40px #0b8a5226,0 0 0 1px #0b8a5233}
+@keyframes lm-sheen{0%{left:-60%;opacity:0}20%{opacity:1}100%{left:120%;opacity:0}}
+
+/* Progress bars shimmer; the navigation underline grows on hover. */
+:root[data-theme="light"] .bar i{background-image:linear-gradient(90deg,var(--green),#22c07a,var(--lm-gold),#22c07a,var(--green));background-size:300% 100%;animation:lm-bar 6s linear infinite}
+@keyframes lm-bar{to{background-position:300% 0}}
+:root[data-theme="light"] .links a{background-image:linear-gradient(90deg,var(--lm-green),var(--lm-gold));background-size:0 2px;background-repeat:no-repeat;background-position:50% 100%;transition:background-size .3s}
+:root[data-theme="light"] .links a:hover,:root[data-theme="light"] .links a:focus-visible{background-size:70% 2px}
+
+/* A slow colour line along the top of the footer. */
+:root[data-theme="light"] footer{position:relative}
+:root[data-theme="light"] footer::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;pointer-events:none;
+  background:linear-gradient(90deg,var(--lm-green),var(--lm-gold),var(--lm-teal),var(--lm-rose),var(--lm-green));background-size:300% 100%;animation:lm-bar 14s linear infinite}
+
+@media(max-width:600px){:root[data-theme="light"] .hero::before{width:340px;height:340px;top:-150px;right:-130px}:root[data-theme="light"] .hero::after{display:none}}
+@media(prefers-reduced-motion:reduce){
+  :root[data-theme="light"] .hero::before,:root[data-theme="light"] .hero::after,:root[data-theme="light"] .page-head::before,:root[data-theme="light"] .page-head::after,
+  :root[data-theme="light"] .subj .ic,:root[data-theme="light"] .dept .ic,:root[data-theme="light"] .res .ic,:root[data-theme="light"] .bar i,:root[data-theme="light"] footer::before{animation:none!important}
+  :root[data-theme="light"] .subj::after,:root[data-theme="light"] .dept::after{display:none}
+}
+:root.motion-paused[data-theme="light"] .hero::before,:root.motion-paused[data-theme="light"] .hero::after,:root.motion-paused[data-theme="light"] .page-head::before,:root.motion-paused[data-theme="light"] .page-head::after,
+:root.motion-paused[data-theme="light"] .subj .ic,:root.motion-paused[data-theme="light"] .dept .ic,:root.motion-paused[data-theme="light"] .res .ic,:root.motion-paused[data-theme="light"] .bar i,:root.motion-paused[data-theme="light"] footer::before{animation:none!important}
+:root.motion-paused[data-theme="light"] .subj::after,:root.motion-paused[data-theme="light"] .dept::after{display:none}

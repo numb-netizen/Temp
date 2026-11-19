@@ -284,3 +284,4 @@ footer{border-top:1px solid var(--line);background:#050f09;padding:44px 0 30px}
 .dabi-teaser-icon{font-size:25px}.dabi-teaser span:nth-child(2){flex:1}.dabi-teaser strong,.dabi-teaser small{display:block}.dabi-teaser strong{font-size:17px;color:#fff}.dabi-teaser small{color:var(--muted);font-size:13px}.dabi-teaser span:last-child{color:var(--green2);font-size:22px}
 .structure-note{max-width:680px;margin:12px 0 0;color:var(--muted);font-size:15px;line-height:1.7}.structure-note strong{color:var(--green2)}
 .ict-inspiration{text-align:center;color:var(--muted);font-size:10px;line-height:1.4;margin:14px 0 0;opacity:.8}
+.ict-inspiration[hidden]{display:none}
