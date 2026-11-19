@@ -167,6 +167,14 @@ h1{font-family:"Baloo Da 2","Hind Siliguri",sans-serif;font-size:clamp(40px,7vw,
 .chap.done .box::after{content:"✓";font-weight:800}
 .chap.done .nm{color:var(--muted);text-decoration:line-through}
 .chap .nm{flex:1;min-width:0;overflow-wrap:anywhere}
+/* Chapter with a class video: the tag sits beside the tick box, never inside it, so opening a video never ticks the chapter. */
+.chap-row{display:flex;align-items:center;gap:8px}
+.chap-row .chap{flex:1;min-width:0}
+.class-tag{flex:none;display:inline-flex;align-items:center;min-height:30px;padding:4px 11px;border-radius:99px;background:rgba(244,42,65,.12);border:1px solid rgba(255,107,122,.5);color:#ff8f9a;font-size:13px;font-weight:700;white-space:nowrap;transition:.2s}
+.class-tag:hover,.class-tag:focus-visible{background:#c8102e;border-color:#c8102e;color:#fff}
+:root[data-theme="light"] .class-tag{background:#fff0f1;border-color:#f0a1aa;color:#a3001c}
+:root[data-theme="light"] .class-tag:hover,:root[data-theme="light"] .class-tag:focus-visible{background:#c8102e;border-color:#c8102e;color:#fff}
+@media(max-width:360px){.chap-row{flex-wrap:wrap;gap:0}.chap-row .chap{flex-basis:100%}.chap-row .class-tag{margin:-4px 0 6px 43px}}
 
 /* English 2nd paper topic items (no .chap wrapper): visible check boxes */
 .item{display:flex;align-items:flex-start;gap:11px;padding:9px 10px;border-radius:12px;cursor:default;font-size:15px;user-select:none}
