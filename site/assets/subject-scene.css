@@ -1,0 +1,86 @@
+/* Subject-themed animated header backgrounds (drawn by subject-scene.js).
+   Decorative only: behind the text, never clickable, still for reduced motion. */
+.page-head>.wrap{position:relative;z-index:1}
+.subject-scene{position:absolute;z-index:0;pointer-events:none;top:96px;bottom:0;right:max(0px,calc((100% - 1180px)/2));width:min(46%,500px);
+  display:flex;align-items:center;opacity:.5;
+  --sc-ink:#a6ffd1;--sc-a:#00e676;--sc-b:#ffd54f;--sc-c:#ff7a93;--sc-paper:#0d2a1c}
+.subject-scene svg{display:block;width:100%;height:auto;max-height:100%;overflow:visible}
+:root[data-theme="light"] .subject-scene{opacity:.72;--sc-ink:#0f5a3a;--sc-a:#12a865;--sc-b:#f0a400;--sc-c:#e2557a;--sc-paper:#ffffff}
+.subject-scene .k{fill:none;stroke:var(--sc-ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.subject-scene .k2{fill:none;stroke:var(--sc-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.7}
+.subject-scene .sa{stroke:var(--sc-a);stroke-opacity:1}
+.subject-scene .sc{stroke:var(--sc-c)}
+.subject-scene .sc2{stroke:var(--sc-c)}
+.subject-scene .fa{fill:var(--sc-a)}
+.subject-scene .fb{fill:var(--sc-b)}
+.subject-scene .fc{fill:var(--sc-c)}
+.subject-scene .fa-soft{fill:var(--sc-a);fill-opacity:.2}
+.subject-scene .fb-soft{fill:var(--sc-b);fill-opacity:.24}
+.subject-scene .fc-soft{fill:var(--sc-c);fill-opacity:.2}
+.subject-scene .fl-paper{fill:var(--sc-paper);fill-opacity:.85}
+.subject-scene .fl{stroke:none}
+.subject-scene .bub{fill:var(--sc-paper);fill-opacity:.75;stroke:var(--sc-ink);stroke-width:1.2}
+.subject-scene .t{fill:var(--sc-ink);font-family:"Hind Siliguri","Baloo Da 2",sans-serif;font-weight:700}
+
+/* Every animated part moves around its own box; timing comes from --t and --d. */
+.subject-scene [class*="sc-"]{transform-box:fill-box;transform-origin:center;animation-duration:var(--t,6s);animation-delay:var(--d,0s);animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.subject-scene .sc-bob{animation-name:sc-bob}
+.subject-scene .sc-spin{animation-name:sc-spin;animation-timing-function:linear}
+.subject-scene .sc-spin-rev{animation-name:sc-spin;animation-timing-function:linear;animation-direction:reverse}
+.subject-scene .sc-rise{animation-name:sc-rise;animation-timing-function:ease-in}
+.subject-scene .sc-fall{animation-name:sc-fall;animation-timing-function:linear}
+.subject-scene .sc-draw{stroke-dasharray:1;stroke-dashoffset:0;animation-name:sc-draw}
+.subject-scene .sc-pulse{animation-name:sc-pulse}
+.subject-scene .sc-swing{transform-origin:50% 0;animation-name:sc-swing}
+.subject-scene .sc-tilt{animation-name:sc-tilt}
+.subject-scene .sc-blink{animation-name:sc-blink;animation-timing-function:steps(1,end)}
+.subject-scene .sc-flow{animation-name:sc-flow;animation-timing-function:linear}
+.subject-scene .sc-drift{animation-name:sc-drift;animation-direction:alternate}
+.subject-scene .sc-slide{animation-name:sc-slide;animation-timing-function:linear}
+.subject-scene .sc-grow{transform-origin:50% 100%;animation-name:sc-grow;animation-direction:alternate}
+.subject-scene .sc-drain{transform-origin:50% 100%;animation-name:sc-drain;animation-timing-function:linear}
+.subject-scene .sc-twist{animation-name:sc-twist;animation-direction:alternate}
+.subject-scene .sc-morph{animation-name:sc-morph;animation-direction:alternate}
+.subject-scene .sc-flip{transform-origin:0 50%;animation-name:sc-flip}
+.subject-scene .sc-write{transform-origin:0 100%;animation-name:sc-write}
+.subject-scene .sc-pop{animation-name:sc-pop}
+.subject-scene .sc-wave{transform-origin:0 50%;animation-name:sc-wave}
+.subject-scene .sc-drop{animation-name:sc-drop;animation-timing-function:cubic-bezier(.5,0,.8,.5)}
+.subject-scene .sc-key{animation-name:sc-key}
+.subject-scene .sc-flicker{transform-origin:50% 0;animation-name:sc-flicker;animation-direction:alternate}
+.subject-scene .sc-shoot{animation-name:sc-shoot;animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+.subject-scene .sc-hue{animation-name:sc-hue;animation-duration:9s}
+@keyframes sc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(var(--b,-9px))}}
+@keyframes sc-spin{to{transform:rotate(360deg)}}
+@keyframes sc-rise{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}100%{transform:translateY(var(--h,-60px)) scale(1.15);opacity:0}}
+@keyframes sc-fall{0%{transform:translateY(-14px);opacity:0}20%{opacity:1}100%{transform:translateY(var(--h,46px));opacity:0}}
+@keyframes sc-draw{0%{stroke-dashoffset:1;opacity:1}55%,85%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@keyframes sc-pulse{0%,100%{transform:scale(.9);opacity:.45}50%{transform:scale(1.12);opacity:1}}
+@keyframes sc-swing{0%,100%{transform:rotate(calc(var(--a,14deg) * -1))}50%{transform:rotate(var(--a,14deg))}}
+@keyframes sc-tilt{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes sc-blink{0%{opacity:1}50%{opacity:.15}}
+@keyframes sc-flow{to{stroke-dashoffset:calc(var(--len,40) * -1)}}
+@keyframes sc-drift{to{transform:translateX(var(--x,24px))}}
+@keyframes sc-slide{to{transform:translateX(var(--x,-60px))}}
+@keyframes sc-grow{0%{transform:scaleY(.35)}100%{transform:scaleY(1)}}
+@keyframes sc-drain{0%{transform:scaleY(1)}100%{transform:scaleY(.08)}}
+@keyframes sc-twist{0%{transform:scaleX(1)}100%{transform:scaleX(-1)}}
+@keyframes sc-morph{0%{transform:scale(1,1)}100%{transform:scale(1.06,.94)}}
+@keyframes sc-flip{0%,20%{transform:scaleX(1)}50%,70%{transform:scaleX(-1)}100%{transform:scaleX(1)}}
+@keyframes sc-write{0%,100%{transform:rotate(0) translateX(0)}25%{transform:rotate(-6deg) translateX(-8px)}50%{transform:rotate(3deg) translateX(-16px)}75%{transform:rotate(-4deg) translateX(-6px)}}
+@keyframes sc-pop{0%,100%{transform:scale(.9);opacity:.55}50%{transform:scale(1.04);opacity:1}}
+@keyframes sc-wave{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(8deg) scaleX(.9)}}
+@keyframes sc-drop{0%{transform:translateY(-70px);opacity:0}25%{opacity:1}60%,85%{transform:translateY(0);opacity:1}100%{transform:translateY(0);opacity:0}}
+@keyframes sc-key{0%,80%,100%{fill-opacity:.2}88%{fill-opacity:.9}}
+@keyframes sc-flicker{0%{transform:scaleY(.8)}100%{transform:scaleY(1.35)}}
+@keyframes sc-shoot{0%{transform:translate(-90px,60px);opacity:0}30%{transform:translate(0,0);opacity:1}85%{opacity:1}100%{opacity:0}}
+@keyframes sc-hue{0%,100%{fill:var(--sc-a)}33%{fill:var(--sc-c)}66%{fill:var(--sc-b)}}
+
+@media(max-width:1100px) and (min-width:761px){.subject-scene{opacity:.36}:root[data-theme="light"] .subject-scene{opacity:.45}}
+/* Phones and tablets: a faint, wide scene behind the heading so text stays readable. */
+@media(max-width:760px){
+  .subject-scene{top:70px;right:-14%;width:88%;opacity:.2}
+  :root[data-theme="light"] .subject-scene{opacity:.28}
+}
+@media(prefers-reduced-motion:reduce){.subject-scene,.subject-scene *{animation:none!important}}
+.motion-paused .subject-scene,.motion-paused .subject-scene *{animation:none!important}

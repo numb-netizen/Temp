@@ -15,7 +15,7 @@ test('home page names the website structure right above the subject tree', () =>
 test('every page ends with a small ICT chapter-four inspiration line', () => {
   for (const name of fs.readdirSync(site).filter(n => n.endsWith('.html') && !n.startsWith('google'))) {
     const html = read(name);
-    assert.match(html, /<p class="ict-inspiration">ICT চতুর্থ অধ্যায় থেকে অনুপ্রাণিত হয়ে বানানো<\/p>\n  <\/div>\n<\/footer>/, name);
+    assert.match(html, /<p class="ict-inspiration" id="ict-inspiration">ICT চতুর্থ অধ্যায় থেকে অনুপ্রাণিত হয়ে বানানো<\/p>\n  <\/div>\n<\/footer>/, name);
   }
   assert.match(read('assets/style.css'), /\.ict-inspiration\{[^}]*font-size:10px/);
 });
