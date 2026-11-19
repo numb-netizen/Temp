@@ -49,7 +49,7 @@ test('decorative effects are bounded, non-interactive and disabled for reduced m
 test('unnecessary advice is trimmed but essential exam information and links remain', () => {
   const html = read('index.html');
   assert.doesNotMatch(html, /প্রতিদিন পড়ো অন্তত|Hierarchical Structure|পরীক্ষা শেষ হলে তালিকা থেকে নিজে থেকেই সরে যাবে/);
-  for (const s of ['চূড়ান্ত নয়','পরীক্ষার্থীদের জন্য নোটিশের নির্দেশনা','কলেজ ইউনিফর্ম','কলেজ প্রদত্ত আইডি কার্ড','পরীক্ষা শুরু হলে তার সিলেবাস, শেষ হলে রুটিন থেকে বিষয়টি সরে যাবে','href="assets/pretest-notice-2026.jpg"']) assert.ok(html.includes(s), s);
+  for (const s of ['চূড়ান্ত নয়','অভিভাবক <span class="grad">সমাবেশ-২০২৬</span>','০২ নং হলরুম','সকাল ১১.০০ ঘটিকায়','href="assets/parents-meeting-notice-2026.jpg"']) assert.ok(html.includes(s), s);
   for (const link of ['student-group.html','teachers.html','college-info.html','hsc-2027-routine.html','college-routine.html','honours-info.html']) assert.ok(html.includes(`href="${link}"`), link);
   assert.doesNotMatch(read('routine.html'), /মোবাইল পড়ার সময় সাইলেন্ট মোডে রাখো/);
   assert.doesNotMatch(read('classes.html'), /টিপস: ক্লাস দেখার পর/);
@@ -64,8 +64,8 @@ test('varied decorative effects respect both motion controls without removing no
   for (const kind of ['bob', 'sway', 'pulse']) assert.ok(html.includes(`data-motion="${kind}"`), kind);
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{\.hero-orbits\{display:none\}/);
   assert.match(css, /\.motion-paused \.hero-orbits\{display:none\}/);
-  assert.match(html, /class="exam-notice-link" href="assets\/pretest-notice-2026.jpg"/);
-  assert.match(html, /<details class="exam-rules"><summary>পরীক্ষার্থীদের জন্য নোটিশের নির্দেশনা<\/summary>/);
+  assert.match(html, /class="exam-notice-link" href="assets\/parents-meeting-notice-2026.jpg"/);
+  assert.match(html, /<figure class="meet-figure">/);
 });
 
 test('ambient background is decorative, bounded, offline and respects motion preferences', () => {

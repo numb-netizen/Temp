@@ -55,7 +55,7 @@ async function runSmoke(win) {
   await win.loadURL('hscapp://site/tracker.html');
   assert.equal(await win.webContents.executeJavaScript("localStorage.getItem('hsc2027:physics:0')"), '1');
   assert.equal(await win.webContents.executeJavaScript("document.querySelector('[data-subject=physics][data-chapter=\"0\"]').classList.contains('done')"), true);
-  assert.equal(await win.webContents.executeJavaScript("document.querySelector('#pretest-routine') === null"), true);
+  assert.equal(await win.webContents.executeJavaScript("document.querySelector('#parents-meeting') === null"), true);
   console.log('Desktop offline navigation and tracker smoke test passed');
 }
 app.whenReady().then(async () => {
