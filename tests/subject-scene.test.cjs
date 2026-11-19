@@ -21,8 +21,8 @@ test('every subject page opts into its own themed header scene', () => {
   for (const name of subjects) {
     const html = read(`${name}.html`);
     assert.match(html, new RegExp(`<header class="page-head" data-scene="${name}">`), name);
-    assert.ok(html.includes('assets/subject-scene.css?v=1'), name);
-    assert.ok(html.includes('<script src="assets/subject-scene.js?v=1" defer></script>'), name);
+    assert.ok(html.includes('assets/subject-scene.css?v=2'), name);
+    assert.ok(html.includes('<script src="assets/subject-scene.js?v=2" defer></script>'), name);
   }
 });
 
@@ -35,13 +35,32 @@ test('each subject draws a decorative, hidden SVG scene with its own artwork', (
     assert.equal(el.attrs['aria-hidden'], 'true');
     assert.match(el.innerHTML, /^<svg viewBox="0 0 420 260" focusable="false"/);
     assert.ok((el.innerHTML.match(/class="[^"]*\bsc-/g) || []).length >= 4, `${name} is animated`);
-    assert.doesNotMatch(el.innerHTML, /style="[^"]*"[^>]*\sstyle=/, `${name} has no duplicate style attributes`);
+    // A repeated attribute (e.g. two class="…") is silently dropped by the browser.
+    for (const tag of el.innerHTML.match(/<[a-z]+\s[^>]*>/gi)) {
+      const names = [...tag.matchAll(/\s([a-zA-Z-]+)=/g)].map(m => m[1]);
+      assert.equal(new Set(names).size, names.length, `${name}: ${tag}`);
+    }
     seen.set(el.innerHTML, (seen.get(el.innerHTML) || []).concat(name));
   }
   // Only the two-paper subjects share artwork with their first paper.
   assert.equal(seen.size, 16);
   assert.ok(render('chemistry').innerHTML.includes('sc-rise'), 'chemistry reactions bubble');
   assert.equal(render('unknown'), null);
+});
+
+test('physics electrons travel their orbits, the microscope is detailed and the ballot enters the box', () => {
+  const physics = render('physics').innerHTML;
+  assert.equal((physics.match(/<g class="electron">/g) || []).length, 3);
+  assert.equal((physics.match(/<animateMotion dur="[\d.]+s" begin="-?[\d.]+s" repeatCount="indefinite" path="M186 130a76 25/g) || []).length, 3);
+  assert.doesNotMatch(physics, /sc-spin/, 'orbits stay put while electrons move');
+  const chemistry = render('chemistry').innerHTML;
+  for (const part of ['scene-lens-clip', 'class="hl"', 'class="k fb" cx="80" cy="210"']) assert.ok(chemistry.includes(part), part);
+  const civics = render('civics').innerHTML;
+  assert.match(civics, /<clipPath id="scene-ballot-clip"><rect x="340" y="40" width="80" height="130"\/>/);
+  assert.match(civics, /<g clip-path="url\(#scene-ballot-clip\)"><g class="sc-ballot"/);
+  const css = read('assets/subject-scene.css');
+  assert.match(css, /@keyframes sc-ballot\{[^\n]*80%,100%\{transform:translateY\(36px\)/, 'ballot top (y 138) ends below the slot (y 170)');
+  assert.match(read('assets/subject-scene.js'), /svg\.pauseAnimations\(\)/);
 });
 
 test('scenes stay behind the text, ignore the pointer and respect motion preferences', () => {
