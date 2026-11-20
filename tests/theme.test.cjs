@@ -17,7 +17,7 @@ test('all navigable pages load the theme early, provide the control and cache as
     assert.ok(html.indexOf('assets/theme.css?v=1') > html.indexOf('assets/heading-motion.css'), name);
     assert.match(html, /class="theme-toggle"[^>]*aria-label="লাইট মোড"[^>]*aria-pressed="false"[^>]*hidden/);
   }
-  assert.equal(pages, 35);
+  assert.equal(pages, 36);
   const manifest = require('../scripts/offline-manifest.cjs').makeManifest(site).files;
   for (const asset of ['assets/theme.js', 'assets/theme.css']) assert.ok(manifest.some(x => x.path === asset), asset);
 });

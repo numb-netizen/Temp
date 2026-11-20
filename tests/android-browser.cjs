@@ -19,7 +19,7 @@ const {chromium} = require('playwright-core');
       await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8765/') ? route.continue() : route.abort());
       const errors = [];
       page.on('pageerror', e => errors.push(e.message));
-      for (const name of ['science','arts','commerce','tracker','bangla','bangla-2','english','english-2','ict','physics','chemistry','math','biology','economics','sociology','civics','history','accounting','business','finance','marketing']) {
+      for (const name of ['science','arts','commerce','tracker','bangla','mcq-test','bangla-2','english','english-2','ict','physics','chemistry','math','biology','economics','sociology','civics','history','accounting','business','finance','marketing']) {
         await page.goto('http://127.0.0.1:8765/' + name + '.html');
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `syllabus overflow ${name} ${width}`);
       }
@@ -347,6 +347,57 @@ const {chromium} = require('playwright-core');
         assert.match(page.url(), /student-group\.html$/);
         await page.close();
       }
+    }
+    // Live MCQ test: a mocked Supabase reply drives a full attempt; an aborted request shows a retry.
+    for (const width of [320, 360, 1440]) {
+      const page = await browser.newPage({viewport:{width, height:800}});
+      const errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+      let online = false, requested = '';
+      const rows = [0, 6, 29].flatMap(ch => [1, 2, 3].map(i => ({code:`bangla-${String(ch).padStart(3, '0')}-00${i}`, chapter_no:ch,
+        stem:`<b>প্রশ্ন ${ch}-${i}</b>`, option_a:'ক উত্তর', option_b:'খ উত্তর', option_c:'গ উত্তর', option_d:'ঘ উত্তর', correct:'b', explanation:'নমুনা ব্যাখ্যা', difficulty:'easy'})));
+      await page.context().route('**/*', route => {
+        const url = route.request().url();
+        if (url.startsWith('http://127.0.0.1:8765/')) return route.continue();
+        if (online && url.startsWith('https://jwzznffykcxghigkwzab.supabase.co/rest/v1/mcq_questions?')) {
+          requested = url;
+          return route.fulfill({status:200, contentType:'application/json', headers:{'access-control-allow-origin':'*'}, body:JSON.stringify(rows)});
+        }
+        return route.abort();
+      });
+      await page.goto('http://127.0.0.1:8765/mcq-test.html');
+      await page.locator('#mcqRetry').waitFor({state:'visible'});
+      assert.match(await page.locator('#mcqStatus').textContent(), /লোড করা যায়নি/);
+      assert.equal(await page.locator('#mcqStart').isDisabled(), true);
+      online = true;
+      await page.locator('#mcqRetry').click();
+      await page.waitForFunction(() => !document.getElementById('mcqStart').disabled);
+      assert.doesNotMatch(requested, /source_note/);
+      assert.match(await page.locator('#mcqStatus').textContent(), /৯টি প্রশ্ন/);
+      await page.selectOption('#mcqChapter', '6');
+      assert.match(await page.locator('#mcqStatus').textContent(), /৩টি প্রশ্ন/);
+      await page.selectOption('#mcqChapter', '1');
+      assert.equal(await page.locator('#mcqStart').isDisabled(), true, 'chapter without questions cannot start');
+      await page.selectOption('#mcqChapter', 'all');
+      await page.locator('#mcqStart').click();
+      assert.equal(await page.locator('.mcq-q').count(), 9);
+      assert.equal(await page.locator('.mcq-q legend b').count(), 0, 'stems are plain text');
+      const legends = await page.locator('.mcq-q legend').allTextContents();
+      await page.locator('.mcq-q').nth(0).locator('input[value="b"]').check();
+      await page.locator('.mcq-q').nth(1).locator('input[value="a"]').check();
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `mcq quiz overflow at ${width}`);
+      await page.locator('#mcqSubmit').click();
+      assert.match(await page.locator('#mcqScore').textContent(), /১ \/ ৯/);
+      assert.match(await page.locator('#mcqScore').textContent(), /উত্তর দাওনি ৭টি/);
+      assert.equal(await page.locator('.mcq-opt.is-right').count(), 9);
+      assert.equal(await page.locator('.mcq-opt.is-wrong').count(), 1);
+      assert.equal(await page.locator('.mcq-explain').count(), 9);
+      assert.ok(legends.length === 9);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `mcq result overflow at ${width}`);
+      await page.locator('#mcqAgain').click();
+      assert.equal(await page.locator('#mcqSetup').isVisible(), true);
+      assert.deepEqual(errors, [], `mcq script errors at ${width}`);
+      await page.close();
     }
     for (const width of [1201, 1440]) {
       const page = await browser.newPage({viewport:{width, height:900}});

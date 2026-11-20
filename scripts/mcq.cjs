@@ -58,15 +58,19 @@ function shuffled(code, options) {
 
 function loadQuestions() {
   const dir = path.join(ROOT, 'data/mcq');
-  const out = [];
+  const out = []; const used = {};
+  // Files are read in name order; a later file that adds to the same chapter continues its numbering
+  // (bangla-playlist-batch.json starts at bangla-029-006 after the five Gemini questions).
   for (const file of fs.readdirSync(dir).filter(f => f.endsWith('.json')).sort()) {
     const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
     const meta = data.meta || {};
     for (const [subject, byChapter] of Object.entries(data.questions)) {
       for (const [no, list] of Object.entries(byChapter)) {
+        const start = used[chapterKey(subject, no)] || 0;
+        used[chapterKey(subject, no)] = start + list.length;
         list.forEach((row, i) => {
           const [stem, correct, w1, w2, w3, explanation = null, difficulty = 'medium'] = row;
-          const code = `${subject}-${pad3(no)}-${pad3(i + 1)}`;
+          const code = `${subject}-${pad3(no)}-${pad3(start + i + 1)}`;
           const s = shuffled(code, [correct, w1, w2, w3]);
           out.push({code, subject, chapter_no: Number(no), stem, options: s.options, correct: s.correct, explanation,
             difficulty, source: meta.source || 'ai_draft', source_note: meta.source_note || null, status: 'draft', file});
