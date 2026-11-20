@@ -73,3 +73,14 @@ test('Bangla 1st paper links to the MCQ test and the one-shot class playlist', (
     assert.doesNotMatch(read('site/' + f), /href="mcq-test\.html"/, `${f}: the test is only linked from Bangla 1st paper`);
   }
 });
+
+test('the test is timed at 40 seconds per question and each answer locks on the third choice', () => {
+  assert.match(js, /var SECONDS_PER_QUESTION = 40;/);
+  assert.match(js, /var MAX_PICKS = 3;/);
+  assert.match(js, /deadline = Date\.now\(\) \+ n \* SECONDS_PER_QUESTION \* 1000;/, 'the deadline survives tab switches and slow timers');
+  assert.match(js, /if \(left === 0\) \{ stopTimer\(\); grade\(true\); \}/, 'time up submits automatically');
+  assert.match(page, /প্রতি প্রশ্নে ৪০ সেকেন্ড/);
+  assert.match(page, /৩য় বার বাছাই করলেই সেই প্রশ্নের উত্তর লক হয়ে যাবে/);
+  assert.match(page, /<div class="mcq-timer" id="mcqTimer" role="timer"/);
+  assert.match(read('site/assets/mcq-test.css'), /\.mcq-wrap \[hidden\]\{display:none!important\}/, '.btn display must not reveal hidden buttons');
+});

@@ -34,8 +34,8 @@
 <link rel="stylesheet" href="assets/light-motion.css?v=1">
 <link rel="stylesheet" href="assets/subject-scene.css?v=3">
 <script src="assets/subject-scene.js?v=3" defer></script>
-<link rel="stylesheet" href="assets/mcq-test.css?v=1">
-<script src="assets/mcq-test.js?v=1" defer></script>
+<link rel="stylesheet" href="assets/mcq-test.css?v=3">
+<script src="assets/mcq-test.js?v=3" defer></script>
 </head>
 <body>
 <nav>
@@ -101,6 +101,10 @@
         </select>
       </label>
     </div>
+    <ul class="mcq-rules">
+      <li>⏱ সময়: প্রতি প্রশ্নে ৪০ সেকেন্ড — <b id="mcqTimeInfo">১০টি প্রশ্নে ৬ মিনিট ৪০ সেকেন্ড</b>। সময় শেষ হলে উত্তর নিজে থেকেই জমা হয়ে যাবে।</li>
+      <li>🔒 প্রতিটি প্রশ্নে সর্বোচ্চ ৩ বার উত্তর বাছতে পারবে; ৩য় বার বাছাই করলেই সেই প্রশ্নের উত্তর লক হয়ে যাবে।</li>
+    </ul>
     <button class="btn btn-p" type="submit" id="mcqStart" disabled>টেস্ট শুরু করো</button>
     <p class="mcq-status" id="mcqStatus" role="status" aria-live="polite">প্রশ্ন লোড হচ্ছে…</p>
     <button class="btn btn-g" type="button" id="mcqRetry" hidden>আবার চেষ্টা করো</button>
@@ -108,6 +112,8 @@
 
   <form class="mcq-quiz" id="mcqQuiz" hidden>
     <h2 id="mcqQuizTitle" tabindex="-1">প্রশ্ন</h2>
+    <div class="mcq-timer" id="mcqTimer" role="timer" aria-label="বাকি সময়">⏱ <span id="mcqTimeLeft">০০:০০</span> বাকি</div>
+    <p class="sr-only" id="mcqTimeNote" role="status" aria-live="assertive"></p>
     <ol class="mcq-list" id="mcqList"></ol>
     <p class="mcq-score" id="mcqScore" role="status" aria-live="polite" tabindex="-1" hidden></p>
     <div class="mcq-actions">
