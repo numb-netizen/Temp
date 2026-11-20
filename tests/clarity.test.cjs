@@ -25,7 +25,7 @@ test('the exact Clarity snippet is inline in the head of every indexed page, onc
     const head = html.slice(0, html.indexOf('</head>'));
     assert.ok(head.includes(snippet), `${file}: snippet must be verbatim inside <head>`);
   }
-  assert.equal(indexed.length, 32);
+  assert.equal(indexed.length, 33);
   assert.ok(!fs.existsSync(path.join(site, 'assets/clarity.js')), 'old loader file removed');
   assert.ok(!indexed.some(file => read(file).includes('assets/clarity.js')));
 });
