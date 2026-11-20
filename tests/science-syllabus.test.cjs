@@ -28,7 +28,8 @@ test('science subjects list every textbook chapter of both papers in order', () 
     const total = bn(names.length);
     assert.ok(page.includes(`<span class="cnt">০/${total}</span>`), `${subject} count`);
     assert.ok(read('science.html').includes(`${total}টি অধ্যায়।`), `${subject} science card`);
-    assert.ok(page.includes(`<strong>১ম পত্র (কোড ${book.codes[0]}):</strong> ${bn(book.first.length)}টি অধ্যায়। <strong>২য় পত্র (কোড ${book.codes[1]}):</strong> ${bn(book.second.length)}টি অধ্যায়।`), `${subject} codes`);
+    // The old "what changed" box (paper codes, update date, kept ticks) was removed on request.
+    assert.ok(!page.includes(`<strong>১ম পত্র (কোড ${book.codes[0]}):</strong>`), `${subject} change box removed`);
     assert.doesNotMatch(page, /যাচাই বাকি|বাছাই করা প্রস্তুতি|নির্বাচিত প্রস্তুতি/, `${subject} no longer marked unverified`);
   }
 });
