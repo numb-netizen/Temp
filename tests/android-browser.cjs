@@ -370,8 +370,10 @@ const {chromium} = require('playwright-core');
       assert.match(await page.locator('#mcqStatus').textContent(), /লোড করা যায়নি/);
       assert.equal(await page.locator('#mcqStart').isDisabled(), true);
       online = true;
+      assert.equal(await page.locator('#mcqAgain').isVisible(), false, 'hidden buttons stay hidden despite .btn display');
       await page.locator('#mcqRetry').click();
       await page.waitForFunction(() => !document.getElementById('mcqStart').disabled);
+      assert.equal(await page.locator('#mcqRetry').isVisible(), false);
       assert.doesNotMatch(requested, /source_note/);
       assert.match(await page.locator('#mcqStatus').textContent(), /৯টি প্রশ্ন/);
       await page.selectOption('#mcqChapter', '6');
@@ -385,18 +387,65 @@ const {chromium} = require('playwright-core');
       const legends = await page.locator('.mcq-q legend').allTextContents();
       await page.locator('.mcq-q').nth(0).locator('input[value="b"]').check();
       await page.locator('.mcq-q').nth(1).locator('input[value="a"]').check();
+      // The third choice on a question locks it.
+      const q2 = page.locator('.mcq-q').nth(2);
+      await q2.locator('input[value="a"]').check();
+      await q2.locator('input[value="b"]').check();
+      assert.match(await q2.locator('.mcq-picks').textContent(), /আর ১ বার/);
+      assert.equal(await q2.locator('input[value="c"]').isDisabled(), false);
+      await q2.locator('input[value="c"]').check();
+      assert.match(await q2.locator('.mcq-picks').textContent(), /লক/);
+      assert.equal(await q2.locator('input:disabled').count(), 4, 'locked after the 3rd choice');
+      assert.equal(await q2.locator('input[value="c"]').isChecked(), true);
+      assert.match(await page.locator('#mcqTimeLeft').textContent(), /^০[৫৬]:[০-৫][০-৯]$/, '9 questions × 40 s = 6 minutes');
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `mcq quiz overflow at ${width}`);
       await page.locator('#mcqSubmit').click();
       assert.match(await page.locator('#mcqScore').textContent(), /১ \/ ৯/);
-      assert.match(await page.locator('#mcqScore').textContent(), /উত্তর দাওনি ৭টি/);
+      assert.match(await page.locator('#mcqScore').textContent(), /উত্তর দাওনি ৬টি/);
+      assert.doesNotMatch(await page.locator('#mcqScore').textContent(), /সময় শেষ/);
       assert.equal(await page.locator('.mcq-opt.is-right').count(), 9);
-      assert.equal(await page.locator('.mcq-opt.is-wrong').count(), 1);
+      assert.equal(await page.locator('.mcq-opt.is-wrong').count(), 2);
       assert.equal(await page.locator('.mcq-explain').count(), 9);
       assert.ok(legends.length === 9);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `mcq result overflow at ${width}`);
+      assert.equal(await page.locator('#mcqSubmit').isVisible(), false);
+      assert.equal(await page.locator('#mcqAgain').isVisible(), true);
       await page.locator('#mcqAgain').click();
       assert.equal(await page.locator('#mcqSetup').isVisible(), true);
       assert.deepEqual(errors, [], `mcq script errors at ${width}`);
+      await page.close();
+    }
+    // When the timer reaches zero the answers are submitted automatically.
+    {
+      const page = await browser.newPage({viewport:{width:360, height:800}});
+      const errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+      await page.clock.install();
+      const rows = [1, 2, 3, 4].map(i => ({code:`bangla-000-00${i}`, chapter_no:0, stem:`প্রশ্ন ${i}`, option_a:'এক', option_b:'দুই', option_c:'তিন', option_d:'চার', correct:'a', explanation:null, difficulty:'easy'}));
+      await page.context().route('**/*', route => {
+        const url = route.request().url();
+        if (url.startsWith('http://127.0.0.1:8765/')) return route.continue();
+        if (url.startsWith('https://jwzznffykcxghigkwzab.supabase.co/rest/v1/mcq_questions?')) return route.fulfill({status:200, contentType:'application/json', headers:{'access-control-allow-origin':'*'}, body:JSON.stringify(rows)});
+        return route.abort();
+      });
+      await page.goto('http://127.0.0.1:8765/mcq-test.html');
+      assert.match(await page.locator('#mcqTimeInfo').textContent(), /১০টি প্রশ্নে ৬ মিনিট ৪০ সেকেন্ড/);
+      await page.selectOption('#mcqCount', '30');
+      assert.match(await page.locator('#mcqTimeInfo').textContent(), /৩০টি প্রশ্নে ২০ মিনিট$/);
+      await page.locator('#mcqStart:not([disabled])').waitFor();
+      await page.locator('#mcqStart').click();
+      assert.equal(await page.locator('.mcq-q').count(), 4);
+      assert.equal(await page.locator('#mcqTimeLeft').textContent(), '০২:৪০', '4 questions × 40 s');
+      await page.locator('.mcq-q').nth(0).locator('input[value="a"]').check();
+      await page.clock.runFor(100 * 1000);
+      assert.equal(await page.locator('#mcqTimer.is-low').count(), 1, 'last minute is highlighted');
+      assert.equal(await page.locator('#mcqTimeNote').textContent(), 'আর ১ মিনিট বাকি!');
+      await page.clock.runFor(61 * 1000);
+      await page.locator('#mcqScore:not([hidden])').waitFor();
+      assert.match(await page.locator('#mcqScore').textContent(), /সময় শেষ.*১ \/ ৪/);
+      assert.equal(await page.locator('#mcqTimeLeft').textContent(), '০০:০০');
+      assert.equal(await page.locator('#mcqSubmit').isVisible(), false);
+      assert.deepEqual(errors, []);
       await page.close();
     }
     for (const width of [1201, 1440]) {
